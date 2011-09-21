@@ -123,3 +123,53 @@ thin-others {suc n} (suc i) zero p = zero , refl
 thin-others {zero} (suc ()) (suc i') p
 thin-others {suc n} (suc i) (suc i') p with thin-others i i' (λ x → p (cong suc x))
 ... | y' , proof = suc y' , cong suc proof
+
+-- an inversion to thin
+
+open import Data.Maybe
+open import Category.Functor
+open RawFunctor functor
+
+thick : {n : ℕ} → (x y : Fin (suc n)) → Maybe (Fin n)
+thick zero zero               = nothing
+thick zero (suc j)            = just j
+thick {zero} (suc ()) y
+thick {suc n} (suc i) zero    = just zero
+thick {suc n} (suc i) (suc j) = suc <$> thick i j
+
+open import Data.Sum
+open import Data.Fin.Props renaming (_≟_ to _≟Fin_)
+open import Relation.Nullary
+
+thick-inv : ∀ {n} (x y : Fin (suc n)) → (x ≡ y × thick x y ≡ nothing) ⊎ (Σ[ y' ∶ Fin n ](thin x y' ≡ y × thick x y ≡ just y'))
+thick-inv x y with x ≟Fin y
+thick-inv zero zero | yes p = inj₁ (refl , refl)
+thick-inv zero (suc i) | yes ()
+thick-inv (suc i) zero | yes ()
+thick-inv {zero} (suc ()) (suc i') | yes p
+thick-inv {suc n }(suc i) (suc i') | yes p with thick-inv i i'
+... | inj₁ (eq , y) rewrite y = inj₁ (p , refl)
+... | inj₂ y = {!!}
+thick-inv x y | no ¬p = {!!}
+
+open import Category.Monad
+open RawMonad monad using (_>>=_; return)
+
+
+-- If check x return nothing, then x occurs in t
+-- Otherwise we get a term with one slot less than the original one
+
+check : {n : ℕ} → (x : Fin (suc n)) →  (t : Term (suc n)) → Maybe (Term n)
+check x (var i) = var <$> thick x i
+check x leaf = just leaf
+check x (fork s t) = check x s >>= λ s' → 
+                     check x t >>= λ t' → 
+                     return (fork s' t')
+                     -- TODO: rewrite it using applicative components
+
+-- the unifier for the 'no occurs check' case
+
+_for_ : {n : ℕ} → (t : Term n) → (x : Fin (suc n)) → Fin (suc n) → Term n
+(t for x) y with thick x y
+... | just y' = var y'
+... | nothing = t
