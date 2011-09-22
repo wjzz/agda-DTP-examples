@@ -76,16 +76,17 @@ module DybjersInternalBST where
     ... | inj₁ _ = (h1 , sins-leqT a x v r h2 q)
     ... | inj₂ _ = (h1 , h2)
 
-  postulate
-    v0 : Value
-    v1 : Value
-    v2 : Value
 
 
 open DybjersInternalBST
 
-test0 = sinsert 1  v1 slf
-test1 = sinsert 0  v0 test0
+postulate
+  v0 : Value
+  v1 : Value
+  v2 : Value
+
+test0 = sinsert 0  v0 slf
+test1 = sinsert 1  v1 test0
 test2 = sinsert 2  v2 test1
 
 -- some experiments

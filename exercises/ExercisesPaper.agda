@@ -135,7 +135,7 @@ module ExercisesPaper where
     negb = λ b → ℕ₂-elim 1₂ 0₂ b
 
     Hnegb : (b : ℕ₂) → ¬ (b ≡ negb b)
-    Hnegb = λ b → ℕ₂-elim ? ? b
+    Hnegb b = ℕ₂-elim {P = λ b → ¬ (b ≡ negb b)} H01 H10 b
      where
        H01 : ¬ (0₂ ≡ 1₂)
        H01 H = Hxy
@@ -143,9 +143,15 @@ module ExercisesPaper where
           isZ : ℕ₂ → Set
           isZ b = T (ℕ₂-elim n₁ n₀ b)
 
+          -- most important part: Let P = isZ.
+          -- Leibniz rule (≡-elim)   : Id(x,y) -> P x -> P y
+          -- since H:Id(0,1) we have : P 0 -> P 1
+          -- 0 is proof for P 0, so we can proove P1
           Hxy : isZ 1₂
           Hxy = ≡-elim isZ H 0₁
 
+       H10 : ¬ (1₂ ≡ 0₂)
+       H10 H = H01 (sym H)
 
   module Task_Cantor where
     open MartinLof
