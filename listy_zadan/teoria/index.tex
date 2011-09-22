@@ -1,13 +1,13 @@
-\documentclass[10pt, a4paper]{article}
+\documentclass[11pt, a4paper]{article}
 \usepackage{a4wide}
-\usepackage[utf8]{inputenc}
-%\usepackage{ucs}
 \usepackage{polski}
+\usepackage[utf8]{inputenc}
 \usepackage{amsthm}
-\usepackage{semantic}
-\newtheorem{zadanie}{Zadanie}
+\usepackage{amssymb}
 
-% \setmonofont{FreeMono}
+\usepackage{semantic}
+
+\newtheorem{zadanie}{Zadanie}
 
 \author{Wojciech Jedynak \and Paweł Wieczorek}
 \title{Ćwiczenia}
@@ -29,7 +29,32 @@ Zadania do których nie zrobimy rozwiazań wzorcowych będą do wywalenia.
 Zaznaczam przy zadaniach teoretycznych które można zrobić w Agdzie, możemy zrobić tak że dajemy ludziom te zadania
 + definicje w Agdzie, i ich wola czy zrobią tylko w Agdzie czy tylko na papierze, czy tu i tu.
 
-\section{Teoretyczne}
+\section{Agda i teoria}
+
+
+\subsection{Proste}
+
+\begin{zadanie}[Da się rozwiązać w Agdzie]
+Ustalmy typy $A$ oraz rodzinę $B(a)$ dla każdego $a \in A$ oraz $C(a, a')$ dla każdych $a, a' \in A$.
+Zbuduj termy o następujących typach:
+
+\[
+ \big( (\Pi x \in A)\;(\Pi y \in A)\; C(x, y) \big) \to (\Pi y \in A)\;(\Pi x \in A)\; C(x, y)\;
+\]
+\[
+ \big( (\Sigma x \in A)\;(\Pi y \in A)\; C(x, y) \big) \to (\Pi y \in A)\;(\Sigma x \in A)\; C(x, y)\;
+\]
+\[
+ \big( (\Pi x \in A)\;(\Pi y \in A)\;B(x) \to B(y)\big) \to (\Pi x \in A)\;(\Pi y \in A)\;\neg B(y) \to \neg B(x)
+\]
+\[
+ \big( \neg (\Sigma x \in A)\;B(x)\big) \to (\Pi x \in A)\;\neg B(x)
+\]
+\[
+ \big( (\Pi x \in A)\;B(x)\big) \to (\Pi x \in A)\;B(x)
+\]
+\end{zadanie}
+
 
 \begin{zadanie}[Da się rozwiązać w Agdzie]
 Ustalmy typy $A, B$, zbuduj termy o następujących typach:
@@ -142,6 +167,13 @@ znanych funkcji zbuduj także dowód że są swoimi odwrotnościami, tzn termy o
 (sprawdzić czy się da, czy trzeba dodać jeszcze argumenty, tzn $ (\cdots f \cdots )\;x\;y \equiv f \;x\;y$
 \end{zadanie}
 
+\subsection{Bardziej teoretyczne}
+
+\begin{zadanie}[Da się rozwiązać w Agdzie]
+ Ustalmy typ $A$, zakoduj za pomocą $W$-typów typ $Maybe\; A$ znany z Haskella.
+\end{zadanie}
+
+
 \begin{zadanie}[NIE da się rozwiązać w Agdzie]
  W książce ,,Intuinistic type theory'' pojawia się dodatkowa reguła wnioskowania dotyczaca równości:
 
@@ -181,7 +213,7 @@ oczywiste, trzeba użyć uniwersum jak z czwartym aksjomatem Peano  na seminariu
 \end{zadanie}
 
 \begin{zadanie}[Da się rozwiązać w Agdzie]
- Udowodnij, że nie istnieje funkcja z liczb naturalnych do ciągów zero-jedynkowych, która ma odwrotność.
+ Udowodnij, że nie istnieje funkcja z liczb naturalnych w ciągi zero-jedynkowych, która ma funkcję odwrotną.
 To jest skonstruuj
  term $thm$ o następującym typie:
 \[
@@ -275,55 +307,9 @@ thm =
 H')\;H
 \]
 
-Wersja w Agdzie (musze wybadać jak UTF w Verbatim robić)
-\begin{verbatim}
-module Cantor where
-
-open import Data.Product 
-open import Data.Nat
-open import Data.Empty
-open import Data.Bool
-open import Relation.Nullary
-open import Relation.Binary.PropositionalEquality
-
-negb : Bool -> Bool
-negb true  = false
-negb false = true
-
-Hnegb : (b : Bool) -> ~b == negb b
-Hnegb true ()
-Hnegb false ()
-
-BinSeq : Set
-BinSeq = N -> Bool
-
-E-elim : {A : Set} {B : A -> Set} {P : Ex A B -> Set}
-       -> ( (a : A) -> (b : B a) -> P (a , b) )
-       -> (p : Ex A B) -> P p
-E-elim H (a , b) = H a b
-
-thm : ~ Ex \(f : N -> BinSeq) -> Ex \(g : BinSeq -> N)
-    -> ( (s : BinSeq) -> f (g s) == s )
-thm H = Ex-elim (\f H' -> Ex-elim (\g H'' -> diagonal f g H'') H') H
- where
-
-   diagonal : (f : N -> BinSeq) (g : BinSeq -> N) 
-            -> ( (s : BinSeq) -> f (g s) == s )
-            -> False
-   diagonal f g C = Hnegb (h nh) Heq
-    where
-      h : BinSeq
-      h n = negb (f n n)
-
-      nh = g h
-
-      Heq : negb (f (g h) nh) == negb (h nh)
-      Heq = subst (\ p -> negb (p nh) == (negb (h nh))) (sym (C h)) refl
-\end{verbatim}
-
-
 \end{proof}
 
+\section{Tylko Agda}
 
 
 \end{document}

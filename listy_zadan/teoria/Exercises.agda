@@ -15,10 +15,10 @@ module Exercises where
     data ℕ₁ : Set where
       0₁ : ℕ₁
 
-    N₁-elim : {P : ℕ₁ → Set} 
+    ℕ₁-elim : {P : ℕ₁ → Set} 
             → P 0₁
             → (p : ℕ₁) → P p
-    N₁-elim H0 0₁ = H0
+    ℕ₁-elim H0 0₁ = H0
 
     ----
 
@@ -26,11 +26,11 @@ module Exercises where
       0₂ : ℕ₂
       1₂ : ℕ₂
 
-    N₂-elim : {P : ℕ₂ → Set}
+    ℕ₂-elim : {P : ℕ₂ → Set}
             → P 0₂ → P 1₂
             → (p : ℕ₂) → P p
-    N₂-elim H0 H1 0₂ = H0
-    N₂-elim H0 H1 1₂ = H1
+    ℕ₂-elim H0 H1 0₂ = H0
+    ℕ₂-elim H0 H1 1₂ = H1
 
     ----
 
@@ -48,14 +48,15 @@ module Exercises where
            → (p : Σ A B) → P p
     Σ-elim H (a , b) = H a b
 
+    syntax Σ A (λ x → B) = Σ[ x ∶ A ] B
     ----
 
-    data Id (A : Set) (x : A) : A → Set where
-      refl : Id A x x
+    data _≡_ {A : Set} (x : A) : A → Set where
+      refl :  x ≡ x
 
-    Id-elim : {A : Set} → {x y : A} → {P : A → Set}
-            → Id A x y → P x → P y
-    Id-elim refl H = H
+    ≡-elim : {A : Set} → {x y : A} → (P : A → Set)
+            → x ≡ y → P x → P y
+    ≡-elim P refl H = H
 
     ---
 
@@ -69,67 +70,52 @@ module Exercises where
 
     ---
 
---    open import Data.Product
+    ¬_ : (P : Set) → Set
+    ¬ P = P → ℕ∅
 
-{-
-    c : {A B C : Set} → (A × B → C)
-      → A → B → C
-    c = λ f x y → f (x , y)
+    ---
 
-    u : {A B C : Set} → (A → B → C)
-      → A × B → C
-    u f p = ×-elim (λ a b → f a b) p
+  module Task1 where
+    open MartinLof
 
-    test : {A B C : Set} → (f : A → B → C)
-         → Id (A → B → C) (c (u f)) f
-    test f = refl
+    term1 : {A : Set} {C : A → A → Set} 
+          → ( (x : A) → (y : A) → C x y )
+          → (y : A) → (x : A) → C x y
+    term1 f y x = f x y
 
-    test2 : {A B C : Set} → (f : A × B → C)
-          → Id (A × B → C) (u (c f))  f
-    test2 f = refl
--}
-
-
-  module Cantor where
-
-  open import Data.Product 
-  open import Data.Nat
-  open import Data.Empty
-  open import Data.Bool
-  open import Relation.Nullary
-  open import Relation.Binary.PropositionalEquality
+    term2 : {A : Set} {C : A → A → Set} 
+          → ( Σ[ x ∶ A ] ((y : A) → C x y) )
+          → (y : A) → Σ[ x ∶ A ] C x y
+    term2 p y = Σ-elim (λ x f → (x , f y) ) p
 
 
 
-  negb : Bool → Bool
-  negb true  = false
-  negb false = true
+  module Task_Cantor where
+    open MartinLof
 
-  Hnegb : (b : Bool) → ¬ b ≡ negb b
-  Hnegb true ()
-  Hnegb false ()
+    negb : ℕ₂ → ℕ₂
+    negb = λ b → ℕ₂-elim 1₂ 0₂ b
 
-  BinSeq : Set
-  BinSeq = ℕ → Bool
+    Hnegb : (b : ℕ₂) → ¬ (b ≡ negb b)
+    Hnegb 0₂ ()
+    Hnegb 1₂ ()
 
-  Σ-elim : {A : Set} {B : A → Set} {P : Σ A B → Set}
-         → ( (a : A) → (b : B a) → P (a , b) )
-         → (p : Σ A B) → P p
-  Σ-elim H (a , b) = H a b
+    BinSeq : Set
+    BinSeq = ℕ → ℕ₂
 
-  thm : ¬ ∃ λ (f : ℕ → BinSeq) → ∃ λ (g : BinSeq → ℕ)
-      → ( (s : BinSeq) → f (g s) ≡ s )
-  thm H = Σ-elim (λ f H' → Σ-elim (λ g H'' → diagonal f g H'') H') H
-   where
-    diagonal : (f : ℕ → BinSeq) (g : BinSeq → ℕ) 
-             → ( (s : BinSeq) → f (g s) ≡ s )
-             → ⊥
-    diagonal f g C = Hnegb (h nh) Heq
+    thm : ¬ Σ (ℕ → BinSeq) (λ f  → Σ (BinSeq → ℕ) ( λ g
+        → ( (s : BinSeq) → s ≡ f (g s) )))
+    thm H = Σ-elim (λ f H' → Σ-elim (λ g H'' → diagonal f g H'') H') H
       where
-        h : BinSeq
-        h n = negb (f n n)
+        diagonal : (f : ℕ → BinSeq) (g : BinSeq → ℕ) 
+                 → ( (s : BinSeq) → s ≡ f (g s) )
+                 → ℕ∅
+        diagonal f g C = Hnegb (h nh) Heq
+          where
+            h : BinSeq
+            h n = negb (f n n)
 
-        nh = g h
+            nh = g h
 
-        Heq : negb (f (g h) nh) ≡ negb (h nh)
-        Heq = subst (λ p → negb (p nh) ≡ (negb (h nh))) (sym (C h)) refl
+            Heq : negb (f (g h) nh) ≡ negb (h nh)
+            Heq = ≡-elim (λ p → negb (p nh) ≡ (negb (h nh))) (C h) refl
