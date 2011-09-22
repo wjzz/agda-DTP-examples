@@ -75,6 +75,29 @@ module Exercises where
 
     ---
 
+    mutual
+      data U : Set where
+        n₀ : U
+        n₁ : U
+        n₂ : U
+--        _⊕_ : U -> U -> U
+        σ : (a : U) -> (T a -> U) -> U
+        π : (a : U) -> (T a -> U) -> U
+        N : U
+--      w : (a : U) -> (T a -> U) -> U
+        i : (a : U) -> T a -> T a -> U
+
+      T : U -> Set
+      T n₀        = ℕ∅
+      T n₁        = ℕ₁
+      T n₂        = ℕ₁
+--      T (a ⊕ b)   = T a + T b
+      T (σ a b)   = Σ (T a) (\x -> T (b x))
+      T (π a b)   = (x : T a) -> T (b x)
+      T N         = ℕ
+--      T (w a b)   = W (T a) (\x -> T (b x))
+      T (i a b c) = b ≡ c
+
   module Task1 where
     open MartinLof
 
@@ -89,6 +112,51 @@ module Exercises where
     term2 p y = Σ-elim (λ x f → (x , f y) ) p
 
 
+  module Task2 where
+    open MartinLof
+
+    sym : {A : Set} → {x y : A}
+         → x ≡ y
+         → y ≡ x
+    sym refl = refl
+
+    cong : {A B : Set} → {x y : A}
+         → (f : A → B)
+         → x ≡ y
+         → f x ≡ f y
+    cong f refl = refl
+
+  module Task8 where
+    open MartinLof
+    open Task2
+
+    data _≡₁_ {A : Set₁} (x : A) : A → Set₁ where
+      refl₁ : x ≡₁ x
+
+    cong₁ : {A B : Set₁} → {x y : A}
+          → (f : A → B)
+          → x ≡₁ y
+          → f x ≡₁ f y
+    cong₁ f refl₁ = refl₁ 
+
+
+    negb : ℕ₂ → ℕ₂
+    negb = λ b → ℕ₂-elim 1₂ 0₂ b
+
+    Hnegb : (b : ℕ₂) → ¬ (b ≡ negb b)
+    Hnegb = λ b H → {!!}
+     where
+       H01 : ¬ (0₂ ≡ 1₂)
+       H01 H = {!!}
+        where
+          f : ℕ₂ → U
+          f = λ a → ℕ₂-elim n₀ n₁ a
+
+          f01 : f 0₂ ≡ f 1₂
+          f01 = cong f H
+
+          U01 : T n₀ ≡₁ T n₁
+          U01 = cong₁ T f01
 
   module Task_Cantor where
     open MartinLof
