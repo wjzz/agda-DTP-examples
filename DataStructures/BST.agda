@@ -40,11 +40,11 @@ module DybjersInternalBST where
 
     _≥T_ : BSTree → Key → Set
     slf               ≥T k0 = ⊤
-    snd k v l r _ _   ≥T k0 = k0 ≤ k × r ≥T k0
+    snd k v l r _ _   ≥T k0 = k0 ≤ k × l ≥T k0
 
     _≤T_ : BSTree → Key → Set
     slf               ≤T k0 = ⊤
-    snd k v l r _ _   ≤T k0 = k ≤ k0 × l ≤T k0
+    snd k v l r _ _   ≤T k0 = k ≤ k0 × r ≤T k0
 
   mutual
 
@@ -54,21 +54,27 @@ module DybjersInternalBST where
     ... | inj₁ p = snd x w l (sinsert a v r) pl (sins-geqT a x v r pr p)
     ... | inj₂ p = snd x w (sinsert a v l) r (sins-leqT a x v l pl p) pr
   
-    sins-geqT : (a x : Key) (v : Value)  → (t : BSTree) → t ≥T x 
-              → x ≤ a → sinsert a v t ≥T x
+    sins-geqT : (a x : Key) (v : Value)
+              → (t : BSTree)
+              → t ≥T x 
+              → x ≤ a
+              → sinsert a v t ≥T x
 
     sins-geqT _ _ _ slf _ q = (q , tt)
     sins-geqT a x v (snd b bv l r _ _) (h1 , h2) q with tot b a
-    ... | inj₁ _ = (h1 , sins-geqT a x v r h2 q)
-    ... | inj₂ _  = (h1 , h2 )
+    ... | inj₁ _  = (h1 , h2 )
+    ... | inj₂ _  = (h1 , sins-geqT a x v l h2 q)
 
-    sins-leqT : (a x : Key) (v : Value) → (t : BSTree) → t ≤T x
-              → a ≤ x → (sinsert a v t) ≤T x
+    sins-leqT : (a x : Key) (v : Value)
+              → (t : BSTree)
+              → t ≤T x
+              → a ≤ x
+              → (sinsert a v t) ≤T x
 
     sins-leqT _ _ _ slf _ q = (q , tt)
     sins-leqT a x v (snd b bv l r _ _) (h1 , h2) q with tot b a
-    ... | inj₁ _ = (h1 , h2)
-    ... | inj₂ _ = (h1 , sins-leqT a x v l h2 q)
+    ... | inj₁ _ = (h1 , sins-leqT a x v r h2 q)
+    ... | inj₂ _ = (h1 , h2)
 
   postulate
     v0 : Value
