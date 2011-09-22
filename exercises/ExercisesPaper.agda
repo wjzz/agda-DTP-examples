@@ -49,6 +49,18 @@ module ExercisesPaper where
     Σ-elim H (a , b) = H a b
 
     syntax Σ A (λ x → B) = Σ[ x ∶ A ] B
+
+    ----
+
+    data W (A : Set) (B : A → Set) : Set where
+      sup : (a : A) → (f : B a → W A B) → W A B
+
+    W-elim : {A : Set} {B : A → Set} {P : W A B → Set}
+           → ( (a : A) → (f : B a → W A B) → ((b : B a) → P (f b)) → P (sup a f))
+           → (p : W A B) → P p
+
+    W-elim {A} {B} {P} H (sup a f) = H a f (λ b → W-elim {A} {B} {P} H (f b))
+
     ----
 
     data _≡_ {A : Set} (x : A) : A → Set where
@@ -132,10 +144,10 @@ module ExercisesPaper where
 
 
     negb : ℕ₂ → ℕ₂
-    negb = λ b → ℕ₂-elim 1₂ 0₂ b
+    negb = ℕ₂-elim 1₂ 0₂
 
     Hnegb : (b : ℕ₂) → ¬ (b ≡ negb b)
-    Hnegb b = ℕ₂-elim {P = λ b → ¬ (b ≡ negb b)} H01 H10 b
+    Hnegb = ℕ₂-elim {P = λ b → ¬ (b ≡ negb b)} H01 H10
      where
        H01 : ¬ (0₂ ≡ 1₂)
        H01 H = Hxy
@@ -155,13 +167,7 @@ module ExercisesPaper where
 
   module Task_Cantor where
     open MartinLof
-
-    negb : ℕ₂ → ℕ₂
-    negb = λ b → ℕ₂-elim 1₂ 0₂ b
-
-    Hnegb : (b : ℕ₂) → ¬ (b ≡ negb b)
-    Hnegb 0₂ ()
-    Hnegb 1₂ ()
+    open Task8
 
     BinSeq : Set
     BinSeq = ℕ → ℕ₂
