@@ -1,0 +1,121 @@
+module Exercises where
+
+  module MartinLof where
+    -- standard Martin-Lof type theory from Books
+
+    data ℕ∅ : Set where
+
+    N∅-elim : {P : Set}
+            → ℕ∅
+            → P
+    N∅-elim ()
+
+    ----
+
+    data ℕ₁ : Set where
+      0₁ : ℕ₁
+
+    ℕ₁-elim : {P : ℕ₁ → Set} 
+            → P 0₁
+            → (p : ℕ₁) → P p
+    ℕ₁-elim H0 0₁ = H0
+
+    ----
+
+    data ℕ₂ : Set where
+      0₂ : ℕ₂
+      1₂ : ℕ₂
+
+    ℕ₂-elim : {P : ℕ₂ → Set}
+            → P 0₂ → P 1₂
+            → (p : ℕ₂) → P p
+    ℕ₂-elim H0 H1 0₂ = H0
+    ℕ₂-elim H0 H1 1₂ = H1
+
+    ----
+
+    data ℕ : Set where
+      zero : ℕ
+      suc  : ℕ → ℕ
+
+    ----
+
+    data Σ (A : Set) (B : A → Set) : Set where
+      _,_ : (a : A) → B a → Σ A B
+
+    Σ-elim : {A : Set} {B : A → Set} {P : Σ A B → Set}
+           → ( (a : A) → (b : B a) → P (a , b) )
+           → (p : Σ A B) → P p
+    Σ-elim H (a , b) = H a b
+
+    syntax Σ A (λ x → B) = Σ[ x ∶ A ] B
+    ----
+
+    data _≡_ {A : Set} (x : A) : A → Set where
+      refl :  x ≡ x
+
+    ≡-elim : {A : Set} → {x y : A} → (P : A → Set)
+            → x ≡ y → P x → P y
+    ≡-elim P refl H = H
+
+    ---
+
+    _×_ : Set → Set → Set
+    A × B = Σ A (λ x → B)
+
+    ×-elim : {A B : Set} {P : A × B → Set}
+           → ( (a : A) → (b : B) → P (a , b) )
+           → (p : A × B) → P p
+    ×-elim = Σ-elim
+
+    ---
+
+    ¬_ : (P : Set) → Set
+    ¬ P = P → ℕ∅
+
+    ---
+
+  module Task1 where
+    open MartinLof
+
+    term1 : {A : Set} {C : A → A → Set} 
+          → ( (x : A) → (y : A) → C x y )
+          → (y : A) → (x : A) → C x y
+    term1 f y x = f x y
+
+    term2 : {A : Set} {C : A → A → Set} 
+          → ( Σ[ x ∶ A ] ((y : A) → C x y) )
+          → (y : A) → Σ[ x ∶ A ] C x y
+    term2 p y = Σ-elim (λ x f → (x , f y) ) p
+
+
+
+  module Task_Cantor where
+    open MartinLof
+
+    negb : ℕ₂ → ℕ₂
+    negb = λ b → ℕ₂-elim 1₂ 0₂ b
+
+    Hnegb : (b : ℕ₂) → ¬ (b ≡ negb b)
+    Hnegb 0₂ ()
+    Hnegb 1₂ ()
+
+    BinSeq : Set
+    BinSeq = ℕ → ℕ₂
+
+    thm : ¬ Σ (ℕ → BinSeq) (λ f  → Σ (BinSeq → ℕ) ( λ g
+        → ( (s : BinSeq) → s ≡ f (g s) )))
+    thm H = Σ-elim (λ f H' → Σ-elim (λ g H'' → diagonal f g H'') H') H
+      where
+        diagonal : (f : ℕ → BinSeq) (g : BinSeq → ℕ) 
+                 → ( (s : BinSeq) → s ≡ f (g s) )
+                 → ℕ∅
+        diagonal f g C = Hnegb (h nh) Heq
+          where
+            h : BinSeq
+            h n = negb (f n n)
+
+            nh = g h
+
+            Heq : negb (f (g h) nh) ≡ negb (h nh)
+            Heq = ≡-elim (λ p → negb (p nh) ≡ (negb (h nh))) (C h) refl

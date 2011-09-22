@@ -1,0 +1,317 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage{a4wide}
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage{amsthm}
+\usepackage{amssymb}
+
+\usepackage{semantic}
+
+\newtheorem{zadanie}{Zadanie}
+
+\author{Wojciech Jedynak \and Paweł Wieczorek}
+\title{Ćwiczenia}
+
+\begin{document}
+
+\maketitle
+
+\section*{Meta notatki}
+
+Proponuję wybrać jakąś notację dla teorii typów Martina-L\"{o}fa. Może tę z książki ,,Programming in...''?
+
+
+Czy chcemy mieć narysowane drzewa w proponowanych rozwiązań? W książce Martina-L\"{o}f-a on czasem rysuje drzewa
+by coś pokazać. Musielibyśmy się zdecydować by było konsekwentnie.
+
+Zadania do których nie zrobimy rozwiazań wzorcowych będą do wywalenia.
+
+Zaznaczam przy zadaniach teoretycznych które można zrobić w Agdzie, możemy zrobić tak że dajemy ludziom te zadania
++ definicje w Agdzie, i ich wola czy zrobią tylko w Agdzie czy tylko na papierze, czy tu i tu.
+
+\section{Agda i teoria}
+
+
+\subsection{Proste}
+
+\begin{zadanie}[Da się rozwiązać w Agdzie]
+Ustalmy typy $A$ oraz rodzinę $B(a)$ dla każdego $a \in A$ oraz $C(a, a')$ dla każdych $a, a' \in A$.
+Zbuduj termy o następujących typach:
+
+\[
+ \big( (\Pi x \in A)\;(\Pi y \in A)\; C(x, y) \big) \to (\Pi y \in A)\;(\Pi x \in A)\; C(x, y)\;
+\]
+\[
+ \big( (\Sigma x \in A)\;(\Pi y \in A)\; C(x, y) \big) \to (\Pi y \in A)\;(\Sigma x \in A)\; C(x, y)\;
+\]
+\[
+ \big( (\Pi x \in A)\;(\Pi y \in A)\;B(x) \to B(y)\big) \to (\Pi x \in A)\;(\Pi y \in A)\;\neg B(y) \to \neg B(x)
+\]
+\[
+ \big( \neg (\Sigma x \in A)\;B(x)\big) \to (\Pi x \in A)\;\neg B(x)
+\]
+\[
+ \big( (\Pi x \in A)\;B(x)\big) \to (\Pi x \in A)\;B(x)
+\]
+\end{zadanie}
+
+
+\begin{zadanie}[Da się rozwiązać w Agdzie]
+Ustalmy typy $A, B$, zbuduj termy o następujących typach:
+
+\[
+ (\Pi s \in A)\; s \equiv_A s
+\]
+\[
+  (\Pi s \in A)(\Pi t \in A)\; s \equiv_A t \to t \equiv_A s
+\]
+\[
+  (\Pi s \in A)(\Pi t \in A)(\Pi r \in A)\; s \equiv_A t \to t \equiv_A r \to s \equiv_A r
+\]
+\[
+  (\Pi f \in A \to B)(\Pi s \in A)(\Pi t \in A)\; s \equiv_A t \to f\;t \equiv_B f\;s
+\]
+
+\end{zadanie}
+
+\begin{zadanie}[Da się rozwiązać w Agdzie]
+Zdefiniuj dodawanie i mnożenie na liczbach naturalnych, a następnie skonstruuj termy o następujących typach:
+
+\[
+ (\Pi m \in N)\;\mbox{add}\;0\;m \equiv m
+\]
+\[
+ (\Pi n \in N)\;\mbox{add}\;n\;0 \equiv n
+\]
+\[
+ (\Pi n \in N)\;(\Pi m \in N)\;\mbox{add}\;n\;m \equiv \mbox{add}\;m\;n
+\]
+\[
+ (\Pi m \in N)\;\mbox{mult}\;0\;m \equiv 0
+\]
+\[
+ (\Pi n \in N)\;\mbox{mult}\;n\;0 \equiv 0
+\]
+\[
+ (\Pi n \in N)\;(\Pi m \in N)\;\mbox{mult}\;n\;m \equiv \mbox{mult}\;m\;n
+\]
+\[
+ (\Pi n \in N)\;(\Pi m \in N)\;\mbox{mult}\;(\mbox{add}\;1\;n)\;m \equiv \mbox{add}\;n\;(\mbox{mult}\;m\;n)
+\]
+\[
+ (\Pi n \in N)\;(\Pi m \in N)\;\mbox{mult}\;(\mbox{add}\;2\;n)\;m \equiv \mbox{add}\;(\mbox{mult}\; 2\; n)\;(\mbox{mult}\;m\;n)
+\]
+
+\end{zadanie}
+
+\begin{zadanie}[Da się rozwiązać w Agdzie]
+ Zdefiniuj poprzednik na liczbach naturalnych, a następnie zbuduj termy o następujących typach:
+
+\[
+  \mbox{pred}\;0 \equiv 0
+\]
+\[
+  (\Pi n \in N)\;  \mbox{pred}\;(\mbox{add}\;1\;n) \equiv n
+\]
+\[
+ (\Pi n \in N) 
+\]
+
+\end{zadanie}
+
+
+\begin{zadanie}[Da się rozwiązać w Agdzie]
+ Ustalmy typ $A$, zbubuj funkcję $toCh$ o następującym typie,
+\[
+  N \to (A \to A) \to A \to A
+\]
+
+a następnie termy o takich typach:
+\[
+ (\Pi f \in A \to A)\;(\Pi x \in A)\;\mbox{toCh}\;0\;f\;x \equiv x
+\]
+\[
+ (\Pi f \in A \to A)\;(\Pi x \in A)\;\mbox{toCh}\;(\mbox{add}\;1\;n)\;f\;x \equiv f\;(\mbox{toCh}\;n\;f\;x)
+\]
+\[
+ (\Pi n \in N)\;(\Pi m \in N)\;(\Pi f \in A \to A)\;(\Pi x \in A)\;
+\mbox{toCh}\;(\mbox{add}\;n\;m)\;f\;x
+\equiv
+\mbox{toCh}\;n\;f\;(\mbox{toCh}\;m\;f\;x)
+\]
+
+\end{zadanie}
+
+
+\begin{zadanie}[Da się rozwiązać w Agdzie]
+ Ustalmy dowolne typy $A, B, C$.
+ Pokaż, że typy $A \to B \to C$ oraz $A \times B \to C$ są izomorficzne. To jest, oprócz zdefiniowana dobrze
+znanych funkcji zbuduj także dowód że są swoimi odwrotnościami, tzn termy o następujących typach:
+
+\[
+(\Pi f \in A \to B \to C)\; \mbox{curry}\; (\mbox{uncurry}\; f)\; \equiv f
+\]
+
+\[
+(\Pi f \in A \times B \to C)\; \mbox{uncurry}\; (\mbox{curry}\; f)\; \equiv f
+\]
+
+%\[
+% (\Pi f \in A \to B \to C)\;(\Pi x \in A)\;(\Pi y \in B)\; \mbox{curry}\; (\mbox{uncurry}\; f)\;x\;y \equiv f\;x\;y
+%\]
+
+%\[
+% (\Pi f \in A \times B \to C)\;(\Pi x \in A)\;(\Pi y \in B)\; \mbox{uncurry}\; (\mbox{curry}\; f)\;(x,y) \equiv f\; (x,y)
+%\]
+
+(sprawdzić czy się da, czy trzeba dodać jeszcze argumenty, tzn $ (\cdots f \cdots )\;x\;y \equiv f \;x\;y$
+\end{zadanie}
+
+\subsection{Bardziej teoretyczne}
+
+\begin{zadanie}[Da się rozwiązać w Agdzie]
+ Ustalmy typ $A$, zakoduj za pomocą $W$-typów typ $Maybe\; A$ znany z Haskella.
+\end{zadanie}
+
+
+\begin{zadanie}[NIE da się rozwiązać w Agdzie]
+ W książce ,,Intuinistic type theory'' pojawia się dodatkowa reguła wnioskowania dotyczaca równości:
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+H \in x \equiv_A y
+}
+{
+ x = y : A
+}
+\end{tabular}
+\end{center}
+
+Mówi ona, że jeżeli posiadamy dowód, że dwa termy są równe to są one konwertowalne. Ta reguła sprawia, że
+type-checking jest nierozstrzygalny, a taką równość i teorię typów nazywany ekstensjonalną. 
+Korzystając z tej reguły
+udowodnij ekstensjonalność funkcji, tzn pokaż że w ekstensjonalnej teorii typów dla ustalonych typów $A, B$ możemy
+zbudować term o typie
+
+\[
+(\Pi f \in A \to B)\;(\Pi g \in A \to B)\;\big( (\Pi x \in A)\; f\; x \equiv g\; x \big) \to f \equiv g
+\]
+
+Zadania nie da się rozwiązać w~Agdzie ponieważ nie można rozszerzać systemu o nowe reguły wnioskowania.
+(Sprawdzić czy $\eta$-ekspansja jest potrzebna, czy jest dowodliwa z tą równością)
+\end{zadanie}
+
+\begin{zadanie}
+ Skonstruuj negację bitową, tzn term $\mbox{negb} : N_2 \to N_2$ a następnie skontruuj term o typie:
+\[
+ (\Pi b \in N_2) \neg (b \equiv \mbox{negb}\;b)
+\]
+
+Wskazówka: Trudność to dowód że $0_2$ jest różne od $1_2$, ponieważ nie mamy typów indukcyjnych to to nie jest
+oczywiste, trzeba użyć uniwersum jak z czwartym aksjomatem Peano  na seminarium.
+\end{zadanie}
+
+\begin{zadanie}[Da się rozwiązać w Agdzie]
+ Udowodnij, że nie istnieje funkcja z liczb naturalnych w ciągi zero-jedynkowych, która ma funkcję odwrotną.
+To jest skonstruuj
+ term $thm$ o następującym typie:
+\[
+ \neg (\Sigma f \in N \to BinSeq)\, (\Sigma g \in BinSeq \to N)\,
+(\Pi s \in BinSeq)\,f (g\, s) \equiv s 
+\]
+gdzie $BinSeq$ oznacza $N \to N_2$.
+
+Wskazówka: Dowód tego twierdzenia to standardowy przykład metody przekątniowej, można znaleźć rozwiązanie w Whitebooku.
+Trudność polega na przeniesieniu tego na naturalną dedukcję (Zaskakujące może być, że to twierdzenie jest konstruktywne!).
+
+\end{zadanie}
+
+\begin{proof}[Propozycja rozwiązania]
+Zanim sformalizujemy metodę przekątniową przypomnijmy sobie ten dowód, by ustalić co konkretnie chcemy uzyskać.
+
+Pokażmy, że dla dowolnych funkcji $f$ i $g$ potrafimy dojśc do sprzeczności o ile $g$ jest odwrotnością $f$.
+Stwórzmy ,,przekątniowy'' ciąg zero-jedynkowy $h : BinSeq$:
+\[
+ h = \lambda n. \mbox{negb}\;(f\;n\;n)
+\]
+Element tego ciągu o numerze $n$ jest równy negacji $n$-tego elementu w~$n$-tym ciągu w~wyznaczonej numeracji
+przez funkcję $f$. Za pomocą funkcji $g$ możemy uzyskać numer tego ciągu, niech $n_h = g\;h$. Teraz, zauważmy że
+\[
+h\;n_h = \mbox{negb}\;(f\;n_h\;n_h) = \mbox{negb}\;(f\;(g\;h)\;n_h) = \mbox{negb}\;(h \;n_h)
+\]
+
+czyli sprzeczność.
+
+
+Możemy teraz zacząć zastanawiać się jak przenieść powyższe rozumowanie na naturalną dedukcję, musimy
+spróbować skonstruować
+funkcję $diagonal$ o następującym typie:
+{
+\small
+\[
+ (\Pi f \in N \to BinSeq)\, (\Pi g \in BinSeq \to N)\,
+\to
+\big(
+(\Pi s \in BinSeq)\,f (g\, s) \equiv s 
+\big)
+\to N_0
+\]
+}
+
+Chcemy aby odpowiadała ona przedstawionemu rozumowaniu. Term zacząć pisać prosto:
+
+\[
+  \mbox{diagonal} = \lambda f.\lambda g. \lambda C.\; \framebox{?}
+\]
+
+W miejscu \framebox{?} chcemy skonstruować absurdalną wartość. Ale jak? Sprzeczność uzyskaliśmy
+pokazując, że $h\;n_h = \mbox{negb}\; (h\;n_h)$, bo wiemy że dla dowolnego $b$ zachodzi $b \not= \mbox{negb}\;b$.
+
+Wykorzystajmy te szczegóły w praktyce: z poprzedniego zadania mamy term
+$\mbox{Hnegb} : (\Pi b \in N_2) \neg (b \equiv \mbox{negb}\;b)$, czyli pamiętając co rozumiemy
+jako negację - jesteśmy w posiadaniu metody, która z dowodu $b \equiv \mbox{negb}\;b$ konstruuje
+absurdalną wartość. Wykorzystajmy tę metodę dla $h\;n_h$.
+
+\[
+  \mbox{diagonal} = \lambda f.\lambda g. \lambda C.\; \mbox{Hnegb}\; (h\;n_h)\; Heq
+\]
+gdzie
+\[
+ Heq = \framebox{?} : h\;n_h \equiv \mbox{negb}\; (h\;n_h)
+\]
+
+By skonstruować świadka tej równości musimy przeanalizować ciąg równości w~oryginalnym rozumowaniu - pierwsze dwie
+\[
+h\;n_h = \mbox{negb}\;(f\;n_h\;n_h) = \mbox{negb}\;(f\;(g\;h)\;n_h)
+\]
+mamy z definicji $h$ oraz $n\_h$. Czyli interesuje nas jedynie term typu
+\[
+\mbox{negb}\;(f\;(g\;h)\;n_h) \equiv \mbox{negb}\; (h\;n_h)
+\]
+
+...
+
+--
+
+Dowód twierdzenia, to funkcja która ze świadka istnienia takich funkcji $f$ i $g$ ma konstruować wartość absurdalną, która
+jedyne co musi zrobić to rozpakować dane z~argumentu i zaaplikować do nich funkcję $diagonal$. 
+
+\[
+thm = 
+ \lambda H.\;
+ \Sigma\mbox{-elim}\;
+(\lambda f. \lambda H'.\; \Sigma\mbox{-elim}\; (\lambda g. \lambda H''.\;
+\mbox{diagonal}\;f\;g\;H''
+)\;
+H')\;H
+\]
+
+\end{proof}
+
+\section{Tylko Agda}
+
+
+\end{document}
+
+
