@@ -1,4 +1,4 @@
-module Exercises where
+module ExercisesPaper where
 
   module MartinLof where
     -- standard Martin-Lof type theory from Books
@@ -139,6 +139,11 @@ module Exercises where
           → f x ≡₁ f y
     cong₁ f refl₁ = refl₁ 
 
+    cong' : {A : Set} {B : Set₁} → {x y : A}
+          → (f : A → B)
+          → x ≡ y
+          → f x ≡₁ f y
+    cong' f refl = refl₁
 
     negb : ℕ₂ → ℕ₂
     negb = λ b → ℕ₂-elim 1₂ 0₂ b
@@ -156,7 +161,7 @@ module Exercises where
           f01 = cong f H
 
           U01 : T n₀ ≡₁ T n₁
-          U01 = cong₁ T f01
+          U01 = cong' T f01
 
   module Task_Cantor where
     open MartinLof
