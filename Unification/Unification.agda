@@ -173,3 +173,4 @@ _for_ : {n : ℕ} → (t : Term n) → (x : Fin (suc n)) → Fin (suc n) → Ter
 (t for x) y with thick x y
 ... | just y' = var y'
 ... | nothing = t
+

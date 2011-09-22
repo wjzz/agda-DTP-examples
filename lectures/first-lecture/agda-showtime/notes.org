@@ -1,0 +1,72 @@
+* Co trzeba opowiedzieć?
+** Parę spraw organizacyjnych
+*** Czym będziemy się zajmować
+**** Chcemy nauczyć się programować przy użyciu typów zależnych w Agdzie
+**** Chcemy zrozumieć klasyczny system teoretyczny, który za tym stoi
+
+*** Ogólny plan seminarium
+**** Dzisiaj (Tydzień 1.) (Organizacyjne + wstęp)
+***** Omówienie spraw organizacyjnych
+***** Krótka historia programowania z typami zależnymi
+***** Krótka prezentacja dodatkowej mocy, którą dają nam typy zależne
+***** Przypomnienie idei Izomorfizmu Curry'ego-Howarda, czyli fundamentu systemów teoretycznych Martina-Lofa
+
+**** Tygodnie 2-3 (Teoria Martina-Lofa)
+***** Paweł i Wojtek omówią polimorficzną teorię typów Martina-Lofa
+      Pozwoli nam to zrozumieć zasadę działania typów zależnych
+
+**** Tydzień 4. (ew. tygodnie 4-5) (zapoznanie z Agdą)
+***** (Raczej Paweł i Wojtek) Wprowadzenie do Agdy
+***** Porównanie klasycznej teorii i tego co mamy w Agdzie
+
+**** Pozostałe prezentacje (Tygodnie 5-15)
+***** Prezentacje tematów do wyboru
+****** Mamy listę proponowanych tematów, ale sprawa jest otwarta
+****** Pierwsza prezentacja studencka powinna omawiać prace:
+       Why Dependent Types Matter - McBride, McKinna, Swierstra
+       Power of Pi - Swierstra
+
+*** Gdzie można znaleźć listę tematów i literaturę
+**** Będzie odnośnik na stronie seminarium (moodle)
+**** Można by tę listę wydrukować i rozdać studentom
+     
+*** Czego oczekujemy
+**** Przygotowania porządnej prezentacji
+
+**** Przygotowania przykładowego kodu w Agdzie do tej prezentacji
+     Kod ma pokazywać dane zagadnienie w praktyce lub implementować algorytm z pracy.
+     (Np. jeśli praca dotyczy ciekawego schematu rekursji, to chcemy zobaczyć i potem sami potestować
+     programy, w którym to się nam faktycznie przydaje).
+***** W razie potrzeby służymy pomocą
+
+**** Do części teoretycznej będą przygotowane ćwiczenia. 
+     Będzie można je rozwiązać na papierze, a część sprawdzić w Agdzie. 
+     Będą one nieobowiązkowe, ale jeśli ktoś podeśle nam swoje
+     rozwiązania (e-mail? moodle?) przed podanym deadlinem to je sprawdzimy i skomentujemy
+
+** Bardzo krótko: czym w ogóle są typy zależne
+*** Przykłady:
+**** dowod jest obywatelem pierwszej kategorii
+**** predykaty: liczba parzysta, liczba pierwsza, posortowana lista, plik jest otwarty
+**** warunki wstępne i końcowe - projektowanie bezpiecznych API
+**** twierdzenia za darmo - niezmienniki
+     
+** Po co nam zajmować się w ogóle teorią?!
+*** Żeby jakakolwiek certyfikacja miała sens, musimy mieć pewność, że system nie jest np. sprzeczny
+    Dałoby się wtedy udowodnić, że np. funkcja identycznościowa na listach jest poprawnym sortowaniem!
+
+** Krótką historię proverów
+*** Można wymienić parę nazwisk, programów i teorii
+**** LEGO (Luo, Pollack)
+**** Coc, Coq (Huet, Coquand, ...)
+**** Automath
+**** LF, Elf, Twelf
+**** Cayenne
+**** Dependent ML
+**** Epigram
+**** Epigram 2
+
+*** Historia Agdy (na podstawie wikipedii i japońskiego papera)
+**** ALF
+**** Agda 1
+**** Agda 2
