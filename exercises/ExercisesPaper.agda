@@ -130,38 +130,22 @@ module ExercisesPaper where
     open MartinLof
     open Task2
 
-    data _≡₁_ {A : Set₁} (x : A) : A → Set₁ where
-      refl₁ : x ≡₁ x
-
-    cong₁ : {A B : Set₁} → {x y : A}
-          → (f : A → B)
-          → x ≡₁ y
-          → f x ≡₁ f y
-    cong₁ f refl₁ = refl₁ 
-
-    cong' : {A : Set} {B : Set₁} → {x y : A}
-          → (f : A → B)
-          → x ≡ y
-          → f x ≡₁ f y
-    cong' f refl = refl₁
 
     negb : ℕ₂ → ℕ₂
     negb = λ b → ℕ₂-elim 1₂ 0₂ b
 
     Hnegb : (b : ℕ₂) → ¬ (b ≡ negb b)
-    Hnegb = λ b H → {!!}
+    Hnegb = λ b → ℕ₂-elim ? ? b
      where
        H01 : ¬ (0₂ ≡ 1₂)
-       H01 H = {!!}
+       H01 H = Hxy
         where
-          f : ℕ₂ → U
-          f = λ a → ℕ₂-elim n₀ n₁ a
+          isZ : ℕ₂ → Set
+          isZ b = T (ℕ₂-elim n₁ n₀ b)
 
-          f01 : f 0₂ ≡ f 1₂
-          f01 = cong f H
+          Hxy : isZ 1₂
+          Hxy = ≡-elim isZ H 0₁
 
-          U01 : T n₀ ≡₁ T n₁
-          U01 = cong' T f01
 
   module Task_Cantor where
     open MartinLof
