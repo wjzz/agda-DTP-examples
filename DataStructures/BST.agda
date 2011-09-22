@@ -16,9 +16,6 @@ Key = ℕ
 
 module DybjersInternalBST where
   -- Binary Search Tree from "Dependent Types at Work"
-  -- BST invariant : internal
-  -- balanced      : no
-
 
   tot : (n m : ℕ) → n ≤ m ⊎ m ≤ n
   tot zero _          = inj₁ z≤n
@@ -76,14 +73,7 @@ module DybjersInternalBST where
     ... | inj₂ H = h1 , sins-leqT a x v r h2 q
 
 
-module BalancedTree where
-  open import Data.Bool
-  -- Balanced trees
-  -- inspired by AVL from Stdlib-0.5
-
-  -- relation on heights
-  -- n ~ m   iff |n-m| ≤ 1
-
+module Balance where
   data ℕ₂ : Set where
     0₂ : ℕ₂
     1₂ : ℕ₂
@@ -92,9 +82,8 @@ module BalancedTree where
   0₂ +₂ n = n
   1₂ +₂ n = suc n
 
-  0+₂n : {n : ℕ} → 0₂ +₂ n ≡ n
-  0+₂n = refl
-
+  -- relation on heights
+  -- n ~ m   iff |n-m| ≤ 1
   data _~_ : ℕ → ℕ → Set where
     B- : {n : ℕ} → suc n ~ n
     B0 : {n : ℕ} →     n ~ n
@@ -104,6 +93,12 @@ module BalancedTree where
   ~-max (B- {n}) = suc n
   ~-max (B0 {n}) = n
   ~-max (B+ {n}) = suc n
+
+
+module BalancedTree where
+  open Balance
+  -- Balanced trees
+  -- inspired by AVL from Stdlib-0.5
 
   data BTree : ℕ → Set where
     leaf : BTree 0
@@ -151,17 +146,35 @@ module BalancedTree where
 
 
 
+module Avl where
+  -- AVL Trees, with BST and Balance invariants
 
-{-
-    inv_helper : {h : ℕ}
-               → (k : Key) (v : Value)
-               → (t : BTree h)
-               → BTree (i +₂ h)
-    inv_helper = _
--}
+  open Balance
 
-{-
-open DybjersInternalBST
+  mutual
+    data AvlTree : ℕ → Set where
+      leaf : AvlTree 0
+      node : {hl hr : ℕ}
+           → (k : Key) (v : Value)
+           → (l : AvlTree hl)
+           → (r : AvlTree hr)
+           → (l T< k)
+           → (k <T r)
+           → (b : hl ~ hr)
+           → AvlTree (suc $ ~-max b)
+
+    _T<_ : {n : ℕ} → AvlTree n → Key → Set
+    leaf                T< k0 = ⊤
+    node k v l r _ _ _  T< k0 = k0 ≤ k × l T< k0
+
+    _<T_ : {n : ℕ} → Key → AvlTree n → Set
+    k0 <T leaf                = ⊤
+    k0 <T node k v l r _ _ _  = k ≤ k0 × k0 <T r
+
+
+
+open Balance
+open BalancedTree
 
 
 
@@ -169,8 +182,10 @@ postulate
   v0 : Value
   v1 : Value
   v2 : Value
+  v3 : Value
 
-test0 = sinsert 0  v0 slf
-test1 = sinsert 1  v1 test0
-test2 = sinsert 2  v2 test1
--}
+test0 = proj₂ $ insert 0  v0 leaf
+test1 = proj₂ $ insert 1  v1 test0
+test2 = proj₂ $ insert 2  v2 test1
+test3 = proj₂ $ insert 3  v3 test2
+
