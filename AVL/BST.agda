@@ -138,7 +138,7 @@ module DybjersInternalBST where
   
     data BSTree : Set where
       slf : BSTree 
-      snd : (k : Key) 
+      snd : (k : Key) (v : Value)
           → (l r : BSTree)
           → (l ≥T k)
           → (r ≤T k)
@@ -146,33 +146,34 @@ module DybjersInternalBST where
 
     _≥T_ : BSTree → Key → Set
     slf               ≥T k0 = ⊤
-    snd k l r _ _     ≥T k0 = k0 ≤ k × r ≥T k0
+    snd k v l r _ _   ≥T k0 = k0 ≤ k × r ≥T k0
 
     _≤T_ : BSTree → Key → Set
     slf               ≤T k0 = ⊤
-    snd k l r _ _     ≤T k0 = k ≤ k0 × l ≤T k0
+    snd k v l r _ _   ≤T k0 = k ≤ k0 × l ≤T k0
 
   mutual
 
-    sinsert : (k : Key) → BSTree → BSTree
-    sinsert k slf = snd k slf slf tt tt 
-    sinsert a (snd x l r pl pr) with (tot a x)
-    ... | inj₁ p = snd x l (sinsert a r) pl (sins-leqT a x r pr p)
-    ... | inj₂ p  = snd x (sinsert a l) r (sins-geqT a x l pl p) pr
+    sinsert : (k : Key) (v : Value) → BSTree → BSTree
+    sinsert k v slf = snd k v slf slf tt tt 
+    sinsert a v (snd x w l r pl pr) with (tot a x)
+    ... | inj₁ p = snd x w l (sinsert a v r) pl (sins-leqT a x v r pr p)
+    ... | inj₂ p = snd x w (sinsert a v l) r (sins-geqT a x v l pl p) pr
   
-    sins-geqT : (a x : Key) → (t : BSTree) → t ≥T x 
-              → x ≤ a → sinsert a t ≥T x
+    sins-geqT : (a x : Key) (v : Value)  → (t : BSTree) → t ≥T x 
+              → x ≤ a → sinsert a v t ≥T x
 
-    sins-geqT _ _ slf _ q = (q , tt)
-    sins-geqT a x (snd b l r _ _) (h1 , h2) q with tot a b
-    ... | inj₁ _ = (h1 , sins-geqT a x r h2 q)
+    sins-geqT _ _ _ slf _ q = (q , tt)
+    sins-geqT a x v (snd b bv l r _ _) (h1 , h2) q with tot a b
+    ... | inj₁ _ = (h1 , sins-geqT a x v r h2 q)
     ... | inj₂ _  = (h1 , h2 )
 
-    sins-leqT : (a x : Key) → (t : BSTree) → t ≤T x
-              → a ≤ x → (sinsert a t) ≤T x
+    sins-leqT : (a x : Key) (v : Value) → (t : BSTree) → t ≤T x
+              → a ≤ x → (sinsert a v t) ≤T x
 
-    sins-leqT _ _ slf _ q = (q , tt)
-    sins-leqT a x (snd b l r _ _) (h1 , h2) q with tot a b
+    sins-leqT _ _ _ slf _ q = (q , tt)
+    sins-leqT a x v (snd b bv l r _ _) (h1 , h2) q with tot a b
     ... | inj₁ _ = (h1 , h2)
-    ... | inj₂ _ = (h1 , sins-leqT a x l h2 q)
+    ... | inj₂ _ = (h1 , sins-leqT a x v l h2 q)
+
 
