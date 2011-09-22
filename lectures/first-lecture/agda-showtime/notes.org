@@ -3,7 +3,7 @@
 *** Czym będziemy się zajmować
 **** Chcemy nauczyć się programować przy użyciu typów zależnych w Agdzie
 **** Chcemy zrozumieć klasyczny system teoretyczny, który za tym stoi
-
+     
 *** Ogólny plan seminarium
 **** Dzisiaj (Tydzień 1.) (Organizacyjne + wstęp)
 ***** Omówienie spraw organizacyjnych
@@ -46,6 +46,8 @@
 
 ** Bardzo krótko: czym w ogóle są typy zależne
 *** Przykłady:
+**** esencja bezpiecznego programowania
+**** typ bool jest do niczego - przykład McBride'a z tailem
 **** dowod jest obywatelem pierwszej kategorii
 **** predykaty: liczba parzysta, liczba pierwsza, posortowana lista, plik jest otwarty
 **** warunki wstępne i końcowe - projektowanie bezpiecznych API
@@ -66,7 +68,10 @@
 **** Epigram
 **** Epigram 2
 
-*** Historia Agdy (na podstawie wikipedii i japońskiego papera)
-**** ALF
-**** Agda 1
-**** Agda 2
+** Historia Agdy (na podstawie wikipedii i japońskiego papera)
+*** ALF
+*** Agda 1
+*** Agda 2
+** Prezentacja przykładowych programów
+*** Drzewa BST?
+*** Algorytm unifikacji?
