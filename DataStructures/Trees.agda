@@ -1,4 +1,5 @@
-module BST (Value : Set) where
+module Trees (Value : Set) where
+
 open import Data.Nat
 open import Data.Nat.Properties
 open import Data.Unit using (⊤; tt)
@@ -82,6 +83,11 @@ module Balance where
   0₂ +₂ n = n
   1₂ +₂ n = suc n
 
+  _-₂_ : ℕ₂ → ℕ → ℕ
+  0₂ -₂ n     = n
+  1₂ -₂ 0     = 0
+  1₂ -₂ suc n = n
+
   -- relation on heights
   -- n ~ m   iff |n-m| ≤ 1
   data _~_ : ℕ → ℕ → Set where
@@ -94,57 +100,100 @@ module Balance where
   ~-max (B0 {n}) = n
   ~-max (B+ {n}) = suc n
 
+  nextH : {n m : ℕ} → n ~ m → ℕ
+  nextH bal = suc $ ~-max bal
 
 module BalancedTree where
   open Balance
   -- Balanced trees
   -- inspired by AVL from Stdlib-0.5
 
+
   data BTree : ℕ → Set where
     leaf : BTree 0
     node : {hl hr : ℕ} 
-         → (k : Key) (v : Value)
+         → (k : Key)
          → BTree hl
          → BTree hr
          → (bal : hl ~ hr)
-         → BTree (suc $ ~-max bal)
+         → BTree (nextH bal)
+
+  ---
+
+  foldT : {A : ℕ → Set} {h : ℕ}
+       → (aleaf : A 0)
+       → (fnode : {hl hr : ℕ} → Key → A hl → A hr → (bal : hl ~ hr) → A (nextH bal))
+       → BTree h
+       → A h
+
+  foldT aleaf fnode leaf              = aleaf
+  foldT aleaf fnode (node nk l r bal) = 
+    fnode nk
+          (foldT aleaf fnode l)
+          (foldT aleaf fnode r)
+          bal
+
+  --- 
 
   put- : {hr : ℕ}
-       → (k : Key) (v : Value)
+       → (k : Key) 
        → (l   : BTree (suc hr))
        → Σ ℕ₂ (λ i → BTree (i +₂ hr))
        → BTree (suc (suc hr))
-  put- k v l (0₂ , r) = node k v l r B-
-  put- k v l (1₂ , r) = node k v l r B0
+  put- k l (0₂ , r) = node k l r B-
+  put- k l (1₂ , r) = node k l r B0
 
   put+ : {hl : ℕ}
-       → (k : Key) (v : Value)
+       → (k : Key)
        → Σ ℕ₂ (λ i → BTree (i +₂ hl))
        → (r   : BTree (suc hl))
        → BTree (suc (suc hl))
-  put+ k v (0₂ , r) l = node k v l r B-
-  put+ k v (1₂ , r) l = node k v l r B0
+  put+ k (0₂ , r) l = node k l r B-
+  put+ k (1₂ , r) l = node k l r B0
 
   put0 : {h : ℕ}
-       → (k : Key) (v : Value)
+       → (k : Key) 
        → Σ ℕ₂ (λ i → BTree (i +₂ h))
        → (r   : BTree h)
        → Σ ℕ₂ (λ i → BTree (i +₂ (suc h)))
-  put0 {h} k v (0₂ , l) r = 0₂ , node k v l r B0
-  put0 {h} k v (1₂ , l) r = 1₂ , node k v l r B-
+  put0 {h} k (0₂ , l) r = 0₂ , node k l r B0
+  put0 {h} k (1₂ , l) r = 1₂ , node k l r B-
 
+  ---
 
   insert : {h : ℕ}
-         → (k : Key) (v : Value)
+         → (k : Key)
          → (t : BTree h)
          → Σ ℕ₂ (λ i → BTree (i +₂ h))
 
-  insert k v leaf = (1₂ , node k v leaf leaf B0)
-  insert k v (node nk nv l r B-) = 0₂ , put- k v l (insert k v r)
-  insert k v (node nk nv l r B0) = put0 k v (insert k v l) r
-  insert k v (node nk nv l r B+) = 0₂ , put+ k v (insert k v l) r
+  insert k leaf = (1₂ , node k leaf leaf B0)
+  insert k (node nk  l r B-) = 0₂ , put- nk l (insert k r)
+  insert k (node nk  l r B0) = put0 nk (insert k l) r
+  insert k (node nk  l r B+) = 0₂ , put+ nk (insert k l) r
 
 
+{-
+  insertT : {hs hd : ℕ}
+          → (ts : BTree hs)
+          → (td : BTree hd)
+          → Σ ℕ BTree
+  insertT ts td = foldT {Σ ℕ BTree} (0 , leaf) f {!!}
+   where
+     f : ℕ → Σ ℕ BTree → Σ ℕ BTree → Σ ℕ BTree
+     f k l r = {!!}
+-}    
+
+{-
+  delete : {h : ℕ}
+         → (k : Key)
+         → (t : BTree h)
+         → Σ ℕ₂ (λ i → BTree (i -₂ h))
+
+  delete k leaf = 0₂ , leaf
+  delete k (node nk l r B-) with n ≟ nk | delete k l | delete k r
+  delete k (node nk l r B0) = {!!}
+  delete k (node nk l r B+) = {!!}
+-}
 
 module Avl where
   -- AVL Trees, with BST and Balance invariants
@@ -161,7 +210,7 @@ module Avl where
            → (l T< k)
            → (k <T r)
            → (b : hl ~ hr)
-           → AvlTree (suc $ ~-max b)
+           → AvlTree (nextH b)
 
     _T<_ : {n : ℕ} → AvlTree n → Key → Set
     leaf                T< k0 = ⊤
@@ -173,10 +222,80 @@ module Avl where
 
 
 
+  --- fix
+
+  put- : {hr : ℕ}
+       → (k : Key) (v : Value)
+       → (l   : AvlTree (suc hr))
+       → Σ ℕ₂ (λ i → Σ (AvlTree (i +₂ hr)) (λ r → k <T r))
+       → l T< k
+       → AvlTree (suc (suc hr))
+  put- k v l (0₂ , r , k<Tr) l<Tk = node k v l r l<Tk k<Tr B-
+  put- k v l (1₂ , r , k<Tr) l<Tk = node k v l r l<Tk k<Tr B0
+
+
+  put+ : {hl : ℕ}
+       → (k : Key) (v : Value)
+       → Σ ℕ₂ (λ i → Σ (AvlTree (i +₂ hl)) (λ l → l T< k))
+       → (r   : AvlTree (suc hl))
+       → k <T r
+       → AvlTree (suc (suc hl))
+  put+ k v (0₂ , l , lT<k) r k<Tr = node k v l r lT<k k<Tr B+
+  put+ k v (1₂ , l , lT<k) r k<Tr = node k v l r lT<k k<Tr B0
+
+
+  put0 : {h : ℕ}
+       → (k : Key) (v : Value)
+       → Σ ℕ₂ (λ i → Σ (AvlTree (i +₂ h)) (λ l → l T< k))
+       → (r   : AvlTree h)
+       → k <T r
+       → Σ ℕ₂ (λ i → AvlTree (i +₂ (suc h)))
+  put0 {h} k v (0₂ , l , lT<k) r k<Tr = 0₂ , node k v l r lT<k k<Tr B0
+  put0 {h} k v (1₂ , l , lT<k) r k<Tr = 1₂ , node k v l r lT<k k<Tr B-
+
+  ---
+
+  total : (n m : ℕ) → n ≡ m ⊎ n < m ⊎ m < n
+  total zero zero       = inj₁ refl
+  total zero (suc m)    = inj₂ (inj₁ $ s≤s z≤n)
+  total (suc n) zero    = inj₂ (inj₂ $ s≤s z≤n)
+  total (suc n) (suc m) with total n m
+  ... | inj₁ H        = inj₁ (cong suc H)
+  ... | inj₂ (inj₁ H) = inj₂ $ inj₁ $ s≤s H
+  ... | inj₂ (inj₂ H) = inj₂ $ inj₂ $ s≤s H
+
+  ---
+
+  rotate-LR : {hl hr hll hlr hlrl hlrr : ℕ}
+            → (k kl klr : ℕ)
+            → (r   : AvlTree hr)
+            → (ll  : AvlTree hll)
+            → (lrl : AvlTree hlrl)
+            → (lrr : AvlTree hlrr)
+            → (l~r     : hl   ~ hr)
+            → (lrl~lrr : hlrl ~ hlrr)
+            → Σ ℕ₂ (λ i → AvlTree (i +₂ nextH l~r))
+
+  rotate-LR k kl klr r ll lrl lrr lbr = {!!}
+
+  ---
+
+  insert : {h : ℕ}
+         → (k : Key) (v : Value)
+         → (t : AvlTree h)
+         → Σ ℕ₂ (λ i → AvlTree (i +₂ h))
+  insert k v leaf = 1₂ , node k v leaf leaf tt tt B0
+  insert k v (node nk nv l r lT<nk nk<Tr bal) 
+    with total k nk | insert k v l | insert k v r
+  ... | inj₁ k≡nk        | _ | _ = 0₂ , node nk v l r lT<nk nk<Tr bal
+  ... | inj₂ (inj₁ k<nk) | _ | _ = {!!}
+  ... | inj₂ (inj₂ nk<k) | _ | _ = {!!}
+
+
+
+
 open Balance
 open BalancedTree
-
-
 
 postulate
   v0 : Value
@@ -184,8 +303,11 @@ postulate
   v2 : Value
   v3 : Value
 
-test0 = proj₂ $ insert 0  v0 leaf
-test1 = proj₂ $ insert 1  v1 test0
-test2 = proj₂ $ insert 2  v2 test1
-test3 = proj₂ $ insert 3  v3 test2
+test0 = proj₂ $ insert 0  leaf
+test1 = proj₂ $ insert 1  test0
+test2 = proj₂ $ insert 2  test1
+test3 = proj₂ $ insert 3  test2
+test4 = proj₂ $ insert 3  test3
+test5 = proj₂ $ insert 3  test4
+test6 = proj₂ $ insert 0  test5
 
