@@ -1,0 +1,50 @@
+* Parę spraw organizacyjnych
+** Czym będziemy się zajmować
+*** Chcemy nauczyć się programować i dowodzić przy użyciu typów zależnych w języku Agda
+*** Chcemy zrozumieć klasyczny system teoretyczny, który za tym stoi
+
+** Jakie są wymagania wstepne
+*** Znajomość jakiegoś typowanego języka funkcyjnego
+*** Podstawowa znajomość zagadnień żwiaznych z typami i rachunkiem lambda
+    
+** Ogólny plan seminarium
+*** Dzisiaj (Tydzień 1.) (Organizacyjne + wstęp)
+**** Omówienie spraw organizacyjnych
+**** Krótka prezentacja praktycznych możliwości typów zależnych 
+**** Przypomnienie idei Izomorfizmu Curry'ego-Howarda
+
+*** Tygodnie 2-3 (Teoria Martina-Lofa)
+**** Paweł i Wojtek omówią polimorficzną teorię typów Martina-Lofa
+     Pozwoli nam to zrozumieć zasadę działania typów zależnych
+
+*** Tydzień 4. (ew. tygodnie 4-5) (zapoznanie z Agdą)
+**** (Raczej Paweł i Wojtek) Wprowadzenie do Agdy
+**** Porównanie klasycznej teorii i tego co mamy w Agdzie
+
+*** Pozostałe prezentacje (Tygodnie 5-15)
+**** Prezentacje tematów do wyboru
+***** Mamy listę proponowanych tematów, ale sprawa jest otwarta
+***** Pierwsza prezentacja studencka powinna omawiać prace:
+      Why Dependent Types Matter - McBride, McKinna, Swierstra
+      Power of Pi - Swierstra
+
+** Gdzie można znaleźć listę tematów i literaturę
+*** Będzie odnośnik na stronie seminarium (moodle)
+*** Można by tę listę wydrukować i rozdać studentom
+    
+** Czego oczekujemy
+*** Bardzo dobrej frekwencji -- dozwolone 3 nieobecności
+
+*** Przygotowania porządnej prezentacji
+
+*** Przygotowania przykładowego kodu w Agdzie do tej prezentacji
+    Kod ma pokazywać dane zagadnienie w praktyce lub implementować algorytm z pracy.
+    (Np. jeśli praca dotyczy ciekawego schematu rekursji, to chcemy zobaczyć i potem sami potestować
+    programy, w którym to się nam faktycznie przydaje).
+**** W razie potrzeby służymy pomocą
+
+*** Do części teoretycznej będą przygotowane ćwiczenia. 
+    Będzie można je rozwiązać na papierze, a część sprawdzić w Agdzie. 
+    Będą one nieobowiązkowe, ale jeśli ktoś podeśle nam swoje
+    rozwiązania (e-mail? moodle?) przed podanym deadlinem to je sprawdzimy i skomentujemy
+

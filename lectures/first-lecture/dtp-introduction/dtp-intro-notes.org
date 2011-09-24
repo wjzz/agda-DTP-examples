@@ -1,0 +1,56 @@
+* Bardzo krótko: czym w ogóle są typy zależne
+** Zalety języków funkcyjnych
+*** pozbywamy się pewnych klas błędów programistycznych za darmo (dereferencja pustego wskaźnika, zwolnienie niedostępnej pamięci,...)
+*** mamy _możliwość_ niedopuszczenia do powstania niektórych błędów logicznych
+    Przykłady: listy o parzystej długości, nie pozwalanie na utworzenie błędnych wartości
+
+** Możemy zrobić dużo, ale czasami chcemy więcej...
+*** typ bool jest do niczego - przykład McBride'a z tailem
+    if null xs then tail xs else xs -- gdzie tu jest błąd typowy?
+
+*** projektowanie API
+    Pewne niezmienniki musimy opisywać słownie w komentarzach i liczyć, że będą one zachowane.
+    Podobnie z warunkami wstępnymi, możemy napisać:
+      -- wymaga niepustej listy
+      tail :: [a] -> [a]
+    ale nie mamy żadnych gwarancji, że ktoś nam tego dopilnuje.
+    
+
+** Typy zależne na ratunek!
+*** dowod jest obywatelem pierwszej kategorii
+
+*** predykaty: liczba parzysta, liczba pierwsza, posortowana lista, plik jest otwarty
+
+*** teraz możemy zrobić bardzo ładne i czytelne API
+    
+** Prezentacja przykładowych programów
+*** Drzewa BST?
+*** Algorytm unifikacji?
+
+    
+*** Żeby jakakolwiek certyfikacja miała sens, musimy mieć pewność, że system nie jest np. sprzeczny
+    Dałoby się wtedy udowodnić, że np. funkcja identycznościowa na listach jest poprawnym sortowaniem!
+
+** Krótką historię proverów
+*** Można wymienić parę nazwisk, programów i teorii
+**** LEGO (Luo, Pollack 1992)
+**** Coc, Coq (Huet, Coquand, ...) [Calculus of constructions 1985]
+     It was inspired by the works of Martin-Loef, Girard and de Bruijin
+**** Automath
+**** NuPRL (Constable 1986)
+**** LF (Harper 1993), Elf, Twelf
+**** Cayenne
+**** Dependent ML
+**** Epigram
+**** Epigram 2
+
+** Historia Agdy (na podstawie wikipedii i japońskiego papera)
+*** ALF (Magnusson & Nordstroem 1994)
+*** Agda 1 (+ edytor Alfa)
+*** Agda 2
+    Agda była tworzona od 1990 na Uniwersytecie w Chalmers między innymi przez Catarinę Coquand,
+    Makoto Takeyamę i Marcina Benke.
+    W 2006 zaczęto przepisywanie systemu od nowa. Zajęli się tym Ulf Norell (główny implementator), Nils Anders Danielsson,
+    Makoto Takeyama i Marcin Benke. Przy tej okazji system bardzo się zmienił. Agda1 odnosi się do wszystkich wersji
+    przed tym przedwsięzięciem, Agda2 oznacza aktualną wersję.
+    
