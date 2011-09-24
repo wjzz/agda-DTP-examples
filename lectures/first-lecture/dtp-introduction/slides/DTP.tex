@@ -29,8 +29,8 @@
 \setlength{\parindent}{0pt} 
 
 \title{Seminarium: Programowanie w teorii typów}
-\subtitle{Przykładowe zastowania typów zależnych}
-\author{Dariusz Biernacki, Wojciech Jedynak, Paweł Wieczorek} 
+\subtitle{Przykładowe zastosowania typów zależnych}
+\author{Wojciech Jedynak, Paweł Wieczorek} 
 \institute{Instytut Informatyki Uniwersytetu Wrocławskiego}
 
 \AtBeginSection[]
@@ -49,151 +49,162 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}
-\frametitle{Plan spotkania}
-
-\begin{itemize}
-
-\item Omówienie spraw organizacyjnych
-\item Krótka prezentacja praktycznych możliwości typów zależnych 
-\item Przypomnienie idei Izomorfizmu Curry'ego-Howarda
-
-\end{itemize}
-
 % \tableofcontents[hidesubsections]
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-\frametitle{Sprawy organizacyjne}
-
-\tableofcontents[hidesubsections]
-
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Cel seminarium}
-
-\begin{frame}
-
-\frametitle{Co chcemy osiągnąć?}
-
-\begin{itemize}
-\item Chcemy nauczyć się programować i dowodzić przy użyciu typów zależnych w języku Agda
-\item Chcemy zrozumieć klasyczny system teoretyczny, który za tym stoi
-\end{itemize}
-
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Wymagania wstępne}
-
-\begin{frame}
-
-\frametitle{Jakie są wymagania wstępne?}
-
-\begin{itemize}
-\item Znajomość jakiegoś typowanego języka funkcyjnego
-\item Podstawowa znajomość zagadnień związanych z typami i rachunkiem lambda
-\end{itemize}
-
-\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Ogólny plan seminarium}
+\section{Typy zależne - motywacja}
 
 \begin{frame}
-
-\frametitle{Plan seminarium}
-
-\begin{itemize}
-
-\item Tydzień 1. Spotkanie organizacyjne + wstęp teoretyczny
+\frametitle{Na czym polega programowanie z typami zależnymi?}
 
 \begin{itemize}
-\item <2-4> Omówienie spraw organizacyjnych
-\item <3-4> Krótka prezentacja praktycznych możliwości typów zależnych
-\item <4-4> Przypomnienie idei Izomorfizmu Curry'ego-Howarda
-\end{itemize}
 
-\item Tygodnie 2-3. Teoria Martina-Lofa
-
-\begin{itemize}
-\item <5-5> Paweł i Wojtek omówią polimorficzną teorię typów Martina-Lofa.
-\end{itemize}
-
-\item Tydzień 4. Zapoznanie z Agdą
-
-\begin{itemize}
-\item <6-7> Wprowadzenie do Agdy
-\item <7-7> Porównanie klasycznej teorii i tego co mamy w Agdzie
-\end{itemize}
-
-\item Tygodnie 5-15. Prezentacje tematów wolnych
-\begin{itemize}
-\item <8-> Mamy listę proponowanych tematów, ale sprawa jest otwarta
-%% Pierwsza prezentacja studencka powinna omawiać prace:
-%%   Why Dependent Types Matter - McBride, McKinna, Swierstra
-%%   Power of Pi - Swierstra
-%% To trzeba na liście tematów chyba zaznaczyc
-\end{itemize}
+\item Programowanie w typami zależnymi opiera się na programowaniu funkcyjnym
+\item Dostajemy do dyspozycji znacznie bardziej rozbudowany system typów
+\item Główne hasło: \emph{typ} wyrażenia może {\bf zależeć} od jego \emph{wartości}
 
 \end{itemize}
 
 \end{frame}
 
-
-%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Oczekiwania, kryteria oceny}
+%% %%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-
-\frametitle{Czego oczekujemy}
-
-\begin{itemize}
-\item Bardzo dobrej frekwencji -- dozwolone 3 nieobecności \pause
-
-\item Przygotowania porządnej prezentacji - będą one oceniane \pause
-
-\begin{block}{Przygotowania przykładowego kodu w Agdzie do prezentacji}
-  Kod ma pokazywać dane zagadnienie w praktyce lub implementować algorytm z pracy.
-  (Np. jeśli praca dotyczy ciekawego schematu rekursji, to chcemy zobaczyć i potem sami potestować programy, w którym to się nam faktycznie przydaje).
-\end{block}
-
-\pause
-
-\end{itemize}
-
-\begin{block}{Nieobowiązkowe listy zadań}
-  Do części teoretycznej i praktycznej (Agda) będą przygotowane ćwiczenia.
-  Będzie można je rozwiązać na papierze, a część sprawdzić w Agdzie. 
-  Będą one nieobowiązkowe, ale jeśli ktoś podeśle nam swoje
-  rozwiązania (e-mail? moodle?) przed podanym deadlinem to je sprawdzimy i skomentujemy.
-\end{block}
-
+\frametitle{Rola typów - podejście ``tradycyjne''}
 
 \end{frame}
 
-\section{Lista proponowanych tematów, literatura}
 
-\begin{frame}
+%% \begin{frame}
+%% \frametitle{Sprawy organizacyjne}
 
-\frametitle{Proponowane tematy, literatura}
+%% \tableofcontents[hidesubsections]
 
-\begin{itemize}
+%% \end{frame}
 
-\item Materiały rozdane (będą dostępne na stronie wykładu) \pause
-\item Do tematów TODO TODO TODO najlepiej zgłaszać się już niedługo, 
-żeby mieć czas na przygotowanie się.
+%% %%%%%%%%%%%%%%%%%%%%%%%
 
-\end{itemize}
+%% \section{Cel seminarium}
 
-\end{frame}
+%% \begin{frame}
+
+%% \frametitle{Co chcemy osiągnąć?}
+
+%% \begin{itemize}
+%% \item Chcemy nauczyć się programować i dowodzić przy użyciu typów zależnych w języku Agda
+%% \item Chcemy zrozumieć klasyczny system teoretyczny, który za tym stoi
+%% \end{itemize}
+
+%% \end{frame}
+
+%% %%%%%%%%%%%%%%%%%%%%%%%
+
+%% \section{Wymagania wstępne}
+
+%% \begin{frame}
+
+%% \frametitle{Jakie są wymagania wstępne?}
+
+%% \begin{itemize}
+%% \item Znajomość jakiegoś typowanego języka funkcyjnego
+%% \item Podstawowa znajomość zagadnień związanych z typami i rachunkiem lambda
+%% \end{itemize}
+
+%% \end{frame}
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% \section{Ogólny plan seminarium}
+
+%% \begin{frame}
+
+%% \frametitle{Plan seminarium}
+
+%% \begin{itemize}
+
+%% \item Tydzień 1. Spotkanie organizacyjne + wstęp teoretyczny
+
+%% \begin{itemize}
+%% \item <2-4> Omówienie spraw organizacyjnych
+%% \item <3-4> Krótka prezentacja praktycznych możliwości typów zależnych
+%% \item <4-4> Przypomnienie idei Izomorfizmu Curry'ego-Howarda
+%% \end{itemize}
+
+%% \item Tygodnie 2-3. Teoria Martina-Lofa
+
+%% \begin{itemize}
+%% \item <5-5> Paweł i Wojtek omówią polimorficzną teorię typów Martina-Lofa.
+%% \end{itemize}
+
+%% \item Tydzień 4. Zapoznanie z Agdą
+
+%% \begin{itemize}
+%% \item <6-7> Wprowadzenie do Agdy
+%% \item <7-7> Porównanie klasycznej teorii i tego co mamy w Agdzie
+%% \end{itemize}
+
+%% \item Tygodnie 5-15. Prezentacje tematów wolnych
+%% \begin{itemize}
+%% \item <8-> Mamy listę proponowanych tematów, ale sprawa jest otwarta
+%% %% Pierwsza prezentacja studencka powinna omawiać prace:
+%% %%   Why Dependent Types Matter - McBride, McKinna, Swierstra
+%% %%   Power of Pi - Swierstra
+%% %% To trzeba na liście tematów chyba zaznaczyc
+%% \end{itemize}
+
+%% \end{itemize}
+
+%% \end{frame}
+
+
+%% %%%%%%%%%%%%%%%%%%%%%%
+
+%% \section{Oczekiwania, kryteria oceny}
+
+%% \begin{frame}
+
+%% \frametitle{Czego oczekujemy}
+
+%% \begin{itemize}
+%% \item Bardzo dobrej frekwencji -- dozwolone 3 nieobecności \pause
+
+%% \item Przygotowania porządnej prezentacji - będą one oceniane \pause
+
+%% \begin{block}{Przygotowania przykładowego kodu w Agdzie do prezentacji}
+%%   Kod ma pokazywać dane zagadnienie w praktyce lub implementować algorytm z pracy.
+%%   (Np. jeśli praca dotyczy ciekawego schematu rekursji, to chcemy zobaczyć i potem sami potestować programy, w którym to się nam faktycznie przydaje).
+%% \end{block}
+
+%% \pause
+
+%% \end{itemize}
+
+%% \begin{block}{Nieobowiązkowe listy zadań}
+%%   Do części teoretycznej i praktycznej (Agda) będą przygotowane ćwiczenia.
+%%   Będzie można je rozwiązać na papierze, a część sprawdzić w Agdzie. 
+%%   Będą one nieobowiązkowe, ale jeśli ktoś podeśle nam swoje
+%%   rozwiązania (e-mail? moodle?) przed podanym deadlinem to je sprawdzimy i skomentujemy.
+%% \end{block}
+
+
+%% \end{frame}
+
+%% \section{Lista proponowanych tematów, literatura}
+
+%% \begin{frame}
+
+%% \frametitle{Proponowane tematy, literatura}
+
+%% \begin{itemize}
+
+%% \item Materiały rozdane (będą dostępne na stronie wykładu) \pause
+%% \item Do tematów TODO TODO TODO najlepiej zgłaszać się już niedługo, 
+%% żeby mieć czas na przygotowanie się.
+
+%% \end{itemize}
+
+%% \end{frame}
 
 %%%%%%%%%%%%%%%%%%% OLD STUFF %%%%%%%
 
