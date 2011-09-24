@@ -1,0 +1,47 @@
+
+
+* Konstruktywna matematyka
+** co kryje sie pod ta nazwa
+*** skupiamy sie na dowodliwosci a nie idealnym pojeciu prawdy
+*** Mala informacyjnosc p \/ ~p, roznica miedzy Ex.P(x) a ~Ax.~P(x)
+*** ksiazkowy przyklad z sqrt(2)^sqrt(2)
+*** wspomnienie o Bishopie z intermediate-theorem
+** Interpretacja BHK
+*** Co maja oznaczac dowody poszczegolnych konstrukcji
+*** W tym wszystkie mozliwe konstrukcje FOLa, w tym
+*** kwantyfikatory
+** System naturalnej dedukcji
+*** Krotko wspomnienie co to za system
+*** Pokazanie kilka przykladowy regul, moze jakies drzewko
+
+* Teoria typów Martina-Lofa
+** Historia.
+*** Idea likwidacji samo-odniesienia przez Russela
+*** Moze cos o Churchu, ale on robil dziwne rzeczy robil
+** System typow dla rachunku lambda wzbogacony o wiecej sodow
+*** |- a : G        - program typu G
+*** |- G            - typ G
+*** |- G = G'       - typy sa sobie rowne
+*** |- a = b : G    - programy typu a sa sobie rowne
+*** Wprowadzenie prostych spojnikow [niezalezne funkcje] ->, [iloczyn] x
+** Izomorfizm Curry-Howard (propositions-as-types)
+*** przypomnienie prostej odpowiedniosci dla r.lambda z typami prostymi
+*** teoria typow jako jezyk konstruktywnej matematyki, realizacja BHK
+*** reinterpretacja sadow
+**** |- a : G       - dowod sadu G
+**** |- a : G       - a nalezy do G
+**** |- a : G       - program spelniajacy specyfikacje G
+**** |- a : G       - a jest rozwiazaniem problemu G
+
+--------------------------------------
+
+* Wstęp do teorii typów
+** Jak powstała teoria typów? Z jakich idei wyrosła?
+*** Russel, Church, Martin-Lof
+** Teoria typów jako język funkcyjny
+*** typy mogące wyrażać specyfikację
+*** totalne funkcje
+** Teoria typów jako język konstruktywnej matematyki
+
+* TODO Bez przydzialu w konkretne miejsce
+** Czemu dodanie aksjomatu P\/~P nie jest fajne

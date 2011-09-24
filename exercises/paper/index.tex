@@ -20,7 +20,6 @@
 
 Proponuję wybrać jakąś notację dla teorii typów Martina-L\"{o}fa. Może tę z książki ,,Programming in...''?
 
-
 Czy chcemy mieć narysowane drzewa w proponowanych rozwiązań? W książce Martina-L\"{o}f-a on czasem rysuje drzewa
 by coś pokazać. Musielibyśmy się zdecydować by było konsekwentnie.
 
@@ -202,7 +201,7 @@ Zadania nie da się rozwiązać w~Agdzie ponieważ nie można rozszerzać system
 (Sprawdzić czy $\eta$-ekspansja jest potrzebna, czy jest dowodliwa z tą równością)
 \end{zadanie}
 
-\begin{zadanie}
+\begin{zadanie}[Da się rozwiązać w Agdzie]
  Skonstruuj negację bitową, tzn term $\mbox{negb} : N_2 \to N_2$ a następnie skontruuj term o typie:
 \[
  (\Pi b \in N_2) \neg (b \equiv \mbox{negb}\;b)
@@ -212,8 +211,25 @@ Wskazówka: Trudność to dowód że $0_2$ jest różne od $1_2$, ponieważ nie 
 oczywiste, trzeba użyć uniwersum jak z czwartym aksjomatem Peano  na seminarium.
 \end{zadanie}
 
+\begin{proof}[Propozycja rozwiązania]
+
+Stwórzmy najpierw dowód, że $\neg ( 0_2 \equiv 1_2)$. Jest on identyczny z książkowym.
+
+Weźmy dowolny $H \in ( 0_2 \equiv 1_2)$ oraz zdefiniujmy rodzinę typów:
+\[ 
+\mbox{isZero}(m) = Set ( N_2\mbox{-elim}\;\widehat{N_1}\;\widehat{N_0}\;m)
+\]
+Zaznaczmy, że $isZero(0_2) = Set(\widehat{N_1}) = N_1$ oraz $isZero(1_2) = Set(\widehat{N_0}) = N_0$
+
+Term $0_1 \in N_1$ czyli $0_1 \in \mbox{isZero}(0_2)$. Robiąc eliminację na $H$ możemy skonstruować absurdalną wartość,
+używając po prostu reguły Leibniza: $(\mbox{subst}\;0_1\; H) \in \mbox{isZero}(1_2) = N\_0$
+
+
+\end{proof}
+
+
 \begin{zadanie}[Da się rozwiązać w Agdzie]
- Udowodnij, że nie istnieje funkcja z liczb naturalnych w ciągi zero-jedynkowych, która ma funkcję odwrotną.
+ Udowodnij, że nie istnieje funkcja z liczb naturalnych w ciągi zero-jedynkowe, która ma funkcję odwrotną.
 To jest skonstruuj
  term $thm$ o następującym typie:
 \[
