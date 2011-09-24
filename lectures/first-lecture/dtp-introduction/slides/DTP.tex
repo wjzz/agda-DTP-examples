@@ -43,7 +43,7 @@
 
 \begin{document}
 
-%\lstset{language=Lisp}
+\lstset{language=Haskell}
 
 \maketitle
 
@@ -52,6 +52,75 @@
 % \tableofcontents[hidesubsections]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Na początku był Haskell...}
+\subsection{...i wszystko było dobrze...}
+
+\begin{frame}
+
+\frametitle{Programowanie funkcyjne - mocne strony}
+
+\begin{itemize}
+\item Programując w silnie typowanym języku funkcyjnym mamy gwarancję,
+że jeśli kompilator zaakceptuje nasz program, to wykluczone zostały
+pewne klasy błędów programistycznych 
+% (użycie liczby w miejsce napisu, 
+% dereferencja pustego wskaźnika, zwolnenienie błędnego obszaru pamięci
+\item Co z błędami logicznymi?
+\item Używając sprytu i doświadczenia możemy sobie pomóc...
+% przykłady: listy parzystej dlugości
+% regularne drzewa binarne
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{...prawie wszystko.}
+
+\begin{frame}[fragile]
+\frametitle{Typ bool nie ma znaczenia!}
+
+W klasycznym programowaniu funkcyjnym typecheckerowi jest obojętne
+jaki będzie rezultat obliczenia predykatu w wyrażeniu warunkowym.
+
+\begin{lstlisting}
+if null xs then 
+  head xs 
+else 
+  xs
+\end{lstlisting}
+
+
+``Well-typed programs can't go wrong''?
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% \section{Programowanie z typami zależnymi - We can do it better.}
+
+%% %%%%%%%%%%%%%%%%%%%%%%%
+
+% \subsection{Słaba moc wyrazu specyfikacji typowych}
+
+\begin{frame}[fragile]
+\frametitle{Informacyjność typów - podejście ``tradycyjne''}
+
+W Haskellu piszemy:
+
+\begin{lstlisting}
+sort :: Ord a => [a] -> [a]
+\end{lstlisting}
+
+Co możemy wywnioskować z takiej sygnatury? A czego {\bf nie} możemy wywnioskować?
+
+% słaba specyfikacja...
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Typy zależne - motywacja}
 
@@ -63,503 +132,106 @@
 \item Programowanie w typami zależnymi opiera się na programowaniu funkcyjnym
 \item Dostajemy do dyspozycji znacznie bardziej rozbudowany system typów
 \item Główne hasło: \emph{typ} wyrażenia może {\bf zależeć} od jego \emph{wartości}
+\item System wystarczająco silny, by mówić o {\bf certyfikacji}
 
 \end{itemize}
 
 \end{frame}
 
-%% %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}
-\frametitle{Rola typów - podejście ``tradycyjne''}
+\begin{frame}[fragile]
+\frametitle{Wyrażanie własności danych}
+
+Systemy, którymi będziemy się tutaj zajmować pozwalają
+wyrażać właśności takie jak: 
+
+\begin{itemize}
+\item liczba n jest parzysta
+\item lista l jest posortowana
+\item drzewo t jest zbalansowane
+\item plik f jest otwarty
+\end{itemize}
 
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% \begin{frame}
-%% \frametitle{Sprawy organizacyjne}
+\subsection{Czy możemy lepiej?}
 
-%% \tableofcontents[hidesubsections]
+\begin{frame}[fragile]
+\frametitle{Informacyjność typów - typy zależne}
 
-%% \end{frame}
+Używając typów zależnych możemy napisać (pseudokod)
 
-%% %%%%%%%%%%%%%%%%%%%%%%%
+\begin{lstlisting}
+sort :: Ord a => (xs : [a]) -> 
+  (ys : [a] && ordered ys && permutation_of xs ys)
+\end{lstlisting}
 
-%% \section{Cel seminarium}
+% uwaga: możemy nazwać argumenty w sygnaturze!
 
-%% \begin{frame}
+Co możemy wywnioskować z takiej sygnatury?
 
-%% \frametitle{Co chcemy osiągnąć?}
+% wyjściowa lista jest posortowana
+% jest permutacją listy wejściowej
+% program się zakończy!
 
-%% \begin{itemize}
-%% \item Chcemy nauczyć się programować i dowodzić przy użyciu typów zależnych w języku Agda
-%% \item Chcemy zrozumieć klasyczny system teoretyczny, który za tym stoi
-%% \end{itemize}
+\end{frame}
 
-%% \end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% %%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Zastowanie praktyczne: projektowanie API}
 
-%% \section{Wymagania wstępne}
+Gdy projektujemy interfejs dla biblioteki 
+rzadko udaje się wyrazić wszystkie założenia w sygnaturach.
 
-%% \begin{frame}
+\begin{block}{Przykład. Kółko i krzyżyk}
+Zaprojektuj interfejs dla operacji addMove i undo, zapytania
+empty? i wartości empty. Przeanalizuj relacje między nimi.
+\end{block}
 
-%% \frametitle{Jakie są wymagania wstępne?}
+\end{frame}
 
-%% \begin{itemize}
-%% \item Znajomość jakiegoś typowanego języka funkcyjnego
-%% \item Podstawowa znajomość zagadnień związanych z typami i rachunkiem lambda
-%% \end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% \end{frame}
+\begin{frame}
+\frametitle{Projektowanie API c.d.}
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%
+Stosując tradycyjne podejście pewne założenia musimy
+(w najlepszym wypadku) wyrazić jako komentarz...
 
-%% \section{Ogólny plan seminarium}
+\begin{block}{Dobra wiadomość}
+Typy zależne pozwalają nam traktować dowody na równi z wartościami.
+Możemy programować i dowodzić w ramach tego samego systemu!
+\end{block}
 
-%% \begin{frame}
+%% TODO zaprojektować na kartce ostateczne API, które chcę pokazaćo
 
-%% \frametitle{Plan seminarium}
+\end{frame}
 
-%% \begin{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% \item Tydzień 1. Spotkanie organizacyjne + wstęp teoretyczny
+\begin{frame}
+\frametitle{Uwagi}
 
-%% \begin{itemize}
-%% \item <2-4> Omówienie spraw organizacyjnych
-%% \item <3-4> Krótka prezentacja praktycznych możliwości typów zależnych
-%% \item <4-4> Przypomnienie idei Izomorfizmu Curry'ego-Howarda
-%% \end{itemize}
+Żeby cała ta zabawa miała sens, logika, która jest wbudowana w
+język pozwalający na programowanie z typami zależnymi musi być niesprzeczna.
 
-%% \item Tygodnie 2-3. Teoria Martina-Lofa
+\end{frame}
 
-%% \begin{itemize}
-%% \item <5-5> Paweł i Wojtek omówią polimorficzną teorię typów Martina-Lofa.
-%% \end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% \item Tydzień 4. Zapoznanie z Agdą
+\begin{frame}
+\frametitle{Większe przykłady}
 
-%% \begin{itemize}
-%% \item <6-7> Wprowadzenie do Agdy
-%% \item <7-7> Porównanie klasycznej teorii i tego co mamy w Agdzie
-%% \end{itemize}
+\begin{itemize}
 
-%% \item Tygodnie 5-15. Prezentacje tematów wolnych
-%% \begin{itemize}
-%% \item <8-> Mamy listę proponowanych tematów, ale sprawa jest otwarta
-%% %% Pierwsza prezentacja studencka powinna omawiać prace:
-%% %%   Why Dependent Types Matter - McBride, McKinna, Swierstra
-%% %%   Power of Pi - Swierstra
-%% %% To trzeba na liście tematów chyba zaznaczyc
-%% \end{itemize}
+\item Drzewa poszukiwań binarnych z niezmiennikiem
+\item Unifikacja pierwszego rzędu
+\end{itemize}
 
-%% \end{itemize}
-
-%% \end{frame}
-
-
-%% %%%%%%%%%%%%%%%%%%%%%%
-
-%% \section{Oczekiwania, kryteria oceny}
-
-%% \begin{frame}
-
-%% \frametitle{Czego oczekujemy}
-
-%% \begin{itemize}
-%% \item Bardzo dobrej frekwencji -- dozwolone 3 nieobecności \pause
-
-%% \item Przygotowania porządnej prezentacji - będą one oceniane \pause
-
-%% \begin{block}{Przygotowania przykładowego kodu w Agdzie do prezentacji}
-%%   Kod ma pokazywać dane zagadnienie w praktyce lub implementować algorytm z pracy.
-%%   (Np. jeśli praca dotyczy ciekawego schematu rekursji, to chcemy zobaczyć i potem sami potestować programy, w którym to się nam faktycznie przydaje).
-%% \end{block}
-
-%% \pause
-
-%% \end{itemize}
-
-%% \begin{block}{Nieobowiązkowe listy zadań}
-%%   Do części teoretycznej i praktycznej (Agda) będą przygotowane ćwiczenia.
-%%   Będzie można je rozwiązać na papierze, a część sprawdzić w Agdzie. 
-%%   Będą one nieobowiązkowe, ale jeśli ktoś podeśle nam swoje
-%%   rozwiązania (e-mail? moodle?) przed podanym deadlinem to je sprawdzimy i skomentujemy.
-%% \end{block}
-
-
-%% \end{frame}
-
-%% \section{Lista proponowanych tematów, literatura}
-
-%% \begin{frame}
-
-%% \frametitle{Proponowane tematy, literatura}
-
-%% \begin{itemize}
-
-%% \item Materiały rozdane (będą dostępne na stronie wykładu) \pause
-%% \item Do tematów TODO TODO TODO najlepiej zgłaszać się już niedługo, 
-%% żeby mieć czas na przygotowanie się.
-
-%% \end{itemize}
-
-%% \end{frame}
-
-%%%%%%%%%%%%%%%%%%% OLD STUFF %%%%%%%
-
-%% \section{Kontynuacje - wstęp}
-
-%% \subsection{Próba zdefiniowania kontynuacji}
-%% \begin{frame}[fragile]
-%% \frametitle{Wprowadzenie}
-
-%% \begin{block}{Czym są kontynuacje?}
-%% Kontynuacje pojawiają się podczas procesów obliczeniowych. \\
-%% W każdym momencie procesu reprezentują obliczenia, które zostaną wykonane w przyszłości. \\
-%% Możemy o nich również myśleć jak o migawkach (ang. snapshot) danego stadium obliczenia. 
-%% \end{block}
-%% \end{frame}
-
-
-%% \subsection{Rozgrzewkowy przykładzik}
-%% \begin{frame}[fragile]
-%% \frametitle{Przykład na rozgrzewkę}
-%% \begin{itemize} 
-%% \item <1-> Chcemy napisać funkcję, która obliczy iloczyn wszystkich elementów podanej listy
-%% \item <2-> Jeśli w liście występuje 0, to wynik jest również 0 i szkoda wykonywać jakiekolwiek mnożenia
-%% \end{itemize}
-
-%% \pause
-%% \pause
-%% \begin{lstlisting}
-%% (define (product lst)
-%%   (define (loop l k)
-%%     (cond ((null? l) (k 1))
-%%           ((= 0 (car l)) 0)
-%%           (else (loop (cdr l)
-%%                       (lambda (x)
-%%                          (k (* x (car l))))))))
-%%   (loop lst (lambda (x) x)))
-%% \end{lstlisting}
-%% \end{frame}
-
-%% \begin{frame}[fragile]
-%% \frametitle{Przykład na rozgrzewkę cd.}
-%% \begin{itemize} 
-%% \item <1-> Przerobiliśmy funkcję na wersję z tzn. named let
-%% \end{itemize}
-
-%% \pause
-%% \begin{lstlisting}
-%% (define (product lst)
-%%   (let loop ((l lst) 
-%%              (k (lambda (x) x)))
-%%     (cond ((null? l) (k 1))
-%%           ((= 0 (car l)) 0)
-%%           (else (loop (cdr l)
-%%                       (lambda (x) 
-%%                         (k (* x (car l)))))))))
-%% \end{lstlisting}
-%% \end{frame}
-
-%% \section{Continuation Passing Style (CPS)}
-
-%% \subsection{Definicja}
-%% \begin{frame}[fragile]
-%% \frametitle{Continuation Passing Style}
-
-%% \begin{itemize} 
-%% \item <1-> CPS to styl programowania funkcyjnego, w którym sterowanie jest przekazywane jawnie jako kontynuacja
-%% \item <2-> W praktyce polega to na rozszerzeniu wszystkich funkcji o dodatkowy argument - kontynuację - do którego zwracane są
-%% wszystkie wyniki
-%% \end{itemize}
-%% \end{frame}
-
-%% \subsection{Przykładowa transformacja do CPS}
-%% \begin{frame}[fragile]
-%% \frametitle{Przykładowa transformacja do CPS}
-
-%% \begin{itemize} 
-%% \item <1-> Chcemy przekształcić proste wyrażenie arytmetyczne na CPS
-%% \begin{lstlisting}
-%% (+ 2 (* 8 (+ 2 3)))         ;;  42
-%% \end{lstlisting}
-
-%% \item <2-> Potrzebujemy operatorów arytmetycznych w wersji CPS
-%% \begin{lstlisting}
-%% (define (k+ a b k)
-%%   (k (+ a b)))
-
-%% (define (k* a b k)
-%%   (k (* a b)))
-
-%% (define (return x)
-%%   x)
-%% \end{lstlisting}
-
-%% \end{itemize}
-%% \end{frame}
-
-%% \begin{frame}[fragile]
-%% \frametitle{Przykładowa transformacja do CPS cd.}
-
-%% \begin{itemize} 
-%% \item <1-> \begin{lstlisting}
-%% (+ 2 (* 8 (+ 2 3))) 
-%% \end{lstlisting}
-
-%% \item <1-> Musimy teraz wywinąć wyrażenia 'na drugą stronę' - działanie 2+3 jest wykonywane jako pierwsze!
-%% \begin{lstlisting}
-%% (k+ 2 3 (lambda (x) 
-%%           (k* 8 x (lambda (y)
-%%                     (k+ 2 y return)))))
-%% \end{lstlisting}
-%% \end{itemize}
-%% \end{frame}
-
-%% \subsection{Zalety i wady CPS}
-%% \begin{frame}[fragile]
-%% \frametitle{Zalety i wady CPS}
-
-%% CPS jest przyjemny, bo:
-%% \begin{itemize} 
-%% \item <2-> W każdym momencie mamy możliwość przerwania obliczeń
-%% \item <3-> Transformacja programu do CPS upraszcza kompilację: nie trzeba odkładać funkcji na stos, bo wszystkie wywołania są ogonowe
-%% \end{itemize}
-%% \pause
-%% \pause
-%% \pause
-%% Ludzie nie są jednak kompilatorami:
-%% \begin{itemize} 
-%% \item <5-> kod staje się trudniejszy do zrozumienia
-%% \item <6-> i mniej czytelny: pałętają się dodatkowe lambdy i kontynuacje
-%% \end{itemize}
-%% \pause
-%% \pause
-%% \pause
-%% \begin{block}{Dobra wiadomość}
-%% W Scheme mamy wygodniejsze kontynuacje!
-%% \end{block}
-%% \end{frame}
-
-
-%% \section{Kontynuacje w Scheme}
-
-%% \subsection{call-with-current-continuation}
-%% \begin{frame}[fragile]
-%% \frametitle{Kontynuacje w Scheme}
-
-%% \begin{itemize} 
-%% \item <1-> W Scheme obsługa kontynuacji jest wbudowana
-%% \end{itemize}
-%% \pause
-%% \begin{block}{operator call/cc}
-%% (call-with-current-continuation proc) \\
-%% w skrócie: \\
-%% (call/cc proc) 
-%% \end{block}
-
-%% \begin{itemize} 
-%% \item <3-> proc powinno być jednoargumentową procedurą; w miejsce argumentu automagicznie zostanie wstawiona bieżąca kontynuacja
-%% \end{itemize}
-%% \end{frame}
-
-%% \subsection{call/cc w praktyce}
-
-%% \begin{frame}[fragile]
-%% \frametitle{Elementarne przykłady}
-
-%% \begin{itemize} 
-%% \item <1-> Nie mamy obowiązku użyć kontynuacji otrzymanej od call/cc, nie widzimy wtedy różnicy w porównaniu ze zwykłym lispem
-%% \end{itemize}
-%% \begin{lstlisting}
-%% (* 3 (call/cc (lambda (k) (+ 2 1)))) 
-%% ;; 9
-%% \end{lstlisting}
-%% \begin{itemize} 
-%% \item <2-> Jednak jesli wywolamy k, to wyskakujemy natychmiast
-%% \end{itemize}
-%% \pause
-%% \begin{lstlisting}
-%% (* 3 (call/cc (lambda (k) (+ 1 (k 2)))))
-%% ;; 6 
-%% \end{lstlisting}
-%% \end{frame}
-
-%% \begin{frame}[fragile]
-%% \frametitle{Elementarne przykłady cd.}
-
-%% \begin{itemize} 
-%% \item <1-> Kontynuacje zachowują się jak normalne wartości lispowe; w szczególności możemy przypisać je do zmiennych
-%% \end{itemize}
-%% \pause
-%% \begin{lstlisting}
-%% (define a #f) (define b #f)
-%% (define (c-in-c)
-%%   (* 3 (call/cc (lambda (k1)
-%%           (+ 2 (call/cc (lambda (k2)
-%%                   (set! a k1)
-%%                   (set! b k2)
-%%                   2)))))))
-%% (c-in-c) ;; 12
-%% (a 1) ;; 3
-%% (b 1) ;; 9
-%% \end{lstlisting}
-%% \end{frame}
-
-
-%% \section{Moc call/cc}
-
-%% \subsection{Wyskakiwanie z funkcji}
-%% \begin{frame}[fragile]
-%% \frametitle{Wyskakiwanie z funkcji}
-%% \begin{itemize} 
-%% \item <2-> Przykład: przeglądanie listy aż do znalezienia odpowiedniego elementu z pozostałych
-%% \end{itemize}
-%% \pause
-%% \pause
-%% \begin{lstlisting}
-%% (define (search wanted? lst) 
-%%    (call/cc 
-%%      (lambda (return) 
-%%        (for-each (lambda (element) 
-%%                    (if (wanted? element) 
-%%                        (return element))) 
-%%                  lst) 
-%%        \#f)))
-%% \end{lstlisting}
-%% \end{frame}
-
-
-%% \subsection{Wskakiwanie do funkcji}
-%% \begin{frame}[fragile]
-%% \frametitle{Wskakiwanie do funkcji}
-%% \begin{itemize} 
-%% \item <2-> Wariant poprzedniego przykładu: znalezioną wartość przekazujemy do podanej procedury
-%% \end{itemize}
-%% \pause
-%% \pause
-%% \begin{lstlisting}
-%% (define (treat element like-it) 
-%%   (if (good-element? element) 
-%%       (like-it 'fnord))) 
-%% \end{lstlisting}
-%%   \pause
-%% \begin{lstlisting}
-%% (define (search2 treat lst) 
-%%   (call/cc 
-%%    (lambda (return) 
-%%      (for-each (lambda (element) 
-%%                  (treat element return)) 
-%%                lst) 
-%%      \#f))) 
-%% \end{lstlisting}
-%% \end{frame}
-
-
-
-%% \subsection{Coroutines}
-%% \begin{frame}[fragile]
-%% \frametitle{Coroutines}
-%% \begin{block}{Implementacja przeplatanych procedur za pomocą call/cc}
-%% coroutines.ss
-%% \end{block}
-%% \end{frame}
-
-
-%% \subsection{Amb i programowanie logiczne}
-%% \begin{frame}[fragile]
-%% \frametitle{Niedeterminizm w Scheme - operator amb}
-
-%% \begin{itemize} 
-%% \item <2-> Intuicyjnie: (amb a b c ..) zwraca w niedeterministyczny sposób jeden z argumentów
-%% \item <3-> Dodatkowo, amb zawsze wybiera ten wariant, który nie kończy się porażką!
-%% \end{itemize}
-
-%% \pause
-%% \pause
-%% \pause
-%% \begin{block}{(Wciąż intuicyjna) semantyka operatora amb}
-%% (amb a) zwraca a \\
-%% (amb)    oznacza porażkę $\rightarrow$ wykonuje nawrót \\
-%% (amb a b ... z)  zwraca pierwszy z argumentów, który nie kończy się porażką
-%% \end{block}
-%% \end{frame}
-
-%% \begin{frame}[fragile]
-%% \frametitle{amb w praktyce}
-%%   \pause
-%% \begin{lstlisting}
-%% (amb (amb) (amb 1 2) 3 4)
-%% ;; 1
-%% \end{lstlisting}
-%%   \pause
-%% \begin{lstlisting}
-%% (amb)
-%% ;; 2
-%% \end{lstlisting}
-%%   \pause
-%% \begin{lstlisting}
-%% (amb)
-%% ;; 3
-%% \end{lstlisting}
-%%   \pause
-%% \begin{lstlisting}
-%% (amb)
-%% ;; 4
-%% \end{lstlisting}
-%%   \pause
-%% \begin{lstlisting}
-%% (amb)
-%% ;; no-more-values
-%% \end{lstlisting}
-%% \end{frame}
-
-%% \begin{frame}[fragile]
-%% \frametitle{Programowanie logiczne}
-%% \begin{itemize} 
-%% \item <2-> Dzięki amb możemy w Scheme rozwiązywać zagadki Prologowe
-%% \end{itemize}
-%% \pause
-%% \pause
-%% \begin{block}{Implementacja amb i przykładowy program logiczny}
-%% amb.ss
-%% \end{block}
-%% \end{frame}
-
-
-
-
-%% \section{Podsumowanie}
-%% \subsection{Zagadka}
-%% \begin{frame}[fragile]
-%% \frametitle{Zagadka do domu}
-%% \begin{lstlisting}
-
-%% \end{lstlisting}
-%% \begin{block}{Co będzie wypisywane na ekran?}
-%% (let ((yin \\
-%%  \ \ \ \ \ \         ((lambda (cc) (display \#\textbackslash@) cc) (call/cc (lambda (c) c)))) \\
-%%  \ \ \      (yang \\
-%%  \ \ \ \ \ \          ((lambda (cc) (display \#\textbackslash* cc) (call/cc (lambda (c) c))))) \\ 
-%%     (yin yang)) 
-%% \end{block}
-%% \begin{block}{Plik z zagadką}
-%% yin-yang-zagadka.ss
-%% \end{block}
-%% \end{frame}
-
-%% \subsection{Literatura}
-%% \begin{frame}[fragile]
-%% \frametitle{Literatura}
-%% \begin{itemize}
-%% \item <1->Yet Another Scheme Tutorial, rozdziały 16. i 18.
-%% (\url{http://www.shido.info/lisp/scheme\_cc\_e.html} i \url{http://www.shido.info/lisp/scheme\_amb\_e.html})
-%% \item <1->A short introduction to call-with-current-continuation
-%% (\url{http://community.schemewiki.org/?call-with-current-continuation})
-%% \item <1->\url{http://en.wikipedia.org/wiki/Call-with-current-continuation}
-%% \end{itemize}
-%% \end{frame}
+\end{frame}
 
 \end{document}
