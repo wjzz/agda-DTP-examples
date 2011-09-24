@@ -2,3 +2,10 @@
 *.agdai
 *.hi
 *.o
+*.aux
+*.nav
+*.vrb
+*.log
+*.out
+*.snm
+*.toc
