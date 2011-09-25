@@ -35,13 +35,5 @@
 
 --------------------------------------
 
-* Wstęp do teorii typów
-** Jak powstała teoria typów? Z jakich idei wyrosła?
-*** Russel, Church, Martin-Lof
-** Teoria typów jako język funkcyjny
-*** typy mogące wyrażać specyfikację
-*** totalne funkcje
-** Teoria typów jako język konstruktywnej matematyki
-
 * TODO Bez przydzialu w konkretne miejsce
 ** Czemu dodanie aksjomatu P\/~P nie jest fajne

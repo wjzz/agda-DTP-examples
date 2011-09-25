@@ -1,0 +1,486 @@
+\documentclass{beamer}
+
+% wygląd slajdów 
+% \usetheme{Warsaw} 
+\usetheme{Boadilla}
+
+% \usecolortheme{seahorse} 
+
+% brak tej dziwnej nawigacji w prawym dolnym rogu 
+\setbeamertemplate{navigation symbols}{} 
+
+% brak zbędnych informacji w stopce
+\setbeamertemplate{footline}[page number]{}
+
+% klikalne linki
+\usepackage{hyperref}
+
+% kodowanie utf8 
+%\usepackage[OT4]{fontenc} 
+%\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc} 
+\usepackage{polski}
+\usepackage{listings}
+\usepackage{amsthm}
+\usepackage{semantic}
+
+\newtheorem{thm}{Twierdzenie}
+
+% konfiguracja niektórych parametrów 
+% \setbeamercovered{transparent} 
+\setbeamertemplate{bibliography item}[text] 
+\setlength{\parskip}{1ex} 
+\setlength{\parindent}{0pt} 
+
+\title{Seminarium: Programowanie w teorii typów}
+\subtitle{Teoria typów}
+\author{Wojciech Jedynak, Paweł Wieczorek} 
+\institute{Instytut Informatyki Uniwersytetu Wrocławskiego}
+
+\AtBeginSection[]
+{
+   \begin{frame}
+       \frametitle{}
+       \tableofcontents[sectionstyle=show/hide, subsectionstyle=show/show/hide]
+   \end{frame}
+}
+
+\begin{document}
+
+%\lstset{language=Lisp}
+
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \tableofcontents[hidesubsections]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Matematyka konstruktywna}
+
+\begin{frame}
+\frametitle{Matematyka konstruktywna}
+
+\begin{itemize}
+ \item powstały na początku poprzedniego wieku pogląd na temat fundamentów matematyki
+ \item Brouwer, twórca ideologii
+ \item empiryczna zawartość twierdzeń matematycznych
+ \item co znaczy orzeczenie o istnieniu pewnego obiektu?
+ \item odrzucenie dowodów przez sprowadzenie do sprzeczności
+ \item odrzucenie idealistycznego podejścia do prawdziwości orzeczeń
+ \item Bishop, konstruktywna analiza matematyczna
+\end{itemize}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Książkowy przykład twierdzenia niekonstruktywnego}
+
+\begin{thm}
+ Istnieją takie dwie liczby niewymierne $a$ oraz $b$, że $a^b$ jest liczbą wymierną.
+\end{thm}
+
+\begin{proof}
+ Orzeczenie, że $\sqrt{2}^{\sqrt{2}}$ musi być prawdziwe lub musi być fałszywe.
+\begin{itemize}
+ \item jeżeli jest prawdziwe to mamy szukane $a$ oraz $b$
+ \item jeżeli jest fałszywe to niech $a = \sqrt{2}^{\sqrt{2}}$ oraz $b = \sqrt{2}$, wtedy $a^b = 2$
+\end{itemize}
+
+\end{proof}
+
+Jedyne co wiemy, to to że muszą istnieć takie liczby. 
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Kolejny przykład.}
+
+\begin{thm}[klasycznie]
+ Jeżeli funkcja $f$ jest ciągła na przedziale $[0, 1]$ oraz wartości funkcji na~krańcach przedziału mają różne znaki
+to istnieje punkt w~tym przedziale na~którym funkcja się zeruje.
+\end{thm}
+
+\begin{thm}[konstruktywnie]
+ Jeżeli funkcja $f$ jest ciągła na przedziale $[0, 1]$ oraz wartości funkcji na~krańcach przedziału mają różne znaki
+to dla każdego $\epsilon > 0$ istnieje punkt w~tym przedziale na~którym bezwzględna wartość funkcji jest mniejsza od
+$\epsilon$.
+\end{thm}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}
+\frametitle{Interpretacja Brouwer-Heyting-Kołmogorow}
+
+\begin{itemize}
+ \item $A \wedge B$ to konstrukcja składająca się z~dwóch pod-konstrukcji
+ \item $A \vee B$ to konstrukcja składająca się z lewej lub prawej pod-konstrukcji
+ \item $A \to B$ to metoda przekształcająca konstrukcję $B$ mając do~dyspozycji $A$
+ \item $\bot$ absurd, konstrukcja której nie można zrealizować
+ \item $\forall x. P(x)$ to metoda przekształcająca wartość $a$ w~konstrukcję $P(a)$
+ \item $\exists x. P(x)$ to konstrukcja mająca składać się ze świadka $a$ oraz z konstrukcji $P(a)$
+ \item $\neg A$ to skrót od $A \to \bot$ 
+ \item Czy przy tej interpretacji wszystkie klasyczne prawa mają sens?
+\begin{itemize}
+\item $\exists x\;P(x) \vee \neg \exists x\;P(x)$
+\item $(\neg \forall x\;\neg P(x) ) \to \exists x\;P(x)$
+\end{itemize}
+
+\end{itemize}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{System naturalnej dedukcji}
+
+\begin{itemize}
+ \item system dowodzenia
+ \item posługujemy się sądami $\Gamma |- \varphi$
+ \item dowód to wyprowadzenie o~strukturze drzewa
+ \begin{itemize}
+ \item korzeń - wniosek (sąd)
+ \item węzeł - reguła wnioskowania
+ \item liść - aksjomat
+ \end{itemize}
+ \item reguły wprowadzania i eliminacji spójników logicznych
+\end{itemize}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{System naturalnej dedukcji}
+
+\begin{center}
+\begin{tabular}{lr}
+\inference[I$\wedge$]{
+\Gamma |- A \qquad \Gamma |- B
+}
+{
+\Gamma |- A \wedge B
+}
+&
+\inference[E$\wedge_1$]{
+\Gamma |- A \wedge B
+}
+{
+\Gamma |- A 
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{lr}
+
+\inference[I$\vee_1$]{
+\Gamma |- A 
+}
+{
+\Gamma |- A \vee B
+}
+&
+\inference[E$\vee$]{
+\Gamma |- A \vee B \qquad \Gamma, A |- C \qquad \Gamma, B |- C
+}
+{
+\Gamma |- C
+}
+
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{lr}
+
+\inference[I$\to$]{
+\Gamma, A |- B
+}
+{
+\Gamma |- A \to B
+}
+&
+\inference[E$\to$]{
+\Gamma |- A \to B \qquad \Gamma |- A
+}
+{
+\Gamma |- B
+}
+
+\end{tabular}
+\end{center}
+
+
+\begin{center}
+\begin{tabular}{c}
+\inference[AX]{
+}
+{
+\Gamma, A |- A 
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Teoria typów Martina-L\"{o}fa}
+
+\begin{frame}
+\frametitle{Historia, idee, początki}
+
+\begin{itemize}
+ \item Teoria typów jako logika matematyczna - B. Russel
+ \[
+  A = \{ w \mid w \not\in w \}
+ \]
+ \item $\lambda$-rachunek , funkcja jako pojęcie pierwotne  - A.Church
+ \item System typów, likwidacja paradoksu Kleene'go
+\[
+ K = \lambda x.\; \neg (x\; x)
+\]
+
+\[
+ (K\; K) = \neg (K\; K) = \neg \neg (K\; K) = \cdots
+\]
+
+\end{itemize}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Wzbogacony system typów o więcej sądów}
+
+\begin{itemize}
+ \item Teoria typów Martina L\"{o}f'a - system typów dla $\lambda$-rachunku, w którym możemy wydawać różne sądy:
+       
+\begin{itemize}
+ \item $A$\;set -  jest zbiorem
+ \item $a \in A$ - $a$ jest elementem zbioru
+ \item $a =_A b \in A$ - $a$ oraz $b$ są równymi elementami w~zbiorze A
+ \item $A = B$ - $A$ oraz $B$ są równymi zbiorami
+\end{itemize}
+
+\item elementy zbiorów dzielimy na
+\begin{itemize}
+ \item kanoniczne - wartości (postać normalna)
+ \item niekanoniczne - obliczenia (nie znormalizowane)
+\end{itemize}
+
+
+\item sformułowanie zbioru to
+\begin{itemize}
+ \item określenie kanonicznych elementów jakie ten zbiór zawiera
+ \item określenie co znaczy że dwa elementy są równe w~tym zbiorze
+ \item określenie obliczeń
+\end{itemize}
+
+\end{itemize}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Przykład iloczyn kartezjański w~uproszczonej formie}
+
+\begin{center}
+\begin{tabular}{lcr}
+\inference{
+A\; set \qquad B\; set
+}
+{
+A \times B\; set
+}
+&
+\inference{
+A = A' \qquad B = B'
+}
+{
+A \times B = A' \times B'
+}
+&
+\inference{
+a \in A \qquad b \in B
+}
+{
+(a,b) \in A \times B
+}
+\end{tabular}
+\end{center}
+
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a = a' \in A \qquad b = b' \in B
+}
+{
+(a,b) = (a', b') \in A \times B
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+C\;set \qquad p \in A \times B \qquad f(x, y) \in C\; [x \in A,\; y \in B]
+}
+{
+split(p, f) \in C
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Przykład funkcje w  uproszczonej formie}
+
+\begin{center}
+\begin{tabular}{lcr}
+\inference{
+A\; set \qquad B\; set
+}
+{
+A \to B\; set
+}
+&
+\inference{
+A = A' \qquad B = B'
+}
+{
+A \to B = A' \to B'
+}
+&
+\inference{
+t(x) \in B\; [x \in A]
+}
+{
+\lambda t \in A \to B
+}
+\end{tabular}
+\end{center}
+
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+t(x) = t'(x) \in B \; [x \in A]
+}
+{
+\lambda t = \lambda t' \in A \to B
+}
+&
+\inference{
+f \in A \to B \qquad a \in A
+}
+{
+f \cdot a \in B
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+t(x) \in B \; [x \in A] \qquad a \in A
+}
+{
+\lambda t \cdot a = t(a) \in B
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Izomorfizm Curry-Howard (proposition as types)}
+
+\begin{itemize}
+ \item Martin-L\"{o}f, Curry, Howard, deBruijn i wiele innych
+ \item typy oznaczają formuły
+ \item otypowane termy oznaczają dowody dla swoich typów (formuł)
+ \item izomorfizm pomiędzy wyprowadzeniami formuł w logice intuicjonistycznej a
+       sądami w~systemie typów
+ \item realizacja BHK
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{lr}
+
+\inference[I$\to$]{
+\Gamma, x : A |- t : B
+}
+{
+\Gamma |- \lambda x:A. t : A \to B
+}
+&
+\inference[E$\to$]{
+\Gamma |- f : A \to B \qquad \Gamma |- x : A
+}
+{
+\Gamma |- f \; x : B
+}
+
+\end{tabular}
+\end{center}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Izomorfizm Curry-Howard (proposition as types)}
+
+\begin{itemize}
+ \item fundamentalna teoria według kryteriów matematyki konstruktywnej
+ \item pojęciem pierwotnym jest funkcja, nie zbiór
+ \item nie używamy klasycznych definicji pojęć, mogą być one nie konstruktywne, nie dające się zrealizować
+ \item funkcje które definiujemy są obliczalne i totalne
+ \item teoria nie wyrażona jako logika pierwszego rzędu, lecz kodująca ją w~sobie
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Sądy mają więcej interpretacji}
+
+\begin{itemize}
+ \item $A$\;set -  jest zbiorem
+ \item $A$\;set -  jest problemem, zagadnieniem, zadaniem
+ \item $A$\;prop - jest formułą logiczną
+ \item $A$\;true - umiemy zrealizować $A$, istnieje dowód $A$
+ \item $a \in A$ - $a$ jest elementem zbioru
+ \item $a \in A$ - $a$ jest dowodem propozycji $A$
+ \item $a \in A$ - $a$ jest programem spełniającym specyfikację $A$
+ \item $a \in A$ - $a$ jest rozwiązaniem problemu $A$
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}
