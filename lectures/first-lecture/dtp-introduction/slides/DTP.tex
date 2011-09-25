@@ -61,21 +61,57 @@
 \frametitle{Programowanie funkcyjne - mocne strony}
 
 \begin{itemize}
-\item Programując w silnie typowanym języku funkcyjnym mamy gwarancję,
+
+\item Programując w statycznie typowanym języku funkcyjnym mamy gwarancję,
 że jeśli kompilator zaakceptuje nasz program, to wykluczone zostały
 pewne klasy błędów programistycznych 
-% (użycie liczby w miejsce napisu, 
-% dereferencja pustego wskaźnika, zwolnenienie błędnego obszaru pamięci
 \item Co z błędami logicznymi?
 \item Używając sprytu i doświadczenia możemy sobie pomóc...
-% przykłady: listy parzystej dlugości
-% regularne drzewa binarne
 \end{itemize}
 
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{frame}[fragile]
+\frametitle{Dobra technika 1: Regularne drzewa binarne}
+
+\begin{lstlisting}
+data RTree a = Tip a | Node (RTree a) (RTree a)
+\end{lstlisting}
+
+Trafnie definiując typ indukcyjny wykluczamy (przez samą \emph{konstrukcję}) 
+możliwość utworzenia 
+niepoprawnych wartości (np. wykluczamy drzewa puste).
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+\frametitle{Dobra technika 2: Listy o parzystej długości}
+
+\begin{lstlisting}
+mutual
+    data EvenList a = ENil | ECons a (OddList a)
+    data OddList  a = OCons a (EvenList a)
+\end{lstlisting}
+
+Możemy przez indukcję wzajemną udowodnić, że EvenList a zawsze będzie miało
+parzystą liczbę elementów.
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+\frametitle{Zła technika}
+
+Karciany przykład na tablicy.
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{...prawie wszystko.}
 
 \begin{frame}[fragile]
@@ -114,7 +150,10 @@ W Haskellu piszemy:
 sort :: Ord a => [a] -> [a]
 \end{lstlisting}
 
-Co możemy wywnioskować z takiej sygnatury? A czego {\bf nie} możemy wywnioskować?
+\begin{itemize}
+\item Co możemy wywnioskować z takiej sygnatury? 
+\item A czego {\bf nie} możemy wywnioskować?
+\end{itemize}
 
 % słaba specyfikacja...
 
@@ -132,13 +171,28 @@ Co możemy wywnioskować z takiej sygnatury? A czego {\bf nie} możemy wywniosko
 \item Programowanie w typami zależnymi opiera się na programowaniu funkcyjnym
 \item Dostajemy do dyspozycji znacznie bardziej rozbudowany system typów
 \item Główne hasło: \emph{typ} wyrażenia może {\bf zależeć} od jego \emph{wartości}
-\item System wystarczająco silny, by mówić o {\bf certyfikacji}
 
 \end{itemize}
 
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Na czym polega programowanie z typami zależnymi? c.d.}
+
+\begin{itemize}
+
+\item Zaciera się różnica między typami a wyrażeniami
+\item Żeby móc wydawać mocniejsze sądy wymuszamy \emph{totalność}
+\item Dostajemy system wystarczająco silny, by mówić o {\bf certyfikacji}
+
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 \begin{frame}[fragile]
 \frametitle{Wyrażanie własności danych}
@@ -166,7 +220,7 @@ Używając typów zależnych możemy napisać (pseudokod)
 
 \begin{lstlisting}
 sort :: Ord a => (xs : [a]) -> 
-  (ys : [a] && ordered ys && permutation_of xs ys)
+  (ys : [a] && sorted ys && permutation_of xs ys)
 \end{lstlisting}
 
 % uwaga: możemy nazwać argumenty w sygnaturze!
@@ -184,13 +238,24 @@ Co możemy wywnioskować z takiej sygnatury?
 \begin{frame}
 \frametitle{Zastowanie praktyczne: projektowanie API}
 
-Gdy projektujemy interfejs dla biblioteki 
+\begin{itemize}
+\item Gdy projektujemy interfejs dla biblioteki 
 rzadko udaje się wyrazić wszystkie założenia w sygnaturach.
 
-\begin{block}{Przykład. Kółko i krzyżyk}
-Zaprojektuj interfejs dla operacji addMove i undo, zapytania
-empty? i wartości empty. Przeanalizuj relacje między nimi.
+\item Stosując tradycyjne podejście pewne założenia musimy
+(w najlepszym wypadku) wyrazić jako komentarz...
+\end{itemize}
+
+\begin{block}{Przykład. Funkcje dla list}
+Jaki jest problem z funkcjami null i head z 
+preludium standardowego Haskella?
 \end{block}
+
+
+%% \begin{block}{Przykład. Kółko i krzyżyk}
+%% Zaprojektuj interfejs dla operacji addMove i undo, zapytania
+%% empty? i wartości empty. Przeanalizuj relacje między nimi.
+%% \end{block}
 
 \end{frame}
 
@@ -199,15 +264,16 @@ empty? i wartości empty. Przeanalizuj relacje między nimi.
 \begin{frame}
 \frametitle{Projektowanie API c.d.}
 
-Stosując tradycyjne podejście pewne założenia musimy
-(w najlepszym wypadku) wyrazić jako komentarz...
-
 \begin{block}{Dobra wiadomość}
 Typy zależne pozwalają nam traktować dowody na równi z wartościami.
 Możemy programować i dowodzić w ramach tego samego systemu!
 \end{block}
 
-%% TODO zaprojektować na kartce ostateczne API, które chcę pokazaćo
+\begin{block}{Większa moc wyrazu = lepsza komunikacja}
+Wymagając, aby przy wywołaniu funkcji podano pewien dówód (certyfikat)
+przekazujemy pełen obraz sytuacji i nie mamy problemów z totalnością!
+\end{block}
+
 
 \end{frame}
 
@@ -216,22 +282,22 @@ Możemy programować i dowodzić w ramach tego samego systemu!
 \begin{frame}
 \frametitle{Uwagi}
 
-Żeby cała ta zabawa miała sens, logika, która jest wbudowana w
+Żeby cała ta zabawa miała sens, logika wbudowana w
 język pozwalający na programowanie z typami zależnymi musi być niesprzeczna.
 
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}
-\frametitle{Większe przykłady}
+%% \begin{frame}
+%% \frametitle{Większe przykłady}
 
-\begin{itemize}
+%% \begin{itemize}
 
-\item Drzewa poszukiwań binarnych z niezmiennikiem
-\item Unifikacja pierwszego rzędu
-\end{itemize}
+%% \item Drzewa poszukiwań binarnych z niezmiennikiem
+%% \item Unifikacja pierwszego rzędu
+%% \end{itemize}
 
-\end{frame}
+%% \end{frame}
 
 \end{document}
