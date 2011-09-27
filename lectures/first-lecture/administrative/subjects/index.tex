@@ -1,6 +1,7 @@
-\documentclass[11pt, a4paper]{article}
+\documentclass[10pt, a4paper]{article}
 \usepackage{a4wide}
 \usepackage{polski}
+\usepackage{url}
 \usepackage[utf8]{inputenc}
 \usepackage{amsthm}
 \usepackage{amssymb}
@@ -9,324 +10,171 @@
 
 \newtheorem{zadanie}{Zadanie}
 
-\author{Wojciech Jedynak \and Paweł Wieczorek}
-\title{Ćwiczenia}
+\linespread{0.9}
+
+\author{}
+\title{Seminarium: Programowanie w teorii typów}
 
 \begin{document}
 
-\maketitle
-
-\section*{Meta notatki}
-
-Proponuję wybrać jakąś notację dla teorii typów Martina-L\"{o}fa. Może tę z książki ,,Programming in...''?
-
-Czy chcemy mieć narysowane drzewa w proponowanych rozwiązań? W książce Martina-L\"{o}f-a on czasem rysuje drzewa
-by coś pokazać. Musielibyśmy się zdecydować by było konsekwentnie.
-
-Zadania do których nie zrobimy rozwiazań wzorcowych będą do wywalenia.
-
-Zaznaczam przy zadaniach teoretycznych które można zrobić w Agdzie, możemy zrobić tak że dajemy ludziom te zadania
-+ definicje w Agdzie, i ich wola czy zrobią tylko w Agdzie czy tylko na papierze, czy tu i tu.
-
-\section{Agda i teoria}
-
-
-\subsection{Proste}
-
-\begin{zadanie}[Da się rozwiązać w Agdzie]
-Ustalmy typy $A$ oraz rodzinę $B(a)$ dla każdego $a \in A$ oraz $C(a, a')$ dla każdych $a, a' \in A$.
-Zbuduj termy o następujących typach:
-
-\[
- \big( (\Pi x \in A)\;(\Pi y \in A)\; C(x, y) \big) \to (\Pi y \in A)\;(\Pi x \in A)\; C(x, y)\;
-\]
-\[
- \big( (\Sigma x \in A)\;(\Pi y \in A)\; C(x, y) \big) \to (\Pi y \in A)\;(\Sigma x \in A)\; C(x, y)\;
-\]
-\[
- \big( (\Pi x \in A)\;(\Pi y \in A)\;B(x) \to B(y)\big) \to (\Pi x \in A)\;(\Pi y \in A)\;\neg B(y) \to \neg B(x)
-\]
-\[
- \big( \neg (\Sigma x \in A)\;B(x)\big) \to (\Pi x \in A)\;\neg B(x)
-\]
-\[
- \big( (\Pi x \in A)\;B(x)\big) \to (\Pi x \in A)\;B(x)
-\]
-\end{zadanie}
-
-
-\begin{zadanie}[Da się rozwiązać w Agdzie]
-Ustalmy typy $A, B$, zbuduj termy o następujących typach:
-
-\[
- (\Pi s \in A)\; s \equiv_A s
-\]
-\[
-  (\Pi s \in A)(\Pi t \in A)\; s \equiv_A t \to t \equiv_A s
-\]
-\[
-  (\Pi s \in A)(\Pi t \in A)(\Pi r \in A)\; s \equiv_A t \to t \equiv_A r \to s \equiv_A r
-\]
-\[
-  (\Pi f \in A \to B)(\Pi s \in A)(\Pi t \in A)\; s \equiv_A t \to f\;t \equiv_B f\;s
-\]
-
-\end{zadanie}
-
-\begin{zadanie}[Da się rozwiązać w Agdzie]
-Zdefiniuj dodawanie i mnożenie na liczbach naturalnych, a następnie skonstruuj termy o następujących typach:
-
-\[
- (\Pi m \in N)\;\mbox{add}\;0\;m \equiv m
-\]
-\[
- (\Pi n \in N)\;\mbox{add}\;n\;0 \equiv n
-\]
-\[
- (\Pi n \in N)\;(\Pi m \in N)\;\mbox{add}\;n\;m \equiv \mbox{add}\;m\;n
-\]
-\[
- (\Pi m \in N)\;\mbox{mult}\;0\;m \equiv 0
-\]
-\[
- (\Pi n \in N)\;\mbox{mult}\;n\;0 \equiv 0
-\]
-\[
- (\Pi n \in N)\;(\Pi m \in N)\;\mbox{mult}\;n\;m \equiv \mbox{mult}\;m\;n
-\]
-\[
- (\Pi n \in N)\;(\Pi m \in N)\;\mbox{mult}\;(\mbox{add}\;1\;n)\;m \equiv \mbox{add}\;n\;(\mbox{mult}\;m\;n)
-\]
-\[
- (\Pi n \in N)\;(\Pi m \in N)\;\mbox{mult}\;(\mbox{add}\;2\;n)\;m \equiv \mbox{add}\;(\mbox{mult}\; 2\; n)\;(\mbox{mult}\;m\;n)
-\]
-
-\end{zadanie}
-
-\begin{zadanie}[Da się rozwiązać w Agdzie]
- Zdefiniuj poprzednik na liczbach naturalnych, a następnie zbuduj termy o następujących typach:
-
-\[
-  \mbox{pred}\;0 \equiv 0
-\]
-\[
-  (\Pi n \in N)\;  \mbox{pred}\;(\mbox{add}\;1\;n) \equiv n
-\]
-\[
- (\Pi n \in N) 
-\]
-
-\end{zadanie}
-
-
-\begin{zadanie}[Da się rozwiązać w Agdzie]
- Ustalmy typ $A$, zbubuj funkcję $toCh$ o następującym typie,
-\[
-  N \to (A \to A) \to A \to A
-\]
-
-a następnie termy o takich typach:
-\[
- (\Pi f \in A \to A)\;(\Pi x \in A)\;\mbox{toCh}\;0\;f\;x \equiv x
-\]
-\[
- (\Pi f \in A \to A)\;(\Pi x \in A)\;\mbox{toCh}\;(\mbox{add}\;1\;n)\;f\;x \equiv f\;(\mbox{toCh}\;n\;f\;x)
-\]
-\[
- (\Pi n \in N)\;(\Pi m \in N)\;(\Pi f \in A \to A)\;(\Pi x \in A)\;
-\mbox{toCh}\;(\mbox{add}\;n\;m)\;f\;x
-\equiv
-\mbox{toCh}\;n\;f\;(\mbox{toCh}\;m\;f\;x)
-\]
-
-\end{zadanie}
-
-
-\begin{zadanie}[Da się rozwiązać w Agdzie]
- Ustalmy dowolne typy $A, B, C$.
- Pokaż, że typy $A \to B \to C$ oraz $A \times B \to C$ są izomorficzne. To jest, oprócz zdefiniowana dobrze
-znanych funkcji zbuduj także dowód że są swoimi odwrotnościami, tzn termy o następujących typach:
-
-\[
-(\Pi f \in A \to B \to C)\; \mbox{curry}\; (\mbox{uncurry}\; f)\; \equiv f
-\]
-
-\[
-(\Pi f \in A \times B \to C)\; \mbox{uncurry}\; (\mbox{curry}\; f)\; \equiv f
-\]
-
-%\[
-% (\Pi f \in A \to B \to C)\;(\Pi x \in A)\;(\Pi y \in B)\; \mbox{curry}\; (\mbox{uncurry}\; f)\;x\;y \equiv f\;x\;y
-%\]
-
-%\[
-% (\Pi f \in A \times B \to C)\;(\Pi x \in A)\;(\Pi y \in B)\; \mbox{uncurry}\; (\mbox{curry}\; f)\;(x,y) \equiv f\; (x,y)
-%\]
-
-(sprawdzić czy się da, czy trzeba dodać jeszcze argumenty, tzn $ (\cdots f \cdots )\;x\;y \equiv f \;x\;y$
-\end{zadanie}
-
-\subsection{Bardziej teoretyczne}
-
-\begin{zadanie}[Da się rozwiązać w Agdzie]
- Ustalmy typ $A$, zakoduj za pomocą $W$-typów typ $Maybe\; A$ znany z Haskella.
-\end{zadanie}
-
-
-\begin{zadanie}[NIE da się rozwiązać w Agdzie]
- W książce ,,Intuinistic type theory'' pojawia się dodatkowa reguła wnioskowania dotyczaca równości:
-
 \begin{center}
-\begin{tabular}{c}
-\inference{
-H \in x \equiv_A y
-}
-{
- x = y : A
-}
-\end{tabular}
+\begin{Large}
+\textsc{Seminarium: programowanie w teorii typów}
+\end{Large}
 \end{center}
 
-Mówi ona, że jeżeli posiadamy dowód, że dwa termy są równe to są one konwertowalne. Ta reguła sprawia, że
-type-checking jest nierozstrzygalny, a taką równość i teorię typów nazywany ekstensjonalną. 
-Korzystając z tej reguły
-udowodnij ekstensjonalność funkcji, tzn pokaż że w ekstensjonalnej teorii typów dla ustalonych typów $A, B$ możemy
-zbudować term o typie
+\paragraph{\underline{1. Proste przykłady zastowań typów zależnych w Agdzie}}
 
-\[
-(\Pi f \in A \to B)\;(\Pi g \in A \to B)\;\big( (\Pi x \in A)\; f\; x \equiv g\; x \big) \to f \equiv g
-\]
+\begin{itemize}
+ \item Nierozbudowane przykłady funkcji spełniających przykładowe specyfikacje 
+     (np. filter, o której przez konstrukcję wiemy, że zwraca podlistę listy wejściowej [1]) 
+     bądź niezmienniki, które normalnie byłyby wyrażone jako komentarz (istniałyby tylko w głowie implementującego) 
+     (np. drzewa BST [2]). Ilustracja mocy wyrazu typów zależnych, 
+  która pozwala na napisanie programu ładniejszego w porównaniu do tego, który byłby napisany w Haskellu lub MLu [3].
+\end{itemize}
 
-Zadania nie da się rozwiązać w~Agdzie ponieważ nie można rozszerzać systemu o nowe reguły wnioskowania.
-(Sprawdzić czy $\eta$-ekspansja jest potrzebna, czy jest dowodliwa z tą równością)
-\end{zadanie}
+\subparagraph{Literatura:}
 
-\begin{zadanie}[Da się rozwiązać w Agdzie]
- Skonstruuj negację bitową, tzn term $\mbox{negb} : N_2 \to N_2$ a następnie skontruuj term o typie:
-\[
- (\Pi b \in N_2) \neg (b \equiv \mbox{negb}\;b)
-\]
+\begin{enumerate}
+\addtolength{\itemsep}{-0.5\baselineskip}
+ \item  Dependently Typed Programming in Agda - Ulf Norell
+ \item  Dependent Types at Work - Ana Bove and Peter Dybjer
+ \item  Certified Programming with Dependent Types. Chapter 7. More Dependent Types. A Tagless Interpreter - Adam Chlipała (tutaj dostarczymy tłumaczenie programu na Agdę)
+\end{enumerate}
 
-Wskazówka: Trudność to dowód że $0_2$ jest różne od $1_2$, ponieważ nie mamy typów indukcyjnych to to nie jest
-oczywiste, trzeba użyć uniwersum jak z czwartym aksjomatem Peano  na seminarium.
-\end{zadanie}
+\paragraph{\underline{2. Piękno i elegancja typów zależnych}}
 
-\begin{proof}[Propozycja rozwiązania]
+\begin{itemize}
+ \item 
+Pokazanie przykładów programów, które dobrze wykorzystują typy zależne na podstawie 
+klasycznych prac, które demonstrują ich ważne i praktyczne zastosowania ([1], [2]). Głównym 
+trzonem prezentacji powinna być raczej praca [1] i należałoby przedstawić pełną konstrukcję otrzymanego 
+ostatecznego programu razem z rozumowaniem/ideą, która za nią stoi.
+\end{itemize}
 
-Stwórzmy najpierw dowód, że $\neg ( 0_2 \equiv 1_2)$. Jest on identyczny z książkowym.
+\subparagraph{Literatura:}
 
-Weźmy dowolny $H \in ( 0_2 \equiv 1_2)$ oraz zdefiniujmy rodzinę typów:
-\[ 
-\mbox{isZero}(m) = Set ( N_2\mbox{-elim}\;\widehat{N_1}\;\widehat{N_0}\;m)
-\]
-Zaznaczmy, że $isZero(0_2) = Set(\widehat{N_1}) = N_1$ oraz $isZero(1_2) = Set(\widehat{N_0}) = N_0$
+\begin{enumerate}
+\addtolength{\itemsep}{-0.5\baselineskip}
 
-Term $0_1 \in N_1$ czyli $0_1 \in \mbox{isZero}(0_2)$. Robiąc eliminację na $H$ możemy skonstruować absurdalną wartość,
-używając po prostu reguły Leibniza: $(\mbox{subst}\;0_1\; H) \in \mbox{isZero}(1_2) = N\_0$
-
-
-\end{proof}
+ \item Why Dependent Types Matter - McBride, McKinna, Swierstra
+ \item The Power of pi - Swierstra, Oury
+\end{enumerate}
 
 
-\begin{zadanie}[Da się rozwiązać w Agdzie]
- Udowodnij, że nie istnieje funkcja z liczb naturalnych w ciągi zero-jedynkowe, która ma funkcję odwrotną.
-To jest skonstruuj
- term $thm$ o następującym typie:
-\[
- \neg (\Sigma f \in N \to BinSeq)\, (\Sigma g \in BinSeq \to N)\,
-(\Pi s \in BinSeq)\,f (g\, s) \equiv s 
-\]
-gdzie $BinSeq$ oznacza $N \to N_2$.
+\paragraph{\underline{3. Koindukcja}} 
 
-Wskazówka: Dowód tego twierdzenia to standardowy przykład metody przekątniowej, można znaleźć rozwiązanie w Whitebooku.
-Trudność polega na przeniesieniu tego na naturalną dedukcję (Zaskakujące może być, że to twierdzenie jest konstruktywne!).
+\begin{itemize}
+\addtolength{\itemsep}{-0.5\baselineskip}
 
-\end{zadanie}
+ \item Czym jest koindukcja?
+ \item Przykłady wnioskowań przed koindukcję i programów definiowanych przez korekursję.
+ \item Używanie koindukcji w Agdzie\footnote{
+Chodzi nam o Agdę 2.2.10 i nowsze. We wcześniejszych wersjach używało się słowa kluczowego codata - chcemy posłuchać o aktualnym sposobie (wbudowane operacje SHARP i FLAT, patrz [1], [2], [3]).
+}. Guarded coinduction. Implementacja klasycznych koindukcyjnych struktur danych - strumienie, kolisty, nieskończone drzewa binarne.
+ \item Techniki pozwalające radzić sobie, gdy naturalna (naiwna) implementacja nie jest akceptowana przez Agdę, gdyż wykracza poza schemat guarded coinduction. [2,4]
+ \item Definicje indukcyjno-koindukcyjne: przykłady zastosowań [2,3]
+\end{itemize}
 
-\begin{proof}[Propozycja rozwiązania]
-Zanim sformalizujemy metodę przekątniową przypomnijmy sobie ten dowód, by ustalić co konkretnie chcemy uzyskać.
+\subparagraph{Literatura:}
 
-Pokażmy, że dla dowolnych funkcji $f$ i $g$ potrafimy dojśc do sprzeczności o ile $g$ jest odwrotnością $f$.
-Stwórzmy ,,przekątniowy'' ciąg zero-jedynkowy $h : BinSeq$:
-\[
- h = \lambda n. \mbox{negb}\;(f\;n\;n)
-\]
-Element tego ciągu o numerze $n$ jest równy negacji $n$-tego elementu w~$n$-tym ciągu w~wyznaczonej numeracji
-przez funkcję $f$. Za pomocą funkcji $g$ możemy uzyskać numer tego ciągu, niech $n_h = g\;h$. Teraz, zauważmy że
-\[
-h\;n_h = \mbox{negb}\;(f\;n_h\;n_h) = \mbox{negb}\;(f\;(g\;h)\;n_h) = \mbox{negb}\;(h \;n_h)
-\]
+\begin{enumerate}
+\addtolength{\itemsep}{-0.5\baselineskip}
+ \item Strong Functional Programming - David Turner
+ \item Artykuł o koinducji na Agda wiki: \\ {\small
+       \url{http://wiki.portal.chalmers.se/agda/pmwiki.php?n=ReferenceManual.Codatatypes}
+      }
+ \item Mixing Induction and Coinduction - Nils Anders Danielsson, Thorsten Altenkirch
+ \item Total Parser Combinators - Nils Anders Danielsson
+ \item Beating the Productivity Checker Using Embedded Languages - Nils Anders Danielsson
+\end{enumerate}
 
-czyli sprzeczność.
+\subparagraph{Literatura dodatkowa:}
+
+\begin{enumerate}
+\addtolength{\itemsep}{-0.5\baselineskip}
+ \item General Recursion via Coinductive Types - Venanzio Capretta
+ \item Certified Programming with Dependent Types (Chapter 5. Infinite Data and Proofs) - Adam Chlipała
+ \item Coq’Art (Rozdział 13.) - Yves Bertot, Pierre Castéran.
+\end{enumerate}
+
+\paragraph{\underline{4. Widoki}}
+
+\begin{itemize}
+\addtolength{\itemsep}{-0.5\baselineskip}
+ \item Pojęcie widoku w ujęciu “klasycznym”, czyli w kontekście języków funkcyjnych [1].
+ \item Przedstawienie widoków jako rozszerzenia kompilatora GHC dla Haskella [2].
+ \item Wytłumaczenie, dlaczego widoki w kontekście programowania z typami zależnymi nabierają rumieńców [3].
+ \item Przedstawienie różnych przykładów struktur danych i widoków dla nich [3,4,5].
+\end{itemize}
+
+\subparagraph{Literatura:}
+
+\begin{enumerate}
+\addtolength{\itemsep}{-0.5\baselineskip}
+ \item Views: A way for pattern matching to cohabit with data abstraction - Wadler (1986)
+ \item A new view of guards - Peyton Jones (www, 1997)
+ \item The view from the left - McBride, McKinna
+ \item Strong Functional Programming - Turner
+ \item Why Dependent Types Matter - McBride, McKinna, Swierstra
+\end{enumerate}
+
+\paragraph{\underline{5. Reprezentacja języków z wiązaniem zmiennych}}
+
+\begin{itemize}
+\addtolength{\itemsep}{-0.5\baselineskip}
+ \item Różne podejścia do reprezentacji wiązań. 
+ \item Dlaczego nie wystarcza nam naiwna reprezentacja (np. zmienne reprezentowane poprzez typ string)? 
+ \item (Opcjonalnie) jak wygląda sprawa dowodzenia twierdzeń na temat języka z konstrukcjami wiążącymi zmienne (np. lambda abstrakcje)?
+\end{itemize}
+
+\subparagraph{Literatura:}
+
+\begin{enumerate}
+\addtolength{\itemsep}{-0.5\baselineskip}
+ \item CPDT - Adam Chlipala
+ \item Parametric Higher-Order Abstract Syntax for Mechanized Semantics - Adam Chlipala
+ \item Nameless, Painless - Nicolas Pouillard
+ \item A fresh look at programming with names and binders - Nicolas Pouillard, François Pottier
+ \item Strongly-typed term representations in Coq - N. Benton, Ch.-K. Hur, A. Kennedy, C. McBride
+ \item Name binding blog: \\
+       \url{http://namebinding.wordpress.com/}
+\end{enumerate}
+
+\section{xxx}
+
+Opis: 
+
+Literatura:
+
+    
+    
+    
+    
+    
+    
 
 
-Możemy teraz zacząć zastanawiać się jak przenieść powyższe rozumowanie na naturalną dedukcję, musimy
-spróbować skonstruować
-funkcję $diagonal$ o następującym typie:
-{
-\small
-\[
- (\Pi f \in N \to BinSeq)\, (\Pi g \in BinSeq \to N)\,
-\to
-\big(
-(\Pi s \in BinSeq)\,f (g\, s) \equiv s 
-\big)
-\to N_0
-\]
-}
+\paragraph{Programowanie generyczne}
 
-Chcemy aby odpowiadała ona przedstawionemu rozumowaniu. Term zacząć pisać prosto:
+\paragraph{Refleksja}
 
-\[
-  \mbox{diagonal} = \lambda f.\lambda g. \lambda C.\; \framebox{?}
-\]
 
-W miejscu \framebox{?} chcemy skonstruować absurdalną wartość. Ale jak? Sprzeczność uzyskaliśmy
-pokazując, że $h\;n_h = \mbox{negb}\; (h\;n_h)$, bo wiemy że dla dowolnego $b$ zachodzi $b \not= \mbox{negb}\;b$.
+\paragraph{Przegląd innych systemów z typami zależnymi}
 
-Wykorzystajmy te szczegóły w praktyce: z poprzedniego zadania mamy term
-$\mbox{Hnegb} : (\Pi b \in N_2) \neg (b \equiv \mbox{negb}\;b)$, czyli pamiętając co rozumiemy
-jako negację - jesteśmy w posiadaniu metody, która z dowodu $b \equiv \mbox{negb}\;b$ konstruuje
-absurdalną wartość. Wykorzystajmy tę metodę dla $h\;n_h$.
+\begin{itemize}
+\addtolength{\itemsep}{-0.5\baselineskip}
 
-\[
-  \mbox{diagonal} = \lambda f.\lambda g. \lambda C.\; \mbox{Hnegb}\; (h\;n_h)\; Heq
-\]
-gdzie
-\[
- Heq = \framebox{?} : h\;n_h \equiv \mbox{negb}\; (h\;n_h)
-\]
+ \item 
+\end{itemize}
 
-By skonstruować świadka tej równości musimy przeanalizować ciąg równości w~oryginalnym rozumowaniu - pierwsze dwie
-\[
-h\;n_h = \mbox{negb}\;(f\;n_h\;n_h) = \mbox{negb}\;(f\;(g\;h)\;n_h)
-\]
-mamy z definicji $h$ oraz $n\_h$. Czyli interesuje nas jedynie term typu
-\[
-\mbox{negb}\;(f\;(g\;h)\;n_h) \equiv \mbox{negb}\; (h\;n_h)
-\]
+\subparagraph{Literatura:}
 
-...
+\begin{enumerate}
+\addtolength{\itemsep}{-0.5\baselineskip}
 
---
-
-Dowód twierdzenia, to funkcja która ze świadka istnienia takich funkcji $f$ i $g$ ma konstruować wartość absurdalną, która
-jedyne co musi zrobić to rozpakować dane z~argumentu i zaaplikować do nich funkcję $diagonal$. 
-
-\[
-thm = 
- \lambda H.\;
- \Sigma\mbox{-elim}\;
-(\lambda f. \lambda H'.\; \Sigma\mbox{-elim}\; (\lambda g. \lambda H''.\;
-\mbox{diagonal}\;f\;g\;H''
-)\;
-H')\;H
-\]
-
-\end{proof}
-
-\section{Tylko Agda}
-
+ \item 
+\end{enumerate}
 
 \end{document}
 
