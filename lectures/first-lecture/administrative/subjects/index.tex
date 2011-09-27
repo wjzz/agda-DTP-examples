@@ -61,8 +61,54 @@ Pokazanie przykładów z klasycznych prac, które demonstrują ważne i praktycz
  \item The Power of pi - Swierstra, Oury
 \end{enumerate}
 
+\paragraph{\underline{3. Gdy rekursja strukturalna może nie wystarczać}}
+~ \\
 
-\paragraph{\underline{3. Koindukcja}} 
+Prezentacja problemu i kilku technik radzenia sobie sobie w sytuacjach, gdy naiwna implementacja nie spełnia rygorystycznych wymagań języka co do dozwolonych schematów rekursji:
+
+\begin{itemize}
+\addtolength{\itemsep}{-0.5\baselineskip}
+
+ \item 
+    dodanie dodatkowego argumentu - limitu rekurencyjnych wywołań [1]
+ \item 
+    indukcja względem indeksu indeksowanej struktury danych [2]
+ \item 
+    odkrycie struktury względem której faktycznie chcielibyśmy zrobić indukcję i zmaterializowanie jej w postaci typu indukcyjnego [1,2,3,4]
+ \item 
+    dobrze ufundowana indukcja: teoria i praktyka [1,5,6]
+ \item 
+    (opcjonalnie) wspomnienie o ogólnej rekursji w oparciu o prace Any Bove (chociaż sam przykład użycia indukcji-rekursji jako rozszerzenia jednej z powyższych technik)
+
+\end{itemize}
+
+\subparagraph{Literatura:}
+
+\begin{enumerate}
+\addtolength{\itemsep}{-0.5\baselineskip}
+
+ \item
+     Coq’Art. Chapter 15. General recursion\footnote{w tej książce pojawia się magiczne uniwersum Prop. Na nasze potrzeby możemy udawać, że Prop w Coqu = Set w Agdzie}.
+
+\item
+    Unification by structural induction - McBride
+\item
+    Why Dependent Types Matter - McBride, McKinna, Swierstra
+\item
+    Strong Functional Programming - Turner
+\item
+    Slajdy o dobrze ufundowanej indukcji w Agdzie Erica Mertensa
+\item
+    Biblioteka standardowa Agdy - Induction.WellFounded
+\item
+    General Recursion in Type Theory - A. Bove
+\item
+    Constructing Recursion Operators in Intuitionistic Type Theory
+ 
+\end{enumerate}
+
+
+\paragraph{\underline{4. Koindukcja}} 
 
 \begin{itemize}
 \addtolength{\itemsep}{-0.5\baselineskip}
@@ -98,7 +144,7 @@ Chodzi nam o Agdę 2.2.10 i nowsze. We wcześniejszych wersjach używało się s
  \item Coq’Art (Rozdział 13.) - Yves Bertot, Pierre Castéran.
 \end{enumerate}
 
-\paragraph{\underline{4. Widoki}}
+\paragraph{\underline{5. Widoki}}
 
 \begin{itemize}
 \addtolength{\itemsep}{-0.5\baselineskip}
@@ -119,7 +165,7 @@ Chodzi nam o Agdę 2.2.10 i nowsze. We wcześniejszych wersjach używało się s
  \item Why Dependent Types Matter - McBride, McKinna, Swierstra
 \end{enumerate}
 
-\paragraph{\underline{5. Reprezentacja języków z wiązaniem zmiennych}}
+\paragraph{\underline{6. Reprezentacja języków z wiązaniem zmiennych}}
 
 \begin{itemize}
 \addtolength{\itemsep}{-0.5\baselineskip}
@@ -141,7 +187,7 @@ Chodzi nam o Agdę 2.2.10 i nowsze. We wcześniejszych wersjach używało się s
        \url{http://namebinding.wordpress.com/}
 \end{enumerate}
 
-\paragraph{\underline{6. Typy zależne w Haskellu}}
+\paragraph{\underline{7. Typy zależne w Haskellu}}
 
 \begin{itemize}
 \addtolength{\itemsep}{-0.5\baselineskip}
@@ -165,7 +211,7 @@ Chodzi nam o Agdę 2.2.10 i nowsze. We wcześniejszych wersjach używało się s
 
 \end{enumerate}
 
-\paragraph{\underline{7. Programowanie generyczne}}
+\paragraph{\underline{8. Programowanie generyczne}}
 
 
 \begin{itemize}
@@ -178,6 +224,7 @@ Chodzi nam o Agdę 2.2.10 i nowsze. We wcześniejszych wersjach używało się s
 \item (Opcjonalnie) Zastosowanie mechanizmu w praktyce: Generyczny i certyfikowany algorytm diff [1].
 
 \end{itemize}
+
 
 \subparagraph{Literatura:}
 
