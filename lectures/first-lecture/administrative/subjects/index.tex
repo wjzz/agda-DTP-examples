@@ -23,14 +23,17 @@
 \end{Large}
 \end{center}
 
-\paragraph{\underline{1. Proste przykłady zastowań typów zależnych w Agdzie}}
+\paragraph{\underline{1. Proste przykłady zastosowań typów zależnych w Agdzie}}
 
 \begin{itemize}
- \item Nierozbudowane przykłady funkcji spełniających przykładowe specyfikacje 
-     (np. filter, o której przez konstrukcję wiemy, że zwraca podlistę listy wejściowej [1]) 
-     bądź niezmienniki, które normalnie byłyby wyrażone jako komentarz (istniałyby tylko w głowie implementującego) 
-     (np. drzewa BST [2]). Ilustracja mocy wyrazu typów zależnych, 
-  która pozwala na napisanie programu ładniejszego w porównaniu do tego, który byłby napisany w Haskellu lub MLu [3].
+\addtolength{\itemsep}{-0.5\baselineskip}
+\item
+    Przykłady funkcji spełniających proste specyfikacje (np. filter, o której przez konstrukcję wiemy, że zwraca podlistę listy wejściowej [1])
+\item
+    Przykłady struktur danych zachowujących proste niezmienniki, które normalnie istniałyby tylko w głowie implementującego (np. drzewa BST [2])
+\item
+    Ilustracja mocy wyrazu typów zależnych, która pozwala na napisanie programu ładniejszego w porównaniu do tego, który byłby napisany w Haskellu lub MLu [3].
+
 \end{itemize}
 
 \subparagraph{Literatura:}
@@ -39,17 +42,14 @@
 \addtolength{\itemsep}{-0.5\baselineskip}
  \item  Dependently Typed Programming in Agda - Ulf Norell
  \item  Dependent Types at Work - Ana Bove and Peter Dybjer
- \item  Certified Programming with Dependent Types. Chapter 7. More Dependent Types. A Tagless Interpreter - Adam Chlipała (tutaj dostarczymy tłumaczenie programu na Agdę)
+ \item  CPDT. Chapter 7. More Dependent Types. A Tagless Interpreter - Adam Chlipała (tutaj dostarczymy tłumaczenie programu na Agdę).
 \end{enumerate}
 
 \paragraph{\underline{2. Piękno i elegancja typów zależnych}}
 
 \begin{itemize}
  \item 
-Pokazanie przykładów programów, które dobrze wykorzystują typy zależne na podstawie 
-klasycznych prac, które demonstrują ich ważne i praktyczne zastosowania ([1], [2]). Głównym 
-trzonem prezentacji powinna być raczej praca [1] i należałoby przedstawić pełną konstrukcję otrzymanego 
-ostatecznego programu razem z rozumowaniem/ideą, która za nią stoi.
+Pokazanie przykładów z klasycznych prac, które demonstrują ważne i praktyczne zastosowania typów zależnych ([1], [2]). Głównym trzonem prezentacji powinna być raczej praca [1] i należałoby przedstawić pełną konstrukcję otrzymanego ostatecznego programu razem z rozumowaniem/ideą, która za nią stoi.
 \end{itemize}
 
 \subparagraph{Literatura:}
@@ -70,10 +70,10 @@ ostatecznego programu razem z rozumowaniem/ideą, która za nią stoi.
  \item Czym jest koindukcja?
  \item Przykłady wnioskowań przed koindukcję i programów definiowanych przez korekursję.
  \item Używanie koindukcji w Agdzie\footnote{
-Chodzi nam o Agdę 2.2.10 i nowsze. We wcześniejszych wersjach używało się słowa kluczowego codata - chcemy posłuchać o aktualnym sposobie (wbudowane operacje SHARP i FLAT, patrz [1], [2], [3]).
+Chodzi nam o Agdę 2.2.10 i nowsze. We wcześniejszych wersjach używało się słowa kluczowego codata - chcemy posłuchać o aktualnym sposobie (wbudowane operacje SHARP i FLAT, patrz [2], [3], [4]).
 }. Guarded coinduction. Implementacja klasycznych koindukcyjnych struktur danych - strumienie, kolisty, nieskończone drzewa binarne.
- \item Techniki pozwalające radzić sobie, gdy naturalna (naiwna) implementacja nie jest akceptowana przez Agdę, gdyż wykracza poza schemat guarded coinduction. [2,4]
- \item Definicje indukcyjno-koindukcyjne: przykłady zastosowań [2,3]
+ \item Techniki pozwalające radzić sobie, gdy naturalna (naiwna) implementacja nie jest akceptowana przez Agdę, gdyż wykracza poza schemat guarded coinduction. [3,5]
+ \item Definicje indukcyjno-koindukcyjne: przykłady zastosowań [3,4]
 \end{itemize}
 
 \subparagraph{Literatura:}
@@ -162,6 +162,35 @@ Chodzi nam o Agdę 2.2.10 i nowsze. We wcześniejszych wersjach używało się s
  \item Wykład 1. z kursu Dependently Typed Programming używający SHE jako ilustracji
  \item Materiały internetowe, m.in. \\
        \url{http://en.wikibooks.org/wiki/Haskell/GADT}
+
+\end{enumerate}
+
+\paragraph{\underline{7. Programowanie generyczne}}
+
+
+\begin{itemize}
+\addtolength{\itemsep}{-0.5\baselineskip}
+
+\item Użycie uniwersów do pisania algorytmów niezależących od konkretnego typu danych.
+\item Uniwersum dla prostych typów indukcyjnych, wraz z przykładowymi programami jak generyczna równość, generyczny map.
+\item Bardziej zaawansowane kodowania: rodziny indukcyjne, kontenery, zippery itp.
+\item Pisanie funkcji z różną arnością (eliminacja problemu z powtarzaniem schematu zipWith, zipWith3, itd) [5].
+\item (Opcjonalnie) Zastosowanie mechanizmu w praktyce: Generyczny i certyfikowany algorytm diff [1].
+
+\end{itemize}
+
+\subparagraph{Literatura:}
+
+
+\begin{enumerate}
+\addtolength{\itemsep}{-0.5\baselineskip}
+
+\item  Type-safe Diff for Families of Datatypes - E. Lempsink, S. Leather, A. Loh
+\item  Generic programming with Dependent Types - T. Altenkirch, C. McBride, P. Morris
+\item  Generic programming with Indexed Functors - A. Loh, J. P. Magalhaes
+\item  Constructing Universes for Generic Programming - P. Morris
+\item  Arity-Generic Datatype-Generic Programming - S. Weirich, C.Casinghino
+\item  Exploring the regular tree type -
 
 \end{enumerate}
 
