@@ -68,7 +68,7 @@
  \item co znaczy orzeczenie o istnieniu pewnego obiektu?
  \item odrzucenie dowodów przez sprowadzenie do sprzeczności
  \item odrzucenie idealistycznego podejścia do prawdziwości orzeczeń
- \item Bishop, konstruktywna analiza matematyczna
+ \item E. Bishop, konstruktywna analiza matematyczna
 \end{itemize}
 
 
@@ -300,6 +300,80 @@ $\epsilon$.
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
+\frametitle{Liczby naturalne}
+
+\begin{center}
+\begin{tabular}{lcr}
+\inference{
+}
+{
+Nat\; set
+}
+&
+\inference{
+}
+{
+0 \in Nat
+}
+&
+\inference{
+n \in Nat
+}
+{
+succ(n) \in Nat
+}
+\end{tabular}
+\end{center}
+
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+n = n' \in Nat
+}
+{
+succ(n) = succ(n') \in Nat
+}
+&
+\inference{
+A\; set \qquad n \in Nat  \\
+z \in A \qquad s \in Nat \to A \to A 
+}
+{
+natrec(n, z, s) \in A
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+A\; set \qquad  \\
+z \in A \qquad s \in Nat \to A \to A 
+}
+{
+natrec(0, z, s) = z \in A
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+A\; set \qquad n \in Nat  \\
+z \in A \qquad s \in Nat \to A \to A 
+}
+{
+natrec(succ(n), z, s) = s(n, (natrec\;(n, z, s)) \in A
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
 \frametitle{Przykład iloczyn kartezjański w~uproszczonej formie}
 
 \begin{center}
@@ -350,69 +424,20 @@ split(p, f) \in C
 \end{tabular}
 \end{center}
 
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-\frametitle{Przykład funkcje w  uproszczonej formie}
-
-\begin{center}
-\begin{tabular}{lcr}
-\inference{
-A\; set \qquad B\; set
-}
-{
-A \to B\; set
-}
-&
-\inference{
-A = A' \qquad B = B'
-}
-{
-A \to B = A' \to B'
-}
-&
-\inference{
-t(x) \in B\; [x \in A]
-}
-{
-\lambda t \in A \to B
-}
-\end{tabular}
-\end{center}
-
-
-\begin{center}
-\begin{tabular}{lr}
-\inference{
-t(x) = t'(x) \in B \; [x \in A]
-}
-{
-\lambda t = \lambda t' \in A \to B
-}
-&
-\inference{
-f \in A \to B \qquad a \in A
-}
-{
-f \cdot a \in B
-}
-\end{tabular}
-\end{center}
-
 \begin{center}
 \begin{tabular}{c}
 \inference{
-t(x) \in B \; [x \in A] \qquad a \in A
+C\;set \qquad a \in A \qquad b \in B \qquad f(x, y) \in C\; [x \in A,\; y \in B]
 }
 {
-\lambda t \cdot a = t(a) \in B
+split((a,b), f) = f(a,b) \in C
 }
 \end{tabular}
 \end{center}
 
 \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -454,6 +479,87 @@ t(x) \in B \; [x \in A] \qquad a \in A
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
+\frametitle{System naturalnej dedukcji}
+
+\begin{center}
+\begin{tabular}{lr}
+\inference[I$\wedge$]{
+\Gamma |- M : A \qquad \Gamma |- N : B
+}
+{
+\Gamma |- (M, N) : A \wedge B
+}
+&
+\inference[E$\wedge_1$]{
+\Gamma |- M : A \wedge B
+}
+{
+\Gamma |- fst\;M : A 
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+
+\inference[I$\vee_1$]{
+\Gamma |- M : A 
+}
+{
+\Gamma |- inl\; M : A \vee B
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+
+\inference[E$\vee$]{
+\Gamma |- M : A \vee B \qquad \Gamma, x : A |- P : C \qquad \Gamma, x : B |- Q : C
+}
+{
+\Gamma |- when\;M\;(\lambda x.P)\;(\lambda x.Q) : C
+}
+
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{lr}
+
+\inference[I$\to$]{
+\Gamma, A |- M : B
+}
+{
+\Gamma |- \lambda x. M : A \to B
+}
+&
+\inference[E$\to$]{
+\Gamma |- M : A \to B \qquad \Gamma |- N A
+}
+{
+\Gamma |- M\; N : B
+}
+
+\end{tabular}
+\end{center}
+
+
+\begin{center}
+\begin{tabular}{c}
+\inference[AX]{
+}
+{
+\Gamma, x : A |- x : A 
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
 \frametitle{Izomorfizm Curry-Howard (proposition as types)}
 
 \begin{itemize}
@@ -464,7 +570,9 @@ t(x) \in B \; [x \in A] \qquad a \in A
  \item teoria nie wyrażona jako FOL, lecz kodująca ją w~sobie
 \end{itemize}
 \end{frame}
-L
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{frame}
 \frametitle{Sądy mają więcej interpretacji}
 
