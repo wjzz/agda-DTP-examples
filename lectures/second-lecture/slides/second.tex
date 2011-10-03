@@ -436,7 +436,7 @@ $\epsilon$.
 
 \item wyrażeniom przypisujemy arność:
 \begin{itemize}
-\item x
+\item chcemy to napominać?
 \end{itemize}
 
 \end{itemize}
@@ -465,6 +465,14 @@ $\epsilon$.
  \item nic nie mówi o znaczeniu
  \item elementy równe definicyjne traktujemy jako synonimy
 \end{itemize}
+
+\begin{eqnarray*}
+ ((x)b)(x) &\equiv& b \qquad \mbox{$x$ nie występuje w $b$}
+\\
+ ((x)b)(a) & \equiv & b[x := a]
+\\
+  ((x)b) & \equiv& (y)(b[x := y])
+\end{eqnarray*}
 
 \end{itemize}
 
@@ -540,6 +548,186 @@ $\epsilon$.
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{frame}
+\frametitle{Reguły wnioskowania} 
+
+\begin{itemize}
+ \item reguły formułowania
+ \item reguły wprowadzania
+ \item reguły eliminacji
+ \item reguły równościowe
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+ A\;set \qquad B(x) set\;[x \in A]
+}{
+ (\Pi x \in A) B(x) \;set
+}
+&
+\inference{
+ A\;set\;[\Gamma] \qquad B(x) set\;[x \in A, \Delta]
+}{
+ (\Pi x \in A) B(x) \;set [\Gamma, \Delta]
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+ b(x) \in B\;[x \in A]
+}{
+ \lambda b \in A \to B
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+A\;set\;[\Gamma] \qquad B\;set\;[\Delta] \quad
+ b(x) \in B\;[\Theta, x \in A]
+}{
+ \lambda b \in A \to B\; [\Gamma, \Delta, \Theta]
+}
+\end{tabular}
+\end{center}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Zbiór liczb naturalnych} 
+
+\begin{center}
+\begin{tabular}{lcr}
+\inference{
+}
+{
+Nat\; set
+}
+&
+\inference{
+}
+{
+0 \in Nat
+}
+&
+\inference{
+n \in Nat
+}
+{
+succ(n) \in Nat
+}
+\end{tabular}
+\end{center}
+
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+n = n' \in Nat
+}
+{
+succ(n) = succ(n') \in Nat
+}
+\end{tabular}
+\end{center}
+
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in N \qquad C(v)\;set\;[v \in Nat] \qquad d \in C(0) \\
+e(x,y) \in C(succ(x))\;[x \in Nat, y \in C(x)]
+}
+{
+natrec(a, d, e) \in C(a)
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+ C(v)\;set\;[v \in Nat] \qquad C(0) \\
+e(x,y) \in C(succ(x))\;[x \in Nat, y \in C(x)]
+}
+{
+natrec(0, d, e) = d \in C(a)
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in N \qquad C(v)\;set\;[v \in Nat] \qquad d \in C(0) \\
+e(x,y) \in C(succ(x))\;[x \in Nat, y \in C(x)]
+}
+{
+natrec(succ(a), d, e) = e(a, natrec(a,d,e)) \in C(succ(a))
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Zbiór liczb naturalnych} 
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in N \qquad C(v)\;set\;[v \in Nat] \qquad d \in C(0) \\
+e(x,y) \in C(succ(x))\;[x \in Nat, y \in C(x)]
+}
+{
+natrec(a, d, e) \in C(a)
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in N \qquad C(v)\;prop\;[v \in Nat] \qquad C(0)\;true \\
+C(succ(x))\;true\;[x \in Nat, C(x)\;true]
+}
+{
+C(a)\;true
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Zbiór liczb naturalnych} 
+
+\begin{itemize}
+ \item przykłady
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{frame}
 
 \begin{frame}
 \frametitle{Produkt indeksowanej rodziny zbiorów (w matematyce)} 
