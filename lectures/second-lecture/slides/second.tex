@@ -1,0 +1,1197 @@
+\documentclass{beamer}
+
+\usetheme{Boadilla}
+
+% brak tej dziwnej nawigacji w prawym dolnym rogu 
+\setbeamertemplate{navigation symbols}{} 
+
+% brak zbędnych informacji w stopce
+\setbeamertemplate{footline}[page number]{}
+
+% klikalne linki
+\usepackage{hyperref}
+
+% kodowanie utf8 
+\usepackage[utf8]{inputenc} 
+\usepackage{polski}
+\usepackage{amsthm}
+\usepackage{semantic}
+
+\newtheorem{thm}{Twierdzenie}
+
+% konfiguracja niektórych parametrów 
+% \setbeamercovered{transparent} 
+\setbeamertemplate{bibliography item}[text] 
+\setlength{\parskip}{1ex} 
+\setlength{\parindent}{0pt} 
+
+\title{Seminarium: Programowanie w teorii typów}
+\subtitle{Teoria typów}
+\author{Wojciech Jedynak, Paweł Wieczorek} 
+\institute{Instytut Informatyki Uniwersytetu Wrocławskiego}
+
+%\AtBeginSection[]
+%{
+   %\begin{frame}
+       %\frametitle{}
+       %\tableofcontents[sectionstyle=show/hide, subsectionstyle=show/show/hide]
+   %\end{frame}
+%}
+
+\begin{document}
+
+%\lstset{language=Lisp}
+
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \tableofcontents[hidesubsections]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Plan}
+
+\begin{itemize}
+ \item Przypomnimy sobie ideę konstruktywizmu oraz izomorfizmu Curry'ego-Howard'a.
+ \item Zapoznamy się z podstawami teorii typów Martina-L\"{o}f'a:
+ \begin{itemize}
+ \item Zapoznamy się z sądami w tym systemie.
+ \item Sformułujemy podstawowe typy jak liczby naturalne czy \emph{typy wyliczeniowe}.
+ \item Przebrniemy przez formalne definicje podstawowych typów zależnych: $\Pi$-typ, $\Sigma$-typ
+ \item Zobaczymy jak teoria typów koduje logikę pierwszego rzędu.
+ \item Zapoznamy się z równością propozycyjną (typem identycznościowym).
+ \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\section{Matematyka konstruktywna}
+
+\begin{frame}
+\frametitle{Matematyka konstruktywna}
+
+\begin{itemize}
+ \item powstały na początku poprzedniego wieku pogląd na temat fundamentów matematyki
+ \item L.E.J.Brouwer, twórca ideologii
+ \item empiryczna zawartość twierdzeń matematycznych
+ \item co znaczy orzeczenie o istnieniu pewnego obiektu?
+ \item odrzucenie dowodów przez sprowadzenie do sprzeczności
+ \item odrzucenie idealistycznego podejścia do prawdziwości orzeczeń
+ \item E. Bishop, konstruktywna analiza matematyczna
+\end{itemize}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Książkowy przykład twierdzenia niekonstruktywnego}
+
+\begin{thm}
+ Istnieją takie dwie liczby niewymierne $a$ oraz $b$, że $a^b$ jest liczbą wymierną.
+\end{thm}
+
+\begin{proof}
+ Orzeczenie, że $\sqrt{2}^{\sqrt{2}} \in \mathbf{Q}$ musi być prawdziwe lub musi być fałszywe.
+\begin{itemize}
+ \item jeżeli jest prawdziwe to mamy szukane $a$ oraz $b$
+ \item jeżeli jest fałszywe to niech $a = \sqrt{2}^{\sqrt{2}}$ oraz $b = \sqrt{2}$, wtedy $a^b = 2$
+\end{itemize}
+
+\end{proof}
+
+Jedyne co wiemy, to to że muszą istnieć takie liczby. 
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Kolejny przykład.}
+
+\begin{thm}[klasycznie]
+ Jeżeli funkcja $f$ jest ciągła na przedziale $[0, 1]$ oraz wartości funkcji na~krańcach przedziału mają różne znaki
+to istnieje punkt w~tym przedziale na~którym funkcja się zeruje.
+\end{thm}
+
+\begin{thm}[konstruktywnie]
+ Jeżeli funkcja $f$ jest ciągła na przedziale $[0, 1]$ oraz wartości funkcji na~krańcach przedziału mają różne znaki
+to dla każdego $\epsilon > 0$ istnieje punkt w~tym przedziale na~którym bezwzględna wartość funkcji jest mniejsza od
+$\epsilon$.
+\end{thm}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Interpretacja Brouwer-Heyting-Kołmogorow}
+
+\begin{itemize}
+ \item $A \wedge B$ to konstrukcja składająca się z~dwóch pod-konstrukcji
+ \item $A \vee B$ to konstrukcja składająca się z lewej lub prawej pod-konstrukcji
+ \item $A \to B$ to metoda przekształcająca konstrukcję $B$ mając do~dyspozycji $A$
+ \item $\bot$ absurd, konstrukcja której nie można zrealizować
+ \item $\forall x. P(x)$ to metoda przekształcająca wartość $a$ w~konstrukcję $P(a)$
+ \item $\exists x. P(x)$ to konstrukcja mająca składać się ze świadka $a$ oraz z konstrukcji $P(a)$
+ \item $\neg A$ to skrót od $A \to \bot$ 
+ \item Czy przy tej interpretacji wszystkie klasyczne prawa mają sens?
+\begin{itemize}
+\item $\exists x\;P(x) \vee \neg \exists x\;P(x)$
+\item $\exists x\;P(x) \equiv \neg (\forall x \neg P(x))$
+\item $A \vee B \equiv \neg (\neg A \wedge \neg B)$
+\end{itemize}
+
+\end{itemize}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{System naturalnej dedukcji}
+
+\begin{itemize}
+ \item system dowodzenia
+ \item posługujemy się sądami $\Gamma |- \varphi$
+ \item dowód to wyprowadzenie o~strukturze drzewa
+ \begin{itemize}
+ \item korzeń - wniosek (sąd)
+ \item węzeł - reguła wnioskowania
+ \item liść - aksjomat
+ \end{itemize}
+ \item reguły wprowadzania i eliminacji spójników logicznych
+\end{itemize}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{System naturalnej dedukcji}
+
+\begin{center}
+\begin{tabular}{lr}
+\inference[I$\wedge$]{
+\Gamma |- A \qquad \Gamma |- B
+}
+{
+\Gamma |- A \wedge B
+}
+&
+\inference[E$\wedge_1$]{
+\Gamma |- A \wedge B
+}
+{
+\Gamma |- A 
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{lr}
+
+\inference[I$\vee_1$]{
+\Gamma |- A 
+}
+{
+\Gamma |- A \vee B
+}
+&
+\inference[E$\vee$]{
+\Gamma |- A \vee B \qquad \Gamma, A |- C \qquad \Gamma, B |- C
+}
+{
+\Gamma |- C
+}
+
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{lr}
+
+\inference[I$\to$]{
+\Gamma, A |- B
+}
+{
+\Gamma |- A \to B
+}
+&
+\inference[E$\to$]{
+\Gamma |- A \to B \qquad \Gamma |- A
+}
+{
+\Gamma |- B
+}
+
+\end{tabular}
+\end{center}
+
+
+\begin{center}
+\begin{tabular}{c}
+\inference[AX]{
+}
+{
+\Gamma, A |- A 
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Izomorfizm Curry-Howard (proposition as types)}
+
+\begin{itemize}
+ \item Martin-L\"{o}f, Curry, Howard, deBruijn i wiele innych
+ \item typy oznaczają formuły
+ \item otypowane termy oznaczają dowody dla swoich typów (formuł)
+ \item izomorfizm pomiędzy wyprowadzeniami formuł w logice intuicjonistycznej a
+       sądami w~systemie typów
+ \item realizacja BHK
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{lr}
+
+\inference[I$\to$]{
+\Gamma, x : A |- t : B
+}
+{
+\Gamma |- \lambda x:A. t : A \to B
+}
+&
+\inference[E$\to$]{
+\Gamma |- f : A \to B \qquad \Gamma |- x : A
+}
+{
+\Gamma |- f \; x : B
+}
+
+\end{tabular}
+\end{center}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{System typów dla $\lambda$-rachunku}
+
+\begin{center}
+\begin{tabular}{lr}
+\inference[I$\wedge$]{
+\Gamma |- M : A \qquad \Gamma |- N : B
+}
+{
+\Gamma |- (M, N) : A \wedge B
+}
+&
+\inference[E$\wedge_1$]{
+\Gamma |- M : A \wedge B
+}
+{
+\Gamma |- fst\;M : A 
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+
+\inference[I$\vee_1$]{
+\Gamma |- M : A 
+}
+{
+\Gamma |- inl\; M : A \vee B
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+
+\inference[E$\vee$]{
+\Gamma |- M : A \vee B \qquad \Gamma, x : A |- P : C \qquad \Gamma, x : B |- Q : C
+}
+{
+\Gamma |- when\;M\;(\lambda x.P)\;(\lambda x.Q) : C
+}
+
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{lr}
+
+\inference[I$\to$]{
+\Gamma, A |- M : B
+}
+{
+\Gamma |- \lambda x. M : A \to B
+}
+&
+\inference[E$\to$]{
+\Gamma |- M : A \to B \qquad \Gamma |- N : A
+}
+{
+\Gamma |- M\; N : B
+}
+
+\end{tabular}
+\end{center}
+
+
+\begin{center}
+\begin{tabular}{c}
+\inference[AX]{
+}
+{
+\Gamma, x : A |- x : A 
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Teoria typów Martina-L\"{o}fa}
+
+\begin{frame}
+\frametitle{Teoria typów: historia, idee, początki}
+
+\begin{itemize}
+ \item Teoria typów jako logika matematyczna - B. Russel
+ \[
+  A = \{ w \mid w \not\in w \}
+ \]
+ \item $\lambda$-rachunek , funkcja jako pojęcie pierwotne  - A.Church
+ \item System typów, likwidacja paradoksu Kleene'go
+\[
+ K = \lambda x.\; \neg (x\; x)
+\]
+
+\[
+ (K\; K) = \neg (K\; K) = \neg \neg (K\; K) = \cdots
+\]
+
+\end{itemize}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Teoria typów Martina-L\"{o}f'a}
+
+\begin{itemize}
+\item Per Martin-L\"{o}f, A Theory of Types, 1972
+\item Per Martin-L\"{o}f, Constructive Mathematics and Computer Programming, 1979
+\item Per Martin-L\"{o}f, \textbf{Intuitionistic Type Theory}, 1980
+\item Per Martin-L\"{o}f, Truth of a Proposition, Evidence of a Judgement, Validity of a Proof, 1985
+\item B. Nordstr\"{o}m, K. Petersson, and Jan M. Smith, \textbf{ Programming in Martin-L\"{o}f's Type Theory: An Introduction}, 1990
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Wyrażenia jakimi się posługujemy}
+
+\begin{itemize}
+\item język wyrażeń:
+\begin{itemize}
+\item $e(e')$ - aplikacja ( $e(e_1, \cdots, e_n)$ skrócony zapis $e(e_1)\cdots(e_n)$ )
+\item $(x)e$ - abstrakcja
+\item stałe, np $\lambda$, $\Pi$, $apply, 0, succ$
+%\item $(e_1, \cdots, e_n)$ - kombinacja
+%\item $(e_1, \cdots, e_n).i$ - selekcja, gdy $1 \le i \le n$
+\end{itemize}
+
+\item wyrażeniom przypisujemy arność:
+\begin{itemize}
+\item x
+\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Wyrażenia jakimi się posługujemy}
+
+\begin{itemize}
+
+\item Pozwalamy na definiowanie nowych stałych jako makra, np
+\[
+ double \equiv (n)(n + n)
+\]
+\[
+ double(n) \equiv n + n
+\]
+
+
+\item Równość definicyjna
+\begin{itemize}
+ \item relacja równoważności, kongruencja
+ \item surowa równość na wyrażeniach
+ \item nic nie mówi o znaczeniu
+ \item elementy równe definicyjne traktujemy jako synonimy
+\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Wzbogacony system typów o więcej sądów}
+
+\begin{itemize}
+ \item Teoria typów Martina L\"{o}f'a - system typów dla $\lambda$-rachunku, w którym możemy wydawać różne sądy:
+       
+\begin{itemize}
+ \item $A$\;set -  jest zbiorem
+ \item $a \in A$ - $a$ jest elementem zbioru
+ \item $a =_A b \in A$ - $a$ oraz $b$ są równymi elementami w~zbiorze A
+ \item $A = B$ - $A$ oraz $B$ są równymi zbiorami
+\end{itemize}
+
+\item elementy zbiorów dzielimy na
+\begin{itemize}
+ \item kanoniczne - wartości (postać normalna)
+ \item niekanoniczne - obliczenia 
+\end{itemize}
+
+
+\item sformułowanie zbioru to
+\begin{itemize}
+ \item określenie kanonicznych elementów jakie ten zbiór zawiera
+ \item określenie co znaczy że dwa elementy są równe w~tym zbiorze
+ \item określenie obliczeń
+\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Sądy mają więcej interpretacji}
+
+\begin{itemize}
+ \item $A$\;set -  jest zbiorem
+\begin{itemize}
+ \item $a \in A$ - $a$ jest elementem zbioru
+\end{itemize}
+ \item $A$\;set -  jest problemem, zagadnieniem, zadaniem
+\begin{itemize}
+ \item $a \in A$ - $a$ jest rozwiązaniem problemu $A$
+\end{itemize}
+ \item $A$\;prop - jest formułą logiczną
+\begin{itemize}
+ \item $a \in A$ - $a$ jest dowodem propozycji $A$
+ \item $A$\;true - umiemy zrealizować $A$, istnieje dowód $A$
+\end{itemize}
+ \item $A\;set$  - jest specyfikacją 
+\begin{itemize}
+ \item $a \in A$ - $a$ jest programem spełniającym specyfikację $A$
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}
+\frametitle{Produkt indeksowanej rodziny zbiorów (w matematyce)} 
+
+\begin{itemize}
+
+ \item matematyczna definicja
+
+
+\[ \prod_{x \in A} B_x = \left\{ f : A \to \bigcup_{x \in A} B_x \mid \forall x \in A.\;f(x) \in B_x\right\}  \]
+
+ \item zależność przeciwdziedziny od argumentu
+
+\[ \mbox{sort} \in \prod_{xs \in Lists} \{ ys \in Lists \mid perm(ys, xs) \wedge sorted(ys) \}  \]
+
+\[ perm(sort(xs_0), xs_0) \wedge sorted(sort(xs_0)) \]
+
+ \item możemy też wyrazić ,,zwykły'' zbiór funkcji, jeżeli $B_x = B$ to
+
+\[ \prod_{x \in A} B_x = A \to B \]
+
+\end{itemize}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Produkt indeksowanej rodziny zbiorów}
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+A\;set \qquad B(x)\; set\; [x \in A]
+}
+{
+(\Pi x \in A) B(x)\; set
+}
+&
+\inference{
+b(x) \in B(x)\;[x \in A]
+}
+{
+\lambda x.b \in (\Pi x \in A) B(x)\; set
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+A = A' \qquad B(x) = B'(x) \;[x \in A]
+}
+{
+(\Pi x \in A) B(x) = (\Pi x \in A') B'(x)
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+b(x) = b'(x) \in B(x)\;[x \in A]
+}
+{
+\lambda x.b = \lambda x. b' \in (\Pi x \in A) B(x)\; set
+}
+\end{tabular}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Produkt indeksowanej rodziny zbiorów}
+
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+f \in (\Pi x \in A) B(x)\qquad a \in A
+}
+{
+apply(f,a) \in B(a)
+}
+&
+\inference{
+b(x) \in B(x)\;[x \in A] \qquad a \in A
+}
+{
+apply(\lambda x. b , a) = b(a) \in B(a)
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a = a' \in A \qquad f = f' \in (\Pi x \in A) B(x)
+}
+{
+apply(f,a) = apply(f', a') \in B(a)
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Produkt indeksowanej rodziny zbiorów}
+\[ (\forall x \in A) B(x) \equiv (\Pi x \in A) B(x) \]
+
+\begin{center}
+\begin{tabular}{lcr}
+\inference{
+A\;set \qquad B(x)\; set\; [x \in A]
+}
+{
+(\Pi x \in A) B(x)\; set
+}
+&
+$\Rightarrow$
+&
+\inference{
+A\;set \qquad B(x)\; prop\; [x \in A]
+}
+{
+(\forall x \in A) B(x)\; prop
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{lcr}
+\inference{
+b(x) \in B(x)\;[x \in A]
+}
+{
+\lambda x.b \in (\Pi x \in A) B(x)\; set
+}
+&
+$\Rightarrow$
+&
+\inference{
+B(x)\;true\;[x \in A]
+}
+{
+(\forall x \in A) B(x)\; true
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{lcr}
+\inference{
+f \in (\Pi x \in A) B(x)\qquad a \in A
+}
+{
+apply(f,a) \in B(a)
+}
+&
+$\Rightarrow$
+&
+\inference{
+(\forall x \in A) B(x)\;true\qquad a \in A
+}
+{
+B(a)\;true
+}
+\end{tabular}
+\end{center}
+
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Produkt indeksowanej rodziny zbiorów}
+
+\begin{itemize}
+ \item Załóżmy że $f \in (\Pi X \in A) (\Pi y \in B) P(x,y)$, zaprogramujmy $flip\;f$
+\end{itemize}
+
+
+\begin{small}
+\begin{center}
+\begin{tabular}{c}
+\inference
+{
+f \in (\Pi X \in A) (\Pi y \in B) P(x,y) \qquad x \in A\;[x \in A]
+}
+{
+\underbrace{apply(f,x) \in (\Pi y \in B) P(x,y)\; [x \in A]}_D
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference
+{
+\inference
+{
+\inference
+{
+\overbrace{apply(f,x) \in (\Pi y \in B) P(x,y) \; [x \in A]}^D
+\qquad y \in B \; [y \in B]
+}
+{
+apply(apply(f,x),y) \in P(x,y) \; [y \in B, x \in A]
+}
+}
+{
+\lambda x.\; apply(apply(f,x),y) \in (\Pi x \in B) P(x,y) \; [y \in B]
+}
+}
+{
+\lambda y. \lambda x.\; apply(apply(f,x),y) \in (\Pi y \in B)(\Pi x \in A) P(x,y)
+}
+
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference
+{
+(\forall x \in A)(\forall y \in B) P(x,y)\;true
+}
+{
+(\forall y \in B)(\forall x \in A) P(x,y)\;true
+}
+\end{tabular}
+\end{center}
+
+\end{small}
+
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}
+\frametitle{Produkt indeksowanej rodziny zbiorów}
+
+\begin{itemize}
+ \item Jeżeli $x$ nie występuje w $B$ to
+\[ A \to B \equiv (\Pi x \in A) B  \] 
+\end{itemize}
+
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+A\;set \qquad B\; set\;[x \in A]
+}
+{
+A \to B\; set
+}
+&
+\inference{
+b(x) \in B\;[x \in A]
+}
+{
+\lambda x.b \in A \to B
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+A\;prop \qquad B\; prop\;[A\;true]
+}
+{
+A \to B\; prop
+}
+&
+\inference{
+B\;true\;[A\; true]
+}
+{
+A \to B\;true
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Suma rozłączna indeksowanej rodziny zbiorów}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+A\;set \qquad B(x)\; set\; [x \in A]
+}
+{
+(\Sigma x \in A) B(x)\; set
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in A
+\qquad
+B(x)\;set\;[x \in A]
+\qquad
+p \in B(a)
+}
+{
+\langle a,p \rangle \in (\Sigma x \in A) B(x)
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+A = A' \qquad B(x) = B'(x) \;[x \in A]
+}
+{
+(\Sigma x \in A) B(x) = (\Sigma x \in A') B'(x)
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a = a' \in A \qquad b = b' \in B(a)
+}
+{
+\langle a , b \rangle = \langle a'. b' \rangle \in (\Sigma x \in A) B(x)\; set
+}
+\end{tabular}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Suma rozłączna indeksowanej rodziny zbiorów}
+
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+c \in (\Sigma x \in A) B(x) \qquad
+C(v)\;set\;[v \in  (\Sigma x \in A) B(x)] \\
+d(x,y) \in C(\langle x, y \rangle) \;[x \in A, y \in B(a)]
+}
+{
+split(c,d) \in C(c)
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in A \qquad b \in B(a) \\
+C(v)\;set\;[v \in  (\Sigma x \in A) B(x)] \\
+d(x,y) \in C(\langle x, y \rangle) \;[x \in A, y \in B(a)]
+}
+{
+split(\langle a , b \rangle, d) = d(a,b) \in C(\langle a , b \rangle)
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+c  = c'\in (\Sigma x \in A) B(x) \qquad
+C(v)\;set\;[v \in  (\Sigma x \in A) B(x)] \\
+d(x,y) = d'(x,y)\in C(\langle x, y \rangle) \;[x \in A, y \in B(a)]
+}
+{
+split(c,d) = split(c', d')\in C(c)
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Suma rozłączna indeksowanej rodziny zbiorów}
+
+\[
+ (\exists x \in A) B(x) \equiv (\Sigma x \in A) B(x)
+\]
+
+\begin{center}
+\begin{tabular}{lcr}
+\inference{
+A\;set \qquad B(x)\; set\; [x \in A]
+}
+{
+(\Sigma x \in A) B(x)\; set
+}
+&
+$\Rightarrow$
+&
+\inference{
+A\;set \qquad B(x)\; prop\; [x \in A]
+}
+{
+(\exists x \in A) B(x)\; prop
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{lcr}
+\inference{
+a \in A \qquad p \in B(a) 
+}
+{
+\langle a,p \rangle \in (\Sigma x \in A) B(x)
+}
+&
+$\Rightarrow$
+&
+\inference{
+a \in A
+\qquad
+B(a)\; true
+}
+{
+(\exists x \in A) B(x)\;true
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+c \in (\Sigma x \in A) B(x) \qquad
+C(v)\;set\;[v \in  (\Sigma x \in A) B(x)] \\
+d(x,y) \in C(\langle x, y \rangle) \;[x \in A, y \in B(a)]
+}
+{
+split(c,d) \in C(c)
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+\Downarrow \\
+(\exists x \in A) B(x)\;true \qquad
+C\;prop \qquad
+C\;true \;[x \in A, B(a) \; true]
+}
+{
+C\;true
+}
+\end{tabular}
+\end{center}
+
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Suma rozłączna indeksowanej rodziny zbiorów}
+\begin{itemize}
+ \item Jeżeli $x$ nie występuje w $B$ to
+\[
+ A \times B \equiv A \wedge B \equiv (\Sigma x \in A) B
+\]
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{lr}
+
+\inference{
+A\;set \qquad B\; set\;[x \in A]
+}
+{
+A \times B\; set
+}
+&
+\inference{
+a \in A \qquad b \in B 
+}
+{
+\langle a, b \rangle \in A \times B
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+A\;prop \qquad B\; prop\;[A\;true]
+}
+{
+A \wedge B\; prop
+}
+&
+\inference{
+A\;true\qquad B\; true
+}
+{
+A \wedge B\;true
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}
+\frametitle{Równość propozycyjna}
+
+\begin{itemize}
+ \item Nie mamy odpowiednika atomowej formuły $a = b$
+ \item $a = b \in C$ to sąd, nie propozycja.
+ \item Czego oczekujemy od równości propozycyjnej?
+ \begin{itemize}
+   \item By był zamieszkany wtedy i tylko wtedy gdy formuła atomowa $a = b$ jest prawdziwa.
+   \item Abyśmy mogli prowadzić wnioskowanie bazujące na równościach.
+ \end{itemize}
+\end{itemize}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Równość propozycyjna}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+A\;set \qquad a \in A \qquad b \in A
+}
+{
+[a =_{A} b]\;set
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in A
+}
+{
+id(a) \in [a =_{A} a]
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+A = A' \qquad a = a' \in A \qquad b = b' \in A
+}
+{
+[a =_A b] = [a' =_{A'} b']
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a = a' \in A 
+}
+{
+id(a) = id(a') \in [a =_A a]
+}
+\end{tabular}
+\end{center}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Równość propozycyjna}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in A \qquad b \in A \qquad c \in [a =_A b] \\
+C(x, y, z)\;set\; [x \in A, y \in A, z \in [x =_A y] \\
+d(x) \in C(x,x,id(x))\; [x \in A]
+}
+{
+idpeel(c, d) \in C(a, b, c)
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in A \\
+C(x, y, z)\;set\; [x \in A, y \in A, z \in [x =_A y] \\
+d(x) \in C(x,x,id(x))\; [x \in A]
+}
+{
+idpeel(id(a), d) = d(a) \in C(a, a, id(a))
+}
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+ \item Zbyt silna eliminacja:
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+[a =_A b]\; true
+}
+{
+a = b \in A
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}
