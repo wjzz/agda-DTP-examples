@@ -54,14 +54,13 @@
 \frametitle{Plan}
 
 \begin{itemize}
- \item Przypomnimy sobie ideę konstruktywizmu oraz izomorfizmu Curry'ego-Howard'a.
- \item Zapoznamy się z podstawami teorii typów Martina-L\"{o}f'a:
+ \item Przypomnimy sobie ideę konstruktywizmu oraz izomorfizmu Curry'ego-Howarda.
+ \item Zapoznamy się z podstawami teorii typów Martina-L\"{o}fa:
  \begin{itemize}
  \item Zapoznamy się z sądami w tym systemie.
  \item Sformułujemy podstawowe typy jak liczby naturalne czy \emph{typy wyliczeniowe}.
  \item Przebrniemy przez formalne definicje podstawowych typów zależnych: $\Pi$-typ, $\Sigma$-typ
  \item Zobaczymy jak teoria typów koduje logikę pierwszego rzędu.
- \item Zapoznamy się z równością propozycyjną (typem identycznościowym).
  \end{itemize}
 \end{itemize}
 
@@ -167,6 +166,21 @@ $\epsilon$.
  \item reguły wprowadzania i eliminacji spójników logicznych
 \end{itemize}
 
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+\inference{
+\dfrac{A \wedge B |- A \wedge B}{A \wedge B |- B} \qquad \dfrac{A \wedge B |- A \wedge B}{A \wedge B |- A}
+}
+{
+A \wedge B |- B \wedge A
+}
+}
+{
+|- A \wedge B \to B \wedge A
+}
+\end{tabular}
+\end{center}
 
 \end{frame}
 
@@ -262,12 +276,11 @@ $\epsilon$.
 
 \begin{center}
 \begin{tabular}{lr}
-
 \inference[I$\to$]{
 \Gamma, x : A |- t : B
 }
 {
-\Gamma |- \lambda x:A. t : A \to B
+\Gamma |- \lambda x. t : A \to B
 }
 &
 \inference[E$\to$]{
@@ -276,9 +289,9 @@ $\epsilon$.
 {
 \Gamma |- f \; x : B
 }
-
 \end{tabular}
 \end{center}
+
 
 
 \end{frame}
@@ -307,6 +320,27 @@ $\epsilon$.
 \end{center}
 
 \begin{center}
+\begin{tabular}{lr}
+
+\inference[I$\to$]{
+\Gamma, x : A |- M : B
+}
+{
+\Gamma |- \lambda x. M : A \to B
+}
+&
+\inference[E$\to$]{
+\Gamma |- M : A \to B \qquad \Gamma |- N : A
+}
+{
+\Gamma |- M\; N : B
+}
+
+\end{tabular}
+\end{center}
+
+
+\begin{center}
 \begin{tabular}{c}
 
 \inference[I$\vee_1$]{
@@ -326,26 +360,6 @@ $\epsilon$.
 }
 {
 \Gamma |- when\;M\;(\lambda x.P)\;(\lambda x.Q) : C
-}
-
-\end{tabular}
-\end{center}
-
-\begin{center}
-\begin{tabular}{lr}
-
-\inference[I$\to$]{
-\Gamma, A |- M : B
-}
-{
-\Gamma |- \lambda x. M : A \to B
-}
-&
-\inference[E$\to$]{
-\Gamma |- M : A \to B \qquad \Gamma |- N : A
-}
-{
-\Gamma |- M\; N : B
 }
 
 \end{tabular}
@@ -391,6 +405,7 @@ $\epsilon$.
  \[
   A = \{ w \mid w \not\in w \}
  \]
+\pause
  \item $\lambda$-rachunek , funkcja jako pojęcie pierwotne  - A.Church
  \item System typów, likwidacja paradoksu Kleene'go
 \[
@@ -409,7 +424,7 @@ $\epsilon$.
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Teoria typów Martina-L\"{o}f'a}
+\frametitle{Teoria typów Martina-L\"{o}fa}
 
 \begin{itemize}
 \item Per Martin-L\"{o}f, A Theory of Types, 1972
@@ -432,11 +447,6 @@ $\epsilon$.
 \item stałe, np $\lambda$, $\Pi$, $apply, 0, succ$
 %\item $(e_1, \cdots, e_n)$ - kombinacja
 %\item $(e_1, \cdots, e_n).i$ - selekcja, gdy $1 \le i \le n$
-\end{itemize}
-
-\item wyrażeniom przypisujemy arność:
-\begin{itemize}
-\item chcemy to napominać?
 \end{itemize}
 
 \end{itemize}
@@ -467,9 +477,9 @@ $\epsilon$.
 \end{itemize}
 
 \begin{eqnarray*}
- ((x)b)(x) &\equiv& b \qquad \mbox{$x$ nie występuje w $b$}
+((x)b)(a) & \equiv & b[x := a]
 \\
- ((x)b)(a) & \equiv & b[x := a]
+ ((x)b(x)) &\equiv& b \qquad \mbox{$x$ nie występuje w $b$}
 \\
   ((x)b) & \equiv& (y)(b[x := y])
 \end{eqnarray*}
@@ -489,13 +499,13 @@ $\epsilon$.
 \frametitle{Wzbogacony system typów o więcej sądów}
 
 \begin{itemize}
- \item Teoria typów Martina L\"{o}f'a - system typów dla $\lambda$-rachunku, w którym możemy wydawać różne sądy:
+ \item Teoria typów Martina-L\"{o}fa - system w~stylu naturalnej dedukcji, w którym możemy wydawać różne sądy:
        
 \begin{itemize}
  \item $A$\;set -  jest zbiorem
- \item $a \in A$ - $a$ jest elementem zbioru
- \item $a =_A b \in A$ - $a$ oraz $b$ są równymi elementami w~zbiorze A
- \item $A = B$ - $A$ oraz $B$ są równymi zbiorami
+ \item $a \in A$ - jest elementem zbioru
+ \item $a =_A b \in A$ elementy $a$ oraz $b$ są równe w~zbiorze A
+ \item $A = B$ - zbiory $A$ oraz $B$ są równymi zbiorami
 \end{itemize}
 
 \item elementy zbiorów dzielimy na
@@ -574,8 +584,16 @@ $\epsilon$.
 \end{tabular}
 \end{center}
 
+\pause
+
 \begin{center}
-\begin{tabular}{c}
+\begin{tabular}{lr}
+\inference{
+ A\;set \qquad B\;set
+}{
+ A \to B\;set
+}
+&
 \inference{
  b(x) \in B\;[x \in A]
 }{
@@ -583,6 +601,8 @@ $\epsilon$.
 }
 \end{tabular}
 \end{center}
+
+\pause
 
 \begin{center}
 \begin{tabular}{c}
@@ -629,6 +649,7 @@ succ(n) \in Nat
 \end{tabular}
 \end{center}
 
+\pause
 
 \begin{center}
 \begin{tabular}{lr}
@@ -641,6 +662,7 @@ succ(n) = succ(n') \in Nat
 \end{tabular}
 \end{center}
 
+\pause
 
 \begin{center}
 \begin{tabular}{c}
@@ -654,6 +676,7 @@ natrec(a, d, e) \in C(a)
 \end{tabular}
 \end{center}
 
+\pause
 \begin{center}
 \begin{tabular}{c}
 \inference{
@@ -665,6 +688,8 @@ natrec(0, d, e) = d \in C(a)
 }
 \end{tabular}
 \end{center}
+
+\pause
 
 \begin{center}
 \begin{tabular}{c}
@@ -699,6 +724,8 @@ natrec(a, d, e) \in C(a)
 }
 \end{tabular}
 \end{center}
+
+\pause
 
 \begin{center}
 \begin{tabular}{c}
@@ -777,6 +804,8 @@ b(x) \in B(x)\;[x \in A]
 \end{tabular}
 \end{center}
 
+\pause
+
 \begin{center}
 \begin{tabular}{c}
 \inference{
@@ -787,6 +816,8 @@ A = A' \qquad B(x) = B'(x) \;[x \in A]
 }
 \end{tabular}
 \end{center}
+
+\pause
 
 \begin{center}
 \begin{tabular}{c}
@@ -823,6 +854,8 @@ apply(\lambda x. b , a) = b(a) \in B(a)
 }
 \end{tabular}
 \end{center}
+
+\pause
 
 \begin{center}
 \begin{tabular}{c}
@@ -863,6 +896,8 @@ A\;set \qquad B(x)\; prop\; [x \in A]
 \end{tabular}
 \end{center}
 
+\pause
+
 \begin{center}
 \begin{tabular}{lcr}
 \inference{
@@ -882,6 +917,8 @@ B(x)\;true\;[x \in A]
 }
 \end{tabular}
 \end{center}
+
+\pause
 
 \begin{center}
 \begin{tabular}{lcr}
@@ -910,22 +947,23 @@ B(a)\;true
 \frametitle{Produkt indeksowanej rodziny zbiorów}
 
 \begin{itemize}
- \item Załóżmy że $f \in (\Pi X \in A) (\Pi y \in B) P(x,y)$, zaprogramujmy $flip\;f$
+ \item Załóżmy że $f \in (\Pi x \in A) (\Pi y \in B) P(x,y)$, oraz że $x$ nie występuje w $B$
 \end{itemize}
-
 
 \begin{small}
 \begin{center}
 \begin{tabular}{c}
 \inference
 {
-f \in (\Pi X \in A) (\Pi y \in B) P(x,y) \qquad x \in A\;[x \in A]
+f \in (\Pi x \in A) (\Pi y \in B) P(x,y) \qquad x \in A\;[x \in A]
 }
 {
 \underbrace{apply(f,x) \in (\Pi y \in B) P(x,y)\; [x \in A]}_D
 }
 \end{tabular}
 \end{center}
+
+\pause
 
 \begin{center}
 \begin{tabular}{c}
@@ -953,17 +991,26 @@ apply(apply(f,x),y) \in P(x,y) \; [y \in B, x \in A]
 \end{tabular}
 \end{center}
 
+\pause
+
 \begin{center}
 \begin{tabular}{c}
 \inference
 {
+\inference
+{
 (\forall x \in A)(\forall y \in B) P(x,y)\;true
+}
+{
+\cdots
+}
 }
 {
 (\forall y \in B)(\forall x \in A) P(x,y)\;true
 }
 \end{tabular}
 \end{center}
+
 
 \end{small}
 
@@ -1001,6 +1048,8 @@ b(x) \in B\;[x \in A]
 \end{tabular}
 \end{center}
 
+\pause
+
 \begin{center}
 \begin{tabular}{lr}
 \inference{
@@ -1029,6 +1078,12 @@ A \to B\;true
 \begin{frame}
 \frametitle{Suma rozłączna indeksowanej rodziny zbiorów}
 
+\[
+ \sum_{x \in A} B_x = \left\{ (a,b) \mid a \in A \wedge b \in B_a \right\}
+\]
+
+\pause
+
 \begin{center}
 \begin{tabular}{c}
 \inference{
@@ -1045,8 +1100,6 @@ A\;set \qquad B(x)\; set\; [x \in A]
 \inference{
 a \in A
 \qquad
-B(x)\;set\;[x \in A]
-\qquad
 p \in B(a)
 }
 {
@@ -1054,6 +1107,8 @@ p \in B(a)
 }
 \end{tabular}
 \end{center}
+
+\pause
 
 \begin{center}
 \begin{tabular}{c}
@@ -1065,6 +1120,8 @@ A = A' \qquad B(x) = B'(x) \;[x \in A]
 }
 \end{tabular}
 \end{center}
+
+\pause
 
 \begin{center}
 \begin{tabular}{c}
@@ -1097,6 +1154,8 @@ split(c,d) \in C(c)
 \end{tabular}
 \end{center}
 
+\pause
+
 \begin{center}
 \begin{tabular}{c}
 \inference{
@@ -1109,6 +1168,8 @@ split(\langle a , b \rangle, d) = d(a,b) \in C(\langle a , b \rangle)
 }
 \end{tabular}
 \end{center}
+
+\pause
 
 \begin{center}
 \begin{tabular}{c}
@@ -1154,6 +1215,8 @@ A\;set \qquad B(x)\; prop\; [x \in A]
 \end{tabular}
 \end{center}
 
+\pause
+
 \begin{center}
 \begin{tabular}{lcr}
 \inference{
@@ -1175,6 +1238,8 @@ B(a)\; true
 }
 \end{tabular}
 \end{center}
+
+\pause
 
 \begin{center}
 \begin{tabular}{c}
@@ -1273,7 +1338,6 @@ A \wedge B\;true
    \item Abyśmy mogli prowadzić wnioskowanie bazujące na równościach.
  \end{itemize}
 \end{itemize}
-
 
 \end{frame}
 
