@@ -210,26 +210,6 @@ A \wedge B |- B \wedge A
 \begin{center}
 \begin{tabular}{lr}
 
-\inference[I$\vee_1$]{
-\Gamma |- A 
-}
-{
-\Gamma |- A \vee B
-}
-&
-\inference[E$\vee$]{
-\Gamma |- A \vee B \qquad \Gamma, A |- C \qquad \Gamma, B |- C
-}
-{
-\Gamma |- C
-}
-
-\end{tabular}
-\end{center}
-
-\begin{center}
-\begin{tabular}{lr}
-
 \inference[I$\to$]{
 \Gamma, A |- B
 }
@@ -247,6 +227,26 @@ A \wedge B |- B \wedge A
 \end{tabular}
 \end{center}
 
+
+\begin{center}
+\begin{tabular}{lr}
+
+\inference[I$\vee_1$]{
+\Gamma |- A 
+}
+{
+\Gamma |- A \vee B
+}
+&
+\inference[E$\vee$]{
+\Gamma |- A \vee B \qquad \Gamma, A |- C \qquad \Gamma, B |- C
+}
+{
+\Gamma |- C
+}
+
+\end{tabular}
+\end{center}
 
 \begin{center}
 \begin{tabular}{c}
