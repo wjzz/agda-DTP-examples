@@ -58,8 +58,8 @@
  \item Zapoznamy się z podstawami teorii typów Martina-L\"{o}fa:
  \begin{itemize}
  \item Zapoznamy się z sądami w tym systemie.
- \item Sformułujemy podstawowe typy jak liczby naturalne czy \emph{typy wyliczeniowe}.
- \item Przebrniemy przez formalne definicje podstawowych typów zależnych: $\Pi$-typ, $\Sigma$-typ
+ \item Sformułujemy podstawowe typy jak liczby naturalne.
+ \item Przebrniemy przez formalne definicje podstawowych typów zależnych: $\Pi$-typ, $\Sigma$-typ.
  \item Zobaczymy jak teoria typów koduje logikę pierwszego rzędu.
  \end{itemize}
 \end{itemize}
@@ -649,7 +649,6 @@ succ(n) \in Nat
 \end{tabular}
 \end{center}
 
-\pause
 
 \begin{center}
 \begin{tabular}{lr}
@@ -667,6 +666,87 @@ succ(n) = succ(n') \in Nat
 \begin{center}
 \begin{tabular}{c}
 \inference{
+a \in N \qquad C \qquad d \in C \\
+e(x,y) \in C\;[x \in Nat, y \in C]
+}
+{
+natrec(a, d, e) \in C
+}
+\end{tabular}
+\end{center}
+
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+ C\;set \qquad C \\
+e(x,y) \in C\;[x \in Nat, y C]
+}
+{
+natrec(0, d, e) = d \in C
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in N \qquad C\;set \qquad d \in C \\
+e(x,y) \in C\;[x \in Nat, y \in C(x)]
+}
+{
+natrec(succ(a), d, e) = e(a, natrec(a,d,e)) \in C
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Zbiór liczb naturalnych} 
+
+\begin{center}
+\begin{tabular}{lcr}
+\inference{
+}
+{
+Nat\; set
+}
+&
+\inference{
+}
+{
+0 \in Nat
+}
+&
+\inference{
+n \in Nat
+}
+{
+succ(n) \in Nat
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+n = n' \in Nat
+}
+{
+succ(n) = succ(n') \in Nat
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
 a \in N \qquad C(v)\;set\;[v \in Nat] \qquad d \in C(0) \\
 e(x,y) \in C(succ(x))\;[x \in Nat, y \in C(x)]
 }
@@ -676,7 +756,7 @@ natrec(a, d, e) \in C(a)
 \end{tabular}
 \end{center}
 
-\pause
+
 \begin{center}
 \begin{tabular}{c}
 \inference{
@@ -688,8 +768,6 @@ natrec(0, d, e) = d \in C(a)
 }
 \end{tabular}
 \end{center}
-
-\pause
 
 \begin{center}
 \begin{tabular}{c}
@@ -709,6 +787,7 @@ natrec(succ(a), d, e) = e(a, natrec(a,d,e)) \in C(succ(a))
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
 \frametitle{Zbiór liczb naturalnych} 
@@ -724,8 +803,6 @@ natrec(a, d, e) \in C(a)
 }
 \end{tabular}
 \end{center}
-
-\pause
 
 \begin{center}
 \begin{tabular}{c}
@@ -744,17 +821,10 @@ C(a)\;true
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}
-\frametitle{Zbiór liczb naturalnych} 
-
-\begin{itemize}
- \item przykłady
-\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
-\end{frame}
 
 \begin{frame}
 \frametitle{Produkt indeksowanej rodziny zbiorów (w matematyce)} 
@@ -817,8 +887,6 @@ A = A' \qquad B(x) = B'(x) \;[x \in A]
 \end{tabular}
 \end{center}
 
-\pause
-
 \begin{center}
 \begin{tabular}{c}
 \inference{
@@ -855,8 +923,6 @@ apply(\lambda x. b , a) = b(a) \in B(a)
 \end{tabular}
 \end{center}
 
-\pause
-
 \begin{center}
 \begin{tabular}{c}
 \inference{
@@ -875,7 +941,7 @@ apply(f,a) = apply(f', a') \in B(a)
 \begin{frame}
 \frametitle{Produkt indeksowanej rodziny zbiorów}
 \[ (\forall x \in A) B(x) \equiv (\Pi x \in A) B(x) \]
-
+\pause
 \begin{center}
 \begin{tabular}{lcr}
 \inference{
@@ -946,6 +1012,28 @@ B(a)\;true
 \begin{frame}
 \frametitle{Produkt indeksowanej rodziny zbiorów}
 
+\begin{small}
+\begin{center}
+\begin{tabular}{c}
+\inference
+{
+\inference
+{
+(\forall x \in A)(\forall y \in B) P(x,y)\;true
+}
+{
+\vdots
+}
+}
+{
+(\forall y \in B)(\forall x \in A) P(x,y)\;true
+}
+\end{tabular}
+\end{center}
+\end{small}
+
+\pause 
+
 \begin{itemize}
  \item Załóżmy że $f \in (\Pi x \in A) (\Pi y \in B) P(x,y)$, oraz że $x$ nie występuje w $B$
 \end{itemize}
@@ -962,8 +1050,6 @@ f \in (\Pi x \in A) (\Pi y \in B) P(x,y) \qquad x \in A\;[x \in A]
 }
 \end{tabular}
 \end{center}
-
-\pause
 
 \begin{center}
 \begin{tabular}{c}
@@ -991,25 +1077,6 @@ apply(apply(f,x),y) \in P(x,y) \; [y \in B, x \in A]
 \end{tabular}
 \end{center}
 
-\pause
-
-\begin{center}
-\begin{tabular}{c}
-\inference
-{
-\inference
-{
-(\forall x \in A)(\forall y \in B) P(x,y)\;true
-}
-{
-\cdots
-}
-}
-{
-(\forall y \in B)(\forall x \in A) P(x,y)\;true
-}
-\end{tabular}
-\end{center}
 
 
 \end{small}
@@ -1029,6 +1096,7 @@ apply(apply(f,x),y) \in P(x,y) \; [y \in B, x \in A]
 \[ A \to B \equiv (\Pi x \in A) B  \] 
 \end{itemize}
 
+\pause
 
 \begin{center}
 \begin{tabular}{lr}
@@ -1110,6 +1178,7 @@ p \in B(a)
 
 \pause
 
+
 \begin{center}
 \begin{tabular}{c}
 \inference{
@@ -1121,15 +1190,13 @@ A = A' \qquad B(x) = B'(x) \;[x \in A]
 \end{tabular}
 \end{center}
 
-\pause
-
 \begin{center}
 \begin{tabular}{c}
 \inference{
 a = a' \in A \qquad b = b' \in B(a)
 }
 {
-\langle a , b \rangle = \langle a'. b' \rangle \in (\Sigma x \in A) B(x)\; set
+\langle a , b \rangle = \langle a', b' \rangle \in (\Sigma x \in A) B(x)\; set
 }
 \end{tabular}
 \end{center}
@@ -1195,6 +1262,7 @@ split(c,d) = split(c', d')\in C(c)
  (\exists x \in A) B(x) \equiv (\Sigma x \in A) B(x)
 \]
 
+\pause 
 \begin{center}
 \begin{tabular}{lcr}
 \inference{
@@ -1322,128 +1390,49 @@ A \wedge B\;true
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Równość propozycyjna}
+\frametitle{Suma rozłączna indeksowanej rodziny zbiorów}
 
 \begin{itemize}
- \item Nie mamy odpowiednika atomowej formuły $a = b$
- \item $a = b \in C$ to sąd, nie propozycja.
- \item Czego oczekujemy od równości propozycyjnej?
- \begin{itemize}
-   \item By był zamieszkany wtedy i tylko wtedy gdy formuła atomowa $a = b$ jest prawdziwa.
-   \item Abyśmy mogli prowadzić wnioskowanie bazujące na równościach.
- \end{itemize}
+ \item $fst(p) \equiv split(p, (x,y) x )$
+ \item Niech $A$,$B$ będą poprawnymi typami, niech $\langle a , b \rangle \in A \times B$
+ \item Niech $d(x,y) = x$
+ \item NIech $C(p) = A$
 \end{itemize}
 
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-\frametitle{Równość propozycyjna}
 
 \begin{center}
 \begin{tabular}{c}
-\inference{
-A\;set \qquad a \in A \qquad b \in A
+\inference
+{
+a \in A \qquad b \in B \qquad C(v)\;set\; [v \in A \times B] \\
+d(x,y) \in C(\langle x , y \rangle) \; [x \in A, y \in B]
 }
 {
-[a =_{A} b]\;set
+split(\langle a , b\rangle , (x,y)d(x,y) ) = d(a,b) \in C(\langle a , b\rangle)
 }
 \end{tabular}
 \end{center}
 
 \begin{center}
 \begin{tabular}{c}
-\inference{
-a \in A
+\inference
+{
+a \in A \qquad b \in B \qquad A\;set\; [v \in A \times B] \\
+x \in A \; [x \in A, y \in B]
 }
 {
-id(a) \in [a =_{A} a]
-}
-\end{tabular}
-\end{center}
-
-\begin{center}
-\begin{tabular}{c}
-\inference{
-A = A' \qquad a = a' \in A \qquad b = b' \in A
-}
-{
-[a =_A b] = [a' =_{A'} b']
-}
-\end{tabular}
-\end{center}
-
-\begin{center}
-\begin{tabular}{c}
-\inference{
-a = a' \in A 
-}
-{
-id(a) = id(a') \in [a =_A a]
+split(\langle a , b\rangle , (x,y)d(x,y) ) = a \in A
 }
 \end{tabular}
 \end{center}
 
 
 \end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-\frametitle{Równość propozycyjna}
-
-\begin{center}
-\begin{tabular}{c}
-\inference{
-a \in A \qquad b \in A \qquad c \in [a =_A b] \\
-C(x, y, z)\;set\; [x \in A, y \in A, z \in [x =_A y] \\
-d(x) \in C(x,x,id(x))\; [x \in A]
-}
-{
-idpeel(c, d) \in C(a, b, c)
-}
-\end{tabular}
-\end{center}
-
-\begin{center}
-\begin{tabular}{c}
-\inference{
-a \in A \\
-C(x, y, z)\;set\; [x \in A, y \in A, z \in [x =_A y] \\
-d(x) \in C(x,x,id(x))\; [x \in A]
-}
-{
-idpeel(id(a), d) = d(a) \in C(a, a, id(a))
-}
-\end{tabular}
-\end{center}
-
-\begin{itemize}
- \item Zbyt silna eliminacja:
-\end{itemize}
-
-\begin{center}
-\begin{tabular}{c}
-\inference{
-[a =_A b]\; true
-}
-{
-a = b \in A
-}
-\end{tabular}
-\end{center}
-
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \end{document}
