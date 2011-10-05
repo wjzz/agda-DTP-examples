@@ -869,7 +869,7 @@ A\;set \qquad B(x)\; set\; [x \in A]
 b(x) \in B(x)\;[x \in A]
 }
 {
-\lambda x.b \in (\Pi x \in A) B(x)\; set
+\lambda b \in (\Pi x \in A) B(x)\; set
 }
 \end{tabular}
 \end{center}
@@ -893,7 +893,7 @@ A = A' \qquad B(x) = B'(x) \;[x \in A]
 b(x) = b'(x) \in B(x)\;[x \in A]
 }
 {
-\lambda x.b = \lambda x. b' \in (\Pi x \in A) B(x)\; set
+\lambda b = \lambda b' \in (\Pi x \in A) B(x)\; set
 }
 \end{tabular}
 \end{center}
@@ -918,7 +918,7 @@ apply(f,a) \in B(a)
 b(x) \in B(x)\;[x \in A] \qquad a \in A
 }
 {
-apply(\lambda x. b , a) = b(a) \in B(a)
+apply(\lambda b , a) = b(a) \in B(a)
 }
 \end{tabular}
 \end{center}
@@ -970,7 +970,7 @@ A\;set \qquad B(x)\; prop\; [x \in A]
 b(x) \in B(x)\;[x \in A]
 }
 {
-\lambda x.b \in (\Pi x \in A) B(x)\; set
+\lambda b \in (\Pi x \in A) B(x)\; set
 }
 &
 $\Rightarrow$
@@ -1067,7 +1067,7 @@ apply(apply(f,x),y) \in P(x,y) \; [y \in B, x \in A]
 }
 }
 {
-\lambda x.\; apply(apply(f,x),y) \in (\Pi x \in B) P(x,y) \; [y \in B]
+\lambda x. apply(apply(f,x),y) \in (\Pi x \in B) P(x,y) \; [y \in B]
 }
 }
 {
@@ -1111,7 +1111,7 @@ A \to B\; set
 b(x) \in B\;[x \in A]
 }
 {
-\lambda x.b \in A \to B
+\lambda b \in A \to B
 }
 \end{tabular}
 \end{center}
@@ -1401,7 +1401,7 @@ A \wedge B\;true
  \item $fst(p) \equiv split(p, (x,y) x )$
  \item Niech $A$,$B$ będą poprawnymi typami, niech $\langle a , b \rangle \in A \times B$
  \item Niech $d(x,y) = x$
- \item NIech $C(p) = A$
+ \item Niech $C(p) = A$
 \end{itemize}
 
 
@@ -1426,7 +1426,7 @@ a \in A \qquad b \in B \qquad A\;set\; [v \in A \times B] \\
 x \in A \; [x \in A, y \in B]
 }
 {
-split(\langle a , b\rangle , (x,y)d(x,y) ) = a \in A
+split(\langle a , b\rangle , (x,y)x ) = a \in A
 }
 \end{tabular}
 \end{center}
