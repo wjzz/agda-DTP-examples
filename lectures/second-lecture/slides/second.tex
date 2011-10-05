@@ -666,7 +666,7 @@ succ(n) = succ(n') \in Nat
 \begin{center}
 \begin{tabular}{c}
 \inference{
-a \in N \qquad C \qquad d \in C \\
+a \in N \qquad C\;set \qquad d \in C \\
 e(x,y) \in C\;[x \in Nat, y \in C]
 }
 {
@@ -679,7 +679,7 @@ natrec(a, d, e) \in C
 \begin{center}
 \begin{tabular}{c}
 \inference{
- C\;set \qquad C \\
+ C\;set \qquad C\;set \\
 e(x,y) \in C\;[x \in Nat, y C]
 }
 {
