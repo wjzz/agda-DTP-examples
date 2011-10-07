@@ -132,7 +132,7 @@ $\epsilon$.
 \begin{itemize}
  \item $A \wedge B$ to konstrukcja składająca się z~dwóch pod-konstrukcji
  \item $A \vee B$ to konstrukcja składająca się z lewej lub prawej pod-konstrukcji
- \item $A \to B$ to metoda przekształcająca konstrukcję $B$ mając do~dyspozycji $A$
+ \item $A \to B$ to metoda tworząca konstrukcję $B$ mając do~dyspozycji $A$
  \item $\bot$ absurd, konstrukcja której nie można zrealizować
  \item $\forall x. P(x)$ to metoda przekształcająca wartość $a$ w~konstrukcję $P(a)$
  \item $\exists x. P(x)$ to konstrukcja mająca składać się ze świadka $a$ oraz z konstrukcji $P(a)$
@@ -764,7 +764,7 @@ natrec(a, d, e) \in C(a)
 e(x,y) \in C(succ(x))\;[x \in Nat, y \in C(x)]
 }
 {
-natrec(0, d, e) = d \in C(a)
+natrec(0, d, e) = d \in C(0)
 }
 \end{tabular}
 \end{center}
