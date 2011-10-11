@@ -342,7 +342,7 @@ idpeel(id(a),d) = d(a) \in C(a,a,id(a))
 
 \begin{itemize}
  \item słaba eliminacja, równość intensjonalna
- \item zasada indukcji jak dla innych typów, typ identycznościowy nie jest w żaden sposób uprzywilejowany
+ \item zasada indukcji jak dla innych typów
  \item zachowujemy rozstrzygalność dla równości definicyjnej wyrażeń oraz sądów równościowych
 \end{itemize}
 
@@ -633,8 +633,9 @@ apply(negb, apply(\lambda x . b, 2)) \in Bool
 nary  &\equiv  & (a,x) natrec(x, a, (n,y) \widehat{a \to y})  \\
 \lambda x. nary(a,x) & \in & (\Pi x \in Nat) U\; [a \in U] \\
 \lambda a. \lambda x. nary(a,x) & \in & (\Pi a \in U) (\Pi x \in Nat) U \\
+nAry &\equiv& \lambda a. \lambda x. nary(a,x) \\
 \\
-boolfun  & \equiv & (n)Set(apply(apply(nary, \widehat{Bool}), n)) \\
+boolfun  & \equiv & (n)Set(apply(apply(nAry, \widehat{Bool}), n)) \\
 \lambda n. boolfun & \in & (\Pi n \in Nat) Set 
 \end{eqnarray*}
 
@@ -876,7 +877,7 @@ U_n \in U_{n+1}
 A\;set \qquad B(x)\;set\;[x \in A]
 }
 {
-(Wx \in A) B(x) 
+(Wx \in A) B(x)\;set 
 }
 \end{tabular}
 \end{center}
