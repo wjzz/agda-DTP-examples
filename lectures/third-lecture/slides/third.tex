@@ -1,0 +1,997 @@
+\documentclass{beamer}
+
+\usetheme{Boadilla}
+
+% brak tej dziwnej nawigacji w prawym dolnym rogu 
+\setbeamertemplate{navigation symbols}{} 
+
+% brak zbędnych informacji w stopce
+\setbeamertemplate{footline}[page number]{}
+
+% klikalne linki
+\usepackage{hyperref}
+
+% kodowanie utf8 
+\usepackage[utf8]{inputenc} 
+\usepackage{polski}
+\usepackage{amsthm}
+\usepackage{semantic}
+
+\newtheorem{thm}{Twierdzenie}
+
+% konfiguracja niektórych parametrów 
+% \setbeamercovered{transparent} 
+\setbeamertemplate{bibliography item}[text] 
+\setlength{\parskip}{1ex} 
+\setlength{\parindent}{0pt} 
+
+\title{Seminarium: Programowanie w teorii typów}
+\subtitle{Teoria typów cd.}
+\author{Wojciech Jedynak, Paweł Wieczorek} 
+\institute{Instytut Informatyki Uniwersytetu Wrocławskiego}
+
+%\AtBeginSection[]
+%{
+   %\begin{frame}
+       %\frametitle{}
+       %\tableofcontents[sectionstyle=show/hide, subsectionstyle=show/show/hide]
+   %\end{frame}
+%}
+
+\begin{document}
+
+%\lstset{language=Lisp}
+
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \tableofcontents[hidesubsections]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Plan na dziś}
+
+\begin{itemize}
+ \item Co już umiemy:
+ \begin{itemize}
+ \item posługiwać się systemem naturalnej dedukcji
+ \item przerbnęliśmy przez regułki dla $\Pi$-typów oraz $\Sigma$-typów
+ \item zobaczyliśmy jak typy kodują kwantyfikatory z logiki pierwszego rzędu
+ \end{itemize}
+
+ \item Co dziś zobaczymy:
+ \begin{itemize}
+ \item typy wyliczeniowe
+ \item równość w teorii typów
+ \item W-typy
+ \item uniwersa
+ \end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Typy wyliczeniowe}
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+}
+{
+N_k\; set
+}
+&
+\inference{
+\mbox{dla $m < k$}
+}
+{
+m_k \in N_k
+}
+\end{tabular}
+\end{center}
+
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in N_k \qquad C(v)\;set\;[v \in N_k] \\
+c_0 \in C(0_k) \\
+\vdots \\
+c_{k-1} \in C((k-1)_k)
+}
+{
+case_k(a, c_0, \cdots, c_{k-1}) \in C(a)
+}
+\end{tabular}
+\end{center}
+
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+C(v)\;set\;[v \in N_k] \\
+c_0 \in C(0_k) \\
+\vdots \\
+c_{k-1} \in C((k-1)_k)
+}
+{
+case_k(m_k, c_0, \cdots, c_{k-1}) = c_m\in C(m_k)
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Typy wyliczeniowe}
+
+\begin{eqnarray*}
+ N_0 &=& \bot \\
+ \neg A &=& A \to N_0 \\
+ N_1 &=& \top \\
+ N_1 &=& Unit \\
+ 0_1 &=& tt \\
+ N_2 &=& Bool \\
+ 0_2 &=& true \\
+ 1_2 &=& false \\
+ case_2(a,c_0, c_1) &=& if\;a\; then\;c_0\;else\;c_1
+\end{eqnarray*}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in N_0 \qquad C(v)\;set\;[v \in N_0]
+}
+{
+case_0(a) \in C(a)
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Wyrażenia}
+
+\begin{itemize}
+\item język wyrażeń:
+\begin{itemize}
+\item $e(e')$ - aplikacja ( $e(e_1, \cdots, e_n)$ skrócony zapis $e(e_1)\cdots(e_n)$ )
+\item $(x)e$ - abstrakcja
+\item stałe, np $\lambda$, $\Pi$, $apply, 0, succ$
+\end{itemize}
+
+\end{itemize}
+
+
+\begin{itemize}
+\item posługujem się prostym systemem typów (z~jednym typem bazowym $O$) zwanym ,,arnościami''
+\item $e(e') : \beta$ gdy $e : \alpha \to \beta$, $e' : \alpha$
+\item konstruktory:
+\begin{itemize}
+\item $\lambda : (O \to O) \to O$
+\item $\Pi: O \to (O \to O) \to O$
+\item $apply : O\to O \to O$
+\end{itemize}
+
+\item otrzymujemy silną normalizację oraz rozstrzygalność dla równości definicyjnej
+\end{itemize}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}
+\frametitle{Typ identycznościowy}
+
+\begin{itemize}
+\item Sądy a formuły to nie to samo
+\begin{itemize}
+\item nie możemy powiedzieć wewnątrz systemu ,,jeżeli t ma typ A to ...'': $\Gamma |- (t \in A) -> \varphi$
+\item nie możemy też powiedzieć wewnątrz systemu ,,dany sąd jest nieprawdziwy'': $\Gamma |- \neg (a = b \in A)$
+\end{itemize}
+
+\item Co ma oznaczać stwierdzenie, że elementy $a$ oraz $b$ są sobie równe?
+\begin{itemize}
+\item nie poróżnia je żadna własność (równość Leibniza)
+\item dla każdego predykatu $P$: $\forall x\; y.\; P(x) \to x=y \to P(y)$
+\end{itemize}
+
+\item Co znaczy, że funkcje są sobie równe?
+\begin{itemize}
+\item Ile jest funkcji (jako zbiór par) sortujących? Ekstensjonalnie tylko jedna.
+\item $(\forall xs \in List.\,qsort(xs) = isort(xs)) \to qsort = isort$
+\end{itemize}
+
+\item Równość jest formułą atomową, chcemy mieć dla niej typ.
+\begin{itemize}
+\item który zgodnie z \emph{formulas-as-types} jest zamieszkany wtedy i tylko wtedy, gdy elementy są sobie równe
+\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Typ identycznościowy}
+
+\begin{itemize}
+ \item mamy:
+
+\begin{itemize}
+ \item równość definicyjna: $e \equiv e'$
+ \item równość elementów o tym samym typie $a = b \in A$
+ \item równosć typów $A = B$
+\end{itemize}
+
+ \item chcemy jeszcze:
+\begin{itemize}
+ \item formuła logiczna $[a =_A b]$
+\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Typ identycznościowy}
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+A\;set\qquad a\in A \qquad b \in A
+}
+{
+[a =_A b]\; set
+}
+&
+\inference{
+a \in A
+}
+{
+id(a) \in [a =_A a]
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a = b \in A
+}
+{
+id(a) \in [a =_A b]
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Typ identycznościowy}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in A \qquad b \in A \qquad c \in [a =_A b]
+}
+{
+a = b \in A
+}
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+ \item silna eliminacja, równość ekstensjonalna
+ \item chcemy by system nieodróżniał od siebie elementów o których możemy wydać sąd równościowy
+ \item ,,gubimy dowód'' $[a =_A b]$, a więc system chcąc sprawdzić $a = b \in A$ może być zmuszony by go odgadnąć
+ \item nierozstrzygalność
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Typ identycznościowy}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in A \qquad b \in A \qquad c \in [a =_A b] \\
+C(x,y,z)\;set\;[x \in A, y \in A, z \in [x =_A y]] \\
+d(x) \in C(x,x,id(x))\;[x \in A]
+}
+{
+idpeel(c,d) \in C(a,b,c)
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in A \\
+C(x,y,z)\;set\;[x \in A, y \in A, z \in [x =_A y]] \\
+d(x) \in C(x,x,id(x))\;[x \in A]
+}
+{
+idpeel(id(a),d) = d(a) \in C(a,a,id(a))
+}
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+ \item słaba eliminacja, równość intensjonalna
+ \item zasada indukcji jak dla innych typów, typ identycznościowy nie jest w żaden sposób uprzywilejowany
+ \item zachowujemy rozstrzygalność dla równości definicyjnej wyrażeń oraz sądów równościowych
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Typ identycznościowy}
+
+\[
+ subst(c,p) \equiv apply(idpeel(c, (x)\lambda x.x), p)
+\]
+
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+P(x)\;set\;[x \in A]\qquad a \in A \qquad b \in A \qquad c \in [a =_A b] \qquad p \in P(a)
+}
+{
+subst(c,p) \in P(b)
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+P(x)\;prop\;[x \in A]\qquad a \in A \qquad b \in A \qquad [a =_A b]\;true \qquad P(a)\;true
+}
+{
+P(b)\; true
+}
+\end{tabular}
+\end{center}
+
+
+\begin{itemize}
+ \item rowność Leibniza
+ \item ,,kontrolowane'' podstawienie
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Uniwersum}
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+}
+{
+Set\;set
+}
+&
+\inference{
+}
+{
+Nat \in Set
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+A \in Set \qquad B \in Set
+}
+{
+A \to B \in Set
+}
+&
+\inference{
+A \in Set \qquad B \in Set
+}
+{
+A \times B \in Set
+}
+\end{tabular}
+\end{center}
+
+\[ \cdots \]
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+}
+{
+Set \in Set
+}
+\end{tabular}
+\end{center}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Uniwersum ala Tarski}
+
+\begin{itemize}
+ \item posługujemy się nazwami(kodami, identyfikatorami, ...) typów, a nie typami bezpośrednio
+ \item nazwy są zwykłymi danymi
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Uniwersum ala Tarski}
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+}
+{
+U\;set
+}
+&
+\inference{
+}
+{
+\widehat{Nat}\in U
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{lcr}
+\inference{
+}
+{
+\widehat{N_0}\in U
+}
+&
+\inference{
+}
+{
+\widehat{N_1}\in U
+}
+&
+\inference{
+}
+{
+\widehat{N_2}\in U
+}
+\end{tabular}
+\end{center}
+
+\[ \cdots \]
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+a\in U\qquad b \in U
+}
+{
+\widehat{a \to b} \in U
+}
+&
+\inference{
+a\in U\qquad b \in U
+}
+{
+\widehat{a \times b}\in U
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Uniwersum ala Tarski}
+
+\begin{itemize}
+ \item Funkcja semantyczna $Set$ bierze nazwę typu a zwraca typ
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+u \in U
+}
+{
+Set(u)\;set
+}
+\end{tabular}
+\end{center}
+
+\begin{eqnarray*}
+ Set(\widehat{Nat}) &=& Nat \\
+ Set(\widehat{N_0}) &=& N_0 \\
+ Set(\widehat{N_1}) &=& N_1 \\
+ Set(\widehat{N_2}) &=& N_2 \\
+ &...& \\
+ Set(\widehat{a\to b}) &=& Set(a) \to Set(b) \\
+ Set(\widehat{a \times b}) &=& Set(a) \times Set(b) \\
+\end{eqnarray*}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Uniwersum ala Tarski}
+
+\begin{itemize}
+ \item Co nam się nie podoba w~tej funkcji?
+\begin{eqnarray*}
+ g    &\in & Nat \to Bool \cup Nat \\
+ g(2n) &=& left(true) \\
+ g(2n+1) &=& right(42)
+\end{eqnarray*}
+ \item Bezpieczniejsza wersja
+\begin{eqnarray*}
+ B_{2n}   &=& Bool \\
+ B_{2n+1} &=& Nat  \\
+ f    &\in & \prod_{n \in N} B_n \\
+ f(2n)    &=& true \\
+ f(2n+1)  &=& 42 
+\end{eqnarray*}
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Uniwersum ala Tarski}
+
+\begin{eqnarray*}
+B(x)  &\equiv  & Set( case_2(apply(isEven, x), \widehat{Bool}, \widehat{Nat}))  \\
+b     & \equiv & (x) case_2(apply(isEven, x), true, 42) \\
+\lambda x . b & \in & (\Pi n \in Nat) B(n) \\
+apply(\lambda x . b, n) & \in & B(n)\; [ n \in Nat ] 
+\end{eqnarray*}
+
+\begin{itemize}
+ \item niech $negb \in Bool \to Bool$.
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{c}
+\inference
+{
+\dfrac{}
+{
+negb \in Bool \to Bool
+}
+\;\;
+\dfrac{
+apply(\lambda x . b, 2) \in B(2) \qquad B(2) = Bool
+}
+{
+apply(\lambda x . b, 2) \in Bool
+}
+}
+{
+apply(negb, apply(\lambda x . b, 2)) \in Bool 
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{frame}[fragile]
+\frametitle{Uniwersum ala Tarski}
+
+\begin{itemize}
+ \item $nAry(A,n)$ = $\underbrace{A \to A \to \cdots A}_{n+1}$
+
+\begin{eqnarray*}
+nary  &\equiv  & (a,x) natrec(x, a, (n,y) \widehat{a \to y})  \\
+\lambda x. nary(a,x) & \in & (\Pi x \in Nat) U\; [a \in U] \\
+\lambda a. \lambda x. nary(a,x) & \in & (\Pi a \in U) (\Pi x \in Nat) U \\
+\\
+boolfun  & \equiv & (n)Set(apply(apply(nary, \widehat{Bool}), n)) \\
+\lambda n. boolfun & \in & (\Pi n \in Nat) Set 
+\end{eqnarray*}
+
+\item podobnie moglibyśmy generalizować proste schematy dla krotek $A^2$, $A^3$, itd:
+\begin{verbatim}
+ fst (a,b) = a   fst3(a,b,c) = a   fst4(a,b,c,d) = a
+\end{verbatim}
+
+\end{itemize}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Uniwersum ala Tarski}
+
+\begin{itemize}
+ \item Wyrażenie kodu dla $A \to B$ jest proste.
+~ 
+
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+a \in U \qquad b \in U
+}
+{
+\widehat{a \to b} \in U
+}
+&
+$Set(\widehat{a \to b}) = Set(a) \to Set(b)$
+\end{tabular}
+\end{center}
+~
+
+\item Co dla $(\Pi x \in A) B(x)$ ?
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+a \in U \qquad b \in Set(a) \to U
+}
+{
+\widehat{\Pi(a,b)} \in U
+}
+\end{tabular}
+\end{center}
+
+\[
+ Set(\widehat{\Pi(a,b)}) = (\Pi x \in Set(a))\; Set(b(x))
+\]
+
+
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Uniwersum ala Tarski}
+
+\begin{itemize}
+ \item Arytmetyka
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Uniwersum ala Russel}
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+}
+{
+U\;set
+}
+&
+\inference{
+}
+{
+Nat \in U
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{lcr}
+\inference{
+}
+{
+N_0\in U
+}
+&
+\inference{
+}
+{
+N_1\in U
+}
+&
+\inference{
+}
+{
+N_2\in U
+}
+\end{tabular}
+\end{center}
+
+\[ \cdots \]
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+A \in U \qquad B(x) \in U\;[x \in A]
+}
+{
+(\Pi x \in A) B(x) \in U
+}
+&
+\inference{
+A \in U \qquad B(x) \in U\;[x \in A]
+}
+{
+(\Sigma x \in A) B(x) \in U
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{lcr}
+\inference{
+a \in U
+}
+{
+a\;set
+}
+&
+\inference{
+a = b \in U
+}
+{
+a = b
+}
+\end{tabular}
+\end{center}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}
+\frametitle{Uniwersum ala Russel}
+
+\begin{itemize}
+ \item wygodne
+ \item różnica w sensie: posługiwanie się nazwami typów a posługiwanie się typami
+
+\begin{itemize}
+ \item pokazanie $\neg [ \widehat{N} =_U \widehat{Bool} ]$ to jak pokazanie $\neg [ 0 =_{Nat} 1 ]$
+ \item pokazanie $\neg [ N =_U Bool ]$ nie jest takie proste
+ \[ \forall b \in Bool.\; [ b =_{Bool} true ] \vee [ b =_{Bool} false ] \]
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Uniwersum ala Russel}
+
+\[
+ U_0 = U
+\]
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+}
+{
+U_n\;set
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+A \in U_n \qquad B(x) \in U_n\;[x \in A]
+}
+{
+(\Pi x \in A) B(x) \in U_n
+}
+&
+\inference{
+A \in U_n \qquad B(x) \in U_n\;[x \in A]
+}
+{
+(\Sigma x \in A) B(x) \in U_n
+}
+\end{tabular}
+\end{center}
+
+
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+}
+{
+U_n \in U_{n+1}
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{W-typy}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+A\;set \qquad B(x)\;set\;[x \in A]
+}
+{
+(Wx \in A) B(x) 
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in A \qquad b(x) \in (W x \in A)\;B(x)\;[x \in B(a)]
+}
+{
+sup(a,b) \in (W x \in A) B(x)
+}
+\end{tabular}
+\end{center}
+
+
+\begin{itemize}
+ \item dobrze ufundowane drzewa
+\end{itemize}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{W-typy}
+
+\begin{eqnarray*}
+B(x) &\equiv& Set(case_2(x, \hat{N_0}, \hat{N_1})) \\
+Nat     &=& (Wx \in N_2) B(x) \\
+zero    &=& sup(0_2, case_0) \\
+succ(n) &=& sup(1_2, (x) n)
+\end{eqnarray*}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{W-typy}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in (Wx \in A) B(x) \\
+C(v)\;set\;[v \in (Wx \in A) B(x)] \\
+b(y, z, u) \in C(sup(y,z))\;\\[\\
+ ~\qquad y \in A, \\
+ ~\qquad z(x) \in (Wx \in A)B(x)\;[x \in B(y)] \\
+ ~\qquad u(x) \in C(z(x))\;[x\in B(y)] \\
+]
+}
+{
+wrec(a,b) \in C(a)
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{W-typy}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+d \in A\qquad e(x) \in (Wx \in A) B(x)\;[x \in B(d)] \\
+C(v)\;set\;[v \in (Wx \in A) B(x)] \\
+b(y, z, u) \in C(sup(y,z))\;\\[\\
+ ~\qquad y \in A, \\
+ ~\qquad z(x) \in (Wx \in A)B(x)\;[x \in B(y)] \\
+ ~\qquad u(x) \in C(z(x))\;[x\in B(y)] \\
+]
+}
+{
+wrec(sup(d,e),b) = b(d,e,(x)wrec(e(x), b)) \in C(sup(d,e))
+}
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{W-typy}
+
+\begin{eqnarray*}
+B(x) &\equiv& Set(case_2(x, \hat{N_0}, \hat{N_1})) \\
+Nat           &=& (Wx \in N_2) B(x) \\
+zero          &=& sup(0_2, case_0) \\
+succ(n)       &=& sup(1_2, (x) n) \\
+natrec(a,b,c) &=& wrec(a, (y,z,u)case_2(y, b, c(z(tt), u(tt))))
+\end{eqnarray*}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}
+\frametitle{Monomorficzna teoria typów}
+
+\begin{itemize}
+ \item Agda	
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\end{document}
