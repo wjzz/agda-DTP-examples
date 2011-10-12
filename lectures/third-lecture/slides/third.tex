@@ -135,22 +135,32 @@ case_k(m_k, c_0, \cdots, c_{k-1}) = c_m\in C(m_k)
 \begin{eqnarray*}
  N_0 &=& \bot \\
  \neg A &=& A \to N_0 \\
+\pause
  N_1 &=& \top \\
  N_1 &=& Unit \\
  0_1 &=& tt \\
+\pause
  N_2 &=& Bool \\
  0_2 &=& true \\
  1_2 &=& false \\
  case_2(a,c_0, c_1) &=& if\;a\; then\;c_0\;else\;c_1
 \end{eqnarray*}
 
+\pause
 \begin{center}
-\begin{tabular}{c}
+\begin{tabular}{lr}
 \inference{
 a \in N_0 \qquad C(v)\;set\;[v \in N_0]
 }
 {
 case_0(a) \in C(a)
+}
+&
+\inference{
+\bot \;true \qquad C\;prop
+}
+{
+C\;true
 }
 \end{tabular}
 \end{center}
@@ -172,6 +182,7 @@ case_0(a) \in C(a)
 
 \end{itemize}
 
+\pause
 
 \begin{itemize}
 \item posługujem się prostym systemem typów (z~jednym typem bazowym $O$) zwanym ,,arnościami''
@@ -203,18 +214,19 @@ case_0(a) \in C(a)
 \item nie możemy też powiedzieć wewnątrz systemu ,,dany sąd jest nieprawdziwy'': $\Gamma |- \neg (a = b \in A)$
 \end{itemize}
 
+\pause
 \item Co ma oznaczać stwierdzenie, że elementy $a$ oraz $b$ są sobie równe?
 \begin{itemize}
 \item nie poróżnia je żadna własność (równość Leibniza)
-\item dla każdego predykatu $P$: $\forall x\; y.\; P(x) \to x=y \to P(y)$
+\item dla każdego predykatu $P$: $\forall x\; y.\;  x=y \to P(x) \to P(y)$
 \end{itemize}
-
+\pause
 \item Co znaczy, że funkcje są sobie równe?
 \begin{itemize}
 \item Ile jest funkcji (jako zbiór par) sortujących? Ekstensjonalnie tylko jedna.
 \item $(\forall xs \in List.\,qsort(xs) = isort(xs)) \to qsort = isort$
 \end{itemize}
-
+\pause
 \item Równość jest formułą atomową, chcemy mieć dla niej typ.
 \begin{itemize}
 \item który zgodnie z \emph{formulas-as-types} jest zamieszkany wtedy i tylko wtedy, gdy elementy są sobie równe
@@ -273,7 +285,31 @@ id(a) \in [a =_A a]
 \begin{center}
 \begin{tabular}{c}
 \inference{
+a = a' \in A \qquad b = b' \in A
+}
+{
+[a =_A b] = [a' =_A b']
+}
+\end{tabular}
+\end{center}
+
+\pause 
+\begin{center}
+\begin{tabular}{c}
+\inference{
 a = b \in A
+}
+{
+id(a) \in [a =_A b]
+}
+\end{tabular}
+\end{center}
+
+\pause 
+\begin{center}
+\begin{tabular}{c}
+\inference{
+\dfrac{}{id(a) \in [a =_A a]} \qquad \dfrac{a = a \in A \quad a = b \in A}{[a =_A a] = [a =_A b]}
 }
 {
 id(a) \in [a =_A b]
@@ -327,6 +363,7 @@ idpeel(c,d) \in C(a,b,c)
 \end{tabular}
 \end{center}
 
+
 \begin{center}
 \begin{tabular}{c}
 \inference{
@@ -348,26 +385,95 @@ idpeel(id(a),d) = d(a) \in C(a,a,id(a))
 
 \end{frame}
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
 \frametitle{Typ identycznościowy}
 
-\[
- subst(c,p) \equiv apply(idpeel(c, (x)\lambda x.x), p)
-\]
-
+\begin{itemize}
+ \item niech $c \in [a =_A b]$.
+ \item niech $C(x,y,z) \equiv [y =_a x]$
 
 \begin{center}
 \begin{tabular}{c}
 \inference{
-P(x)\;set\;[x \in A]\qquad a \in A \qquad b \in A \qquad c \in [a =_A b] \qquad p \in P(a)
+a \in A \qquad b \in A \qquad c \in [a =_A b] \\
+C(x,y,z)\;set\;[x \in A, y \in A, z \in [x =_A y]] \\
+id(x) \in C(x,x,id(x))\;[x \in A]
 }
 {
-subst(c,p) \in P(b)
+idpeel(c,id) \in C(a,b,c)
 }
 \end{tabular}
 \end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in A \qquad b \in A \qquad c \in [a =_A b] \\
+[y =_A z]\;set\;[x \in A, y \in A, z \in [x =_A y]] \\
+id(x) \in [x =_A x]\;[x \in A]
+}
+{
+idpeel(c,id) \in [b =_A a]
+}
+\end{tabular}
+\end{center}
+\item $symm(c) \equiv idpeel(c, id)$
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Typ identycznościowy}
+
+\begin{itemize}
+ \item niech $e \in [a =_A b]$, $e' \in [b =_A c]$.
+ \item niech $C(x,y,z) \equiv [y =_A c] \to [x =_A c]$
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in A \qquad b \in A \qquad e \in [a =_A b] \\
+C(x,y,z)\;set\;[x \in A, y \in A, z \in [x =_A y]] \\
+id(x) \in C(x,x,id(x))\;[x \in A]
+}
+{
+idpeel(e,(x)\lambda y. y) \in C(a,b,c)
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in A \qquad b \in A \qquad e \in [a =_A b] \\
+[y =_A c] \to [x =_A c]\;set\;[x \in A, y \in A, z \in [x =_A y]] \\
+\lambda y. y \in \;[x =_A c] \to [x =_A c] [x \in A]
+}
+{
+idpeel(e,(x)\lambda y. y) \in [b =_A c] \to [a =_A c]
+}
+\end{tabular}
+\end{center}
+\item $trans(e, e') \equiv apply(idpeel(d, (x)\lambda y. y), e')$
+\end{itemize}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Typ identycznościowy}
 
 \begin{center}
 \begin{tabular}{c}
@@ -380,11 +486,68 @@ P(b)\; true
 \end{tabular}
 \end{center}
 
+\pause 
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+P(x)\;set\;[x \in A]\qquad a \in A \qquad b \in A \qquad c \in [a =_A b] \qquad p \in P(a)
+}
+{
+subst(c,p) \in P(b)
+}
+\end{tabular}
+\end{center}
+
 
 \begin{itemize}
  \item rowność Leibniza
  \item ,,kontrolowane'' podstawienie
 \end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+
+\frametitle{Typ identycznościowy}
+
+\begin{itemize}
+ \item niech $a \in A$, $b \in A$, $e \in [a =_A b]$
+ \item niech $P(x)\;set\;[x \in A]$, $p \in P(a)$
+ \item niech $C(x,y,z) \equiv P(x) \to P(y)$
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in A \qquad b \in A \qquad e \in [a =_A b] \\
+C(x,y,z)\;set\;[x \in A, y \in A, z \in [x =_A y]] \\
+id(x) \in C(x,x,id(x))\;[x \in A]
+}
+{
+idpeel(e,(x)\lambda y. y) \in C(a,b,c)
+}
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+a \in A \qquad b \in A \qquad e \in [a =_A b] \\
+P(x) \to P(y)\;set\;[x \in A, y \in A, z \in [x =_A y]] \\
+\lambda y. y \in P(x) \to P(x)\;[x \in A]
+}
+{
+idpeel(e,(x)\lambda y. y) \in P(a) \to P(b)
+}
+\end{tabular}
+\end{center}
+
+\item $subst(e,p) \equiv apply(idpeel(e,(x)\lambda y.y), p)$
+\end{itemize}
+
 
 \end{frame}
 
@@ -567,6 +730,7 @@ Set(u)\;set
  g(2n) &=& left(true) \\
  g(2n+1) &=& right(42)
 \end{eqnarray*}
+\pause
  \item Bezpieczniejsza wersja
 \begin{eqnarray*}
  B_{2n}   &=& Bool \\
@@ -587,9 +751,12 @@ Set(u)\;set
 \begin{eqnarray*}
 B(x)  &\equiv  & Set( case_2(apply(isEven, x), \widehat{Bool}, \widehat{Nat}))  \\
 b     & \equiv & (x) case_2(apply(isEven, x), true, 42) \\
+\pause
 \lambda x . b & \in & (\Pi n \in Nat) B(n) \\
 apply(\lambda x . b, n) & \in & B(n)\; [ n \in Nat ] 
 \end{eqnarray*}
+
+\pause
 
 \begin{itemize}
  \item niech $negb \in Bool \to Bool$.
@@ -634,7 +801,7 @@ nary  &\equiv  & (a,x) natrec(x, a, (n,y) \widehat{a \to y})  \\
 \lambda x. nary(a,x) & \in & (\Pi x \in Nat) U\; [a \in U] \\
 \lambda a. \lambda x. nary(a,x) & \in & (\Pi a \in U) (\Pi x \in Nat) U \\
 nAry &\equiv& \lambda a. \lambda x. nary(a,x) \\
-\\
+\\\pause
 boolfun  & \equiv & (n)Set(apply(apply(nAry, \widehat{Bool}), n)) \\
 \lambda n. boolfun & \in & (\Pi n \in Nat) Set 
 \end{eqnarray*}
@@ -673,7 +840,10 @@ $Set(\widehat{a \to b}) = Set(a) \to Set(b)$
 \end{center}
 ~
 
+\pause
+
 \item Co dla $(\Pi x \in A) B(x)$ ?
+\pause
 
 \begin{center}
 \begin{tabular}{lr}
@@ -685,6 +855,7 @@ a \in U \qquad b \in Set(a) \to U
 }
 \end{tabular}
 \end{center}
+\pause
 
 \[
  Set(\widehat{\Pi(a,b)}) = (\Pi x \in Set(a))\; Set(b(x))
@@ -701,7 +872,28 @@ a \in U \qquad b \in Set(a) \to U
 \frametitle{Uniwersum ala Tarski}
 
 \begin{itemize}
- \item Arytmetyka
+ \item Bez uniwersów nie umiemy udowodnić że konstruktory tworzą różne wartości!
+ \item celujemy w sąd $\neg [0 =_{Nat} succ(n)]\;[n \in Nat]$
+ \item niech $n \in Nat$, $e \in [0 =_{Nat} succ(n)]$
+
+\begin{eqnarray*}
+ IsZ(m) &\equiv& Set(natrec(m, \widehat{N_1}, (x,y)\widehat{N_0})) \\
+ IsZ(0) &\equiv& N_1 \\
+ IsZ(succ(n)) &\equiv& N_0
+\end{eqnarray*}
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+e \in [0 =_{Nat} succ(n)] \qquad 0_1 \in IsZ(0)
+}
+{
+subst(e,0_1) \in IsZ(succ(n))
+}
+\end{tabular}
+\end{center}
+
+\item $\lambda n. \lambda e.\; subst(e, 0_1) \in (\Pi n \in Nat) \neg [0 =_{Nat} succ(n)]$
 \end{itemize}
 
 \end{frame}
@@ -896,6 +1088,7 @@ sup(a,b) \in (W x \in A) B(x)
 
 \begin{itemize}
  \item dobrze ufundowane drzewa
+ \item kodowanie typów indukcyjnych
 \end{itemize}
 
 \end{frame}
@@ -977,22 +1170,14 @@ succ(n)       &=& sup(1_2, (x) n) \\
 natrec(a,b,c) &=& wrec(a, (y,z,u)case_2(y, b, c(z(tt), u(tt))))
 \end{eqnarray*}
 
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-\begin{frame}
-\frametitle{Monomorficzna teoria typów}
-
 \begin{itemize}
- \item Agda	
+ \item równość ekstensjonalna lub aksjomat ekstensjonalności funkcji
 \end{itemize}
 
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 
 \end{document}
