@@ -224,7 +224,7 @@ C\;true
 \item Co znaczy, że funkcje są sobie równe?
 \begin{itemize}
 \item Ile jest funkcji (jako zbiór par) sortujących? Ekstensjonalnie tylko jedna.
-\item $(\forall xs \in List.\,qsort(xs) = isort(xs)) \to qsort = isort$
+\item $(\forall xs \in List.\,qsort(xs) \equiv isort(xs)) \to qsort \equiv isort$
 \end{itemize}
 \pause
 \item Równość jest formułą atomową, chcemy mieć dla niej typ.
@@ -378,7 +378,7 @@ idpeel(id(a),d) = d(a) \in C(a,a,id(a))
 \end{center}
 
 \begin{itemize}
- \item słaba eliminacja, równość intensjonalna
+ \item słaba eliminacja
  \item zasada indukcji jak dla innych typów
  \item zachowujemy rozstrzygalność dla równości definicyjnej wyrażeń oraz sądów równościowych
 \end{itemize}
@@ -551,8 +551,21 @@ idpeel(e,(x)\lambda y. y) \in P(a) \to P(b)
 
 \end{frame}
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+
+\frametitle{Typ identycznościowy}
+
+\begin{itemize}
+ \item Nie potrafimy wydać sądu $if\;b\;then\;c\;else\;c = c \in A\;[b \in Bool, c \in A]$
+ \item Potrafimy udowodnić $(\Pi b \in Bool)(\Pi c \in A)[ if\;b\;then\;c\;else\;c =_A c ]$
+\end{itemize}
+
+\end{frame}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
