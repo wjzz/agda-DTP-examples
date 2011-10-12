@@ -394,7 +394,7 @@ idpeel(id(a),d) = d(a) \in C(a,a,id(a))
 
 \begin{itemize}
  \item niech $c \in [a =_A b]$.
- \item niech $C(x,y,z) \equiv [y =_a x]$
+ \item niech $C(x,y,z) \equiv [y =_A x]$
 
 \begin{center}
 \begin{tabular}{c}
@@ -442,7 +442,7 @@ idpeel(c,id) \in [b =_A a]
 \inference{
 a \in A \qquad b \in A \qquad e \in [a =_A b] \\
 C(x,y,z)\;set\;[x \in A, y \in A, z \in [x =_A y]] \\
-id(x) \in C(x,x,id(x))\;[x \in A]
+\lambda y. y \in C(x,x,id(x))\;[x \in A]
 }
 {
 idpeel(e,(x)\lambda y. y) \in C(a,b,c)
