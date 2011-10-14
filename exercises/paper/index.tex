@@ -16,22 +16,175 @@
 
 \maketitle
 
-\section*{Meta notatki}
+\section{Propozycja}
 
-Proponuję wybrać jakąś notację dla teorii typów Martina-L\"{o}fa. Może tę z książki ,,Programming in...''?
+\begin{zadanie}
+Dodaj nowe zbiory do naszego systemu - listę parametryzowaną zbiorem $A$ oraz drzewo binarne parametryzowane
+zbiorem $A$, tzn sformuuj wszystkie potrzebne reguły aby takie zbiory wprowadzić.
+\end{zadanie}
 
-Czy chcemy mieć narysowane drzewa w proponowanych rozwiązań? W książce Martina-L\"{o}f-a on czasem rysuje drzewa
-by coś pokazać. Musielibyśmy się zdecydować by było konsekwentnie.
+\begin{zadanie}
+Ustalmy typy $A$ oraz rodzinę $B(a)$ dla każdego $a \in A$ oraz $C(a, a')$ dla każdych $a, a' \in A$.
+Zbuduj termy o następujących typach:
 
-Zadania do których nie zrobimy rozwiazań wzorcowych będą do wywalenia.
+\[
+ \big( (\Pi x \in A)\;(\Pi y \in A)\; C(x, y) \big) \to (\Pi y \in A)\;(\Pi x \in A)\; C(x, y)\;
+\]
+\[
+ \big( (\Sigma x \in A)\;(\Pi y \in A)\; C(x, y) \big) \to (\Pi y \in A)\;(\Sigma x \in A)\; C(x, y)\;
+\]
+\[
+ \big( (\Pi x \in A)\;(\Pi y \in A)\;B(x) \to B(y)\big) \to (\Pi x \in A)\;(\Pi y \in A)\;\neg B(y) \to \neg B(x)
+\]
+\[
+ \big( \neg (\Sigma x \in A)\;B(x)\big) \to (\Pi x \in A)\;\neg B(x)
+\]
+\end{zadanie}
 
-Zaznaczam przy zadaniach teoretycznych które można zrobić w Agdzie, możemy zrobić tak że dajemy ludziom te zadania
-+ definicje w Agdzie, i ich wola czy zrobią tylko w Agdzie czy tylko na papierze, czy tu i tu.
+
+\begin{zadanie}
+Stwórz wyrażenie $compose$, za pomocą którego stworzymy następującą regułę:
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+g \in A \to B \qquad f \in B \to C
+}
+{
+compose(f, g) \in A \to C
+}
+\end{tabular}
+\end{center}
+
+Następnie zaproponuj regułę dla wersji z typami zależnymi i zdefiniuj odpowiednie wyrażenie $composeDep$.
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+g \in (\Pi x \in A) B(x) \qquad f \in (\Pi x \in A)(\Pi b \in B(x))\; C(b)
+}
+{
+composeDep(f,g) \in\; ?
+}
+\end{tabular}
+\end{center}
+
+Zdefiniuj też pomocnicze wyrażenie $apply2$:
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+f \in (\Pi x \in A)(\Pi y \in B(x))C(x,y)\qquad x \in A\qquad y \in B(x)
+}
+{
+apply2(f,x,y) \in\; C(x,y)
+}
+\end{tabular}
+\end{center}
+
+
+
+\end{zadanie}
+
+\begin{zadanie}
+Ustalmy typ $A$, wyprowadź termy o następujących typach.
+
+\[
+ (\Pi x \in A)\;[x =_A x]
+\]
+\[
+ (\Pi b \in Bool)(\Pi c \in A)\;[if\;b\;then\;c\;else\;c =_A c]
+\]
+
+\end{zadanie}
+
+\begin{zadanie}
+Wyprowadź samodzielnie regułę dla prawa Leibniza ($subst$). Następnie posługując się tą regułą pokaż
+jak stworzyć reguły dla symetrii i przechodniości. 
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+P(x)\;set\;[x \in A] \qquad a \in A \qquad b \in A \qquad c \in [a =_A b] \qquad p \in P(a)
+}
+{
+ subst(c,p) \in P(b)
+}
+\end{tabular}
+\end{center}
+
+Oraz pokaż jak stworzyć $cong$ dla poniższej reguły.
+
+\begin{center}
+\begin{tabular}{c}
+\inference{
+f \in A \to B \qquad a \in A \qquad b \in A \qquad c \in [a =_A b]
+}
+{
+ cong(c,f) \in [f\;a =_B f\;b]
+}
+\end{tabular}
+\end{center}
+
+
+\end{zadanie}
+
+\begin{zadanie}
+ Zdefiniuj funkcję dodawania $add \in Nat \to Nat \to Nat$, a następnie stwórz termy o następujących typach:
+\[
+ [apply2(add, 0, a) =_{Nat}  a]
+\]
+\[
+ [apply2(add, a, 0) =_{Nat}  a]
+\]
+\[
+ [apply2(add, succ(a), b) =_{Nat}  succ(apply2(add, b, a))]
+\]
+\[
+ [apply2(add, a, b) =_{Nat}  apply2(add, b, a)]
+\]
+
+Powyższe równości mogą być traktowane jako specyfikacja dodawania, można teraz zauważyć że nasz system z~typami
+zależnymi posłużył jednocześnie do zdefiniowania funkcji, zdefiniowania specyfikacji (za pomocą typów identycznościowych)
+oraz udowodnił że funkcja spełnia te równości -- co oznacza że wszystko zostało zweryfikowane w obrębie jednego systemu.
+\end{zadanie}
+
+
+\begin{zadanie}
+ Skonstruuj negację bitową, tzn funkcję $\mbox{negb} \in Bool \to Bool$ a następnie skontruuj term o typie:
+\[
+ (\Pi b \in N_2) \neg [b =_{Bool} apply(\mbox{negb},b)]
+\]
+
+Dodatkowo, zbuduj termy o następujących typach:
+
+\[
+ [apply(negb, true) =_{Bool} false]
+\]
+\[
+ [apply(negb, false) =_{Bool} true]
+\]
+
+\end{zadanie}
+
+
+\begin{zadanie}
+ Udowodnij, że nie istnieje funkcja z liczb naturalnych w ciągi zero-jedynkowe, która ma funkcję odwrotną.
+To jest skonstruuj
+ term $thm$ o następującym typie:
+\[
+ \neg (\Sigma f \in N \to BinSeq)\, (\Sigma g \in BinSeq \to N)\,
+(\Pi s \in BinSeq)\,[ apply2(f, g, s) =_{BinSeq} s ]
+\]
+gdzie $BinSeq$ oznacza $N \to Bool$.
+
+Wskazówka: Dowód tego twierdzenia to standardowy przykład metody przekątniowej, można znaleźć rozwiązanie w Whitebooku.
+Trudność polega na przeniesieniu tego na naturalną dedukcję.
+
+\end{zadanie}
 
 \section{Agda i teoria}
 
-
-\subsection{Proste}
 
 \begin{zadanie}[Da się rozwiązać w Agdzie]
 Ustalmy typy $A$ oraz rodzinę $B(a)$ dla każdego $a \in A$ oraz $C(a, a')$ dla każdych $a, a' \in A$.
