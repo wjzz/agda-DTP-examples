@@ -22,8 +22,8 @@ zbiorem $A$, tzn sformuuj wszystkie potrzebne reguły aby takie zbiory wprowadzi
 \end{zadanie}
 
 \begin{zadanie}
-Na seminarium nie wprowadziliśmy sobie zbioru odpowiadającego spójnikowi $\vee$, pokaż jak dodać taki zbiór
-oraz że jego reguły odpowiadając regułom z~systemu naturalnej dedukcji.
+Na seminarium nie wprowadziliśmy zbioru odpowiadającego spójnikowi $\vee$, pokaż jak dodać taki zbiór.
+Zadbaj aby jego reguły odpowiadały regułom z~systemu naturalnej dedukcji.
 \end{zadanie}
 
 \begin{zadanie}
@@ -64,7 +64,7 @@ Następnie zaproponuj regułę dla wersji z typami zależnymi i zdefiniuj odpowi
 \begin{center}
 \begin{tabular}{c}
 \inference{
-g \in (\Pi x \in A) B(x) \qquad f \in (\Pi x \in A)(\Pi b \in B(x))\; C(b)
+g \in (\Pi x \in A) B(x) \qquad f \in (\Pi x \in A)(\Pi b \in B(x))\; C(x, b)
 }
 {
 composeDep(f,g) \in\; ?
@@ -124,7 +124,7 @@ Oraz pokaż jak stworzyć $cong$ dla poniższej reguły.
 f \in A \to B \qquad a \in A \qquad b \in A \qquad c \in [a =_A b]
 }
 {
- cong(c,f) \in [f\;a =_B f\;b]
+ cong(c,f) \in [apply(f,a) =_B apply(f,b)]	
 }
 \end{tabular}
 \end{center}
@@ -141,7 +141,7 @@ f \in A \to B \qquad a \in A \qquad b \in A \qquad c \in [a =_A b]
  [apply2(add, a, 0) =_{Nat}  a]
 \]
 \[
- [apply2(add, succ(a), b) =_{Nat}  succ(apply2(add, b, a))]
+ [apply2(add, succ(a), b) =_{Nat}  succ(apply2(add, a, b))]
 \]
 \[
  [apply2(add, a, b) =_{Nat}  apply2(add, b, a)]
@@ -153,7 +153,8 @@ oraz udowodnił że funkcja spełnia te równości -- co oznacza że wszystko zo
 \end{zadanie}
 
 \begin{zadanie}
-Niech $f \in (\Pi x \in A) B(x)$. Wyprowadź $[f =_{(\Pi x \in A) B(x)} \lambda x. apply(f,x)]$.
+Niech $f \in (\Pi x \in A) B(x)$. Wyprowadź $[f =_{(\Pi x \in A) B(x)} \lambda x. apply(f,x)]$\footnote{
+skrócony zapis: $\lambda x. e \equiv \lambda ((x)e)$}.
 Następnie zapoznaj się z typem $Eq$ zdefiniowanym w książce (to typ identycznościowy z silną regułą
 eliminacji), następnie używając tego typu wyprowadź sąd $f = \lambda x. apply(f,x) \in {(\Pi x \in A) B(x)}$.
 \end{zadanie}
@@ -200,7 +201,7 @@ Następnie, korzystając z $Empty$, zaprogramuj bezpieczne wersje procedur $head
 \begin{zadanie}
  Skonstruuj negację bitową, tzn funkcję $\mbox{negb} \in Bool \to Bool$ a następnie skontruuj term o typie:
 \[
- (\Pi b \in N_2) \neg [b =_{Bool} apply(\mbox{negb},b)]
+ (\Pi b \in Bool) \neg [b =_{Bool} apply(\mbox{negb},b)]
 \]
 
 Dodatkowo, zbuduj termy o następujących typach:
@@ -218,15 +219,15 @@ Dodatkowo, zbuduj termy o następujących typach:
 \begin{zadanie}
  Udowodnij, że nie istnieje funkcja z liczb naturalnych w ciągi zero-jedynkowe, która ma funkcję odwrotną.
 To jest skonstruuj
- term $thm$ o następującym typie:
+ term o następującym typie:
 \[
  \neg (\Sigma f \in N \to BinSeq)\, (\Sigma g \in BinSeq \to N)\,
-(\Pi s \in BinSeq)\,[ apply2(f, g, s) =_{BinSeq} s ]
+(\Pi s \in BinSeq)\,[ s =_{BinSeq} apply(f, apply(g, s)) ]
 \]
 gdzie $BinSeq$ oznacza $N \to Bool$.
 
 Wskazówka: Dowód tego twierdzenia to standardowy przykład metody przekątniowej, można znaleźć rozwiązanie w Whitebooku.
-Trudność zadania polega na przeniesieniu jego na nasz system.
+Trudność zadania polega na przeniesieniu rozwiązania do naszego systemu.
 \end{zadanie}
 
 
