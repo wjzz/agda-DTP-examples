@@ -260,7 +260,6 @@ module ExercisesPaper where
     thm2 = Λ[ b ] Λ[ c ] (case₂ {C = λ b → case₂ c c b ≡ c} (id c) (id c) b)
 
 
-
   module Task6 where
     open MartinLof
 
@@ -294,7 +293,44 @@ module ExercisesPaper where
       = subst {P = λ x → apply f a ≡ apply f x} c (id (apply f a))
 
 
-  module Task9 where
+  module Task7 where
+    open MartinLof
+    open Task6
+
+    --
+    apply2 : {A : Set} {B : A → Set} → {C : (x : A) → B x → Set}
+           → (Π[ x ∶ A ] Π[ b ∶ B x ] C x b)
+           → (x : A) → (y : B x)
+           → C x y
+    apply2 f x y = apply (apply f x) y
+    --
+
+    add : ℕ ⇒ (ℕ ⇒ ℕ)
+    add = Λ[ a ] Λ[ b ] natrec b (λ n r → succ r) a
+
+    spec1 : Π[ a ∶ ℕ ] apply2 add O a ≡ a
+    spec1 = Λ[ a ] id a
+
+    spec2 : Π[ a ∶ ℕ ] apply2 add a O ≡ a
+    spec2 = Λ[ a ] natrec
+               {C = λ x → apply2 add x O ≡ x}
+               (id O) (λ n H → cong H (Λ succ)) a
+
+    spec3 : Π[ a ∶ ℕ ] Π[ b ∶ ℕ ] apply2 add (succ a) b ≡ succ (apply2 add a b)
+    spec3 = Λ[ a ] Λ[ b ] natrec 
+          {C = λ x → apply2 add (succ x) b ≡ succ (apply2 add x b)}
+          (id (succ b)) 
+          (λ n H → id (succ (apply2 add (succ n) b)))
+          a
+
+    spec4 : Π[ a ∶ ℕ ] Π[ b ∶ ℕ ] apply2 add a b ≡ apply2 add b a
+    spec4 = Λ[ a ] natrec 
+          {C = λ x → Π ℕ (λ b → apply2 add x b ≡ apply2 add b x)}
+          (Λ[ b ] symm (apply spec2 b))
+          (λ n H → Λ[ b ] {!!})
+          a
+
+  module Task8 where
     open MartinLof
     open Task6
 
@@ -305,6 +341,11 @@ module ExercisesPaper where
       {C = (λ g → g ≡ Λ (λ x → apply g x))} 
       (λ b → id (Λ b))
        f
+
+  module Task9 where
+    open MartinLof
+    open Task6
+
 
     thm : {A B : Set}
         → (f g : A ⇒ B)

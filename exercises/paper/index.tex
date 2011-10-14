@@ -135,16 +135,16 @@ f \in A \to B \qquad a \in A \qquad b \in A \qquad c \in [a =_A b]
 \begin{zadanie}
  Zdefiniuj funkcję dodawania $add \in Nat \to Nat \to Nat$, a następnie stwórz termy o następujących typach:
 \[
- [apply2(add, 0, a) =_{Nat}  a]
+ (\Pi a \in Nat)\; [apply2(add, 0, a) =_{Nat}  a]
 \]
 \[
- [apply2(add, a, 0) =_{Nat}  a]
+ (\Pi a \in Nat)\; [apply2(add, a, 0) =_{Nat}  a]
 \]
 \[
- [apply2(add, succ(a), b) =_{Nat}  succ(apply2(add, a, b))]
+ (\Pi a \in Nat) (\Pi b \in Nat)\; [apply2(add, succ(a), b) =_{Nat}  succ(apply2(add, a, b))]
 \]
 \[
- [apply2(add, a, b) =_{Nat}  apply2(add, b, a)]
+ (\Pi a \in Nat) (\Pi b \in Nat)\; [apply2(add, a, b) =_{Nat}  apply2(add, b, a)]
 \]
 
 Powyższe równości mogą być traktowane jako specyfikacja dodawania, można teraz zauważyć że nasz system z~typami
