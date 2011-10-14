@@ -157,6 +157,34 @@ Niech $f \in (\Pi x \in A) B(x)$. Wyprowadź $[f =_{(\Pi x \in A) B(x)} \lambda 
 skrócony zapis: $\lambda x. e \equiv \lambda ((x)e)$}.
 Następnie zapoznaj się z typem $Eq$ zdefiniowanym w książce (to typ identycznościowy z silną regułą
 eliminacji), następnie używając tego typu wyprowadź sąd $f = \lambda x. apply(f,x) \in {(\Pi x \in A) B(x)}$.
+
+Potrzebna będzie dodatkowa reguła eliminacji dla typu funkcyjnego, jest to reguła eliminacji
+podobna do reguł dla typów indukcyjnych. Mamy rodzinę zbiorów $C$ poindeksowaną parametrami konstruktora $\lambda$, tzn
+ciałami funkcji.
+\begin{center}
+\begin{tabular}{lr}
+\inference{
+ f \in (\Pi x \in A) B(x) \\
+ C(v)\;set\;[v \in (\Pi x \in A) B(x)] \\
+ d(y) \in C(\lambda y)\;[ y(x) \in B(x) \;[x \in A]]
+}
+{
+ funsplit(f,d) \in C(f)
+}
+&
+\inference{
+ b(x) \in B(x)\;[x \in A] \\
+ C(v)\;set\;[v \in (\Pi x \in A) B(x)] \\
+ d(y) \in C(\lambda y)\;[ y(x) \in B(x) \;[x \in A]]
+}
+{
+ funsplit(\lambda b,d) = d(b)\in C(\lambda b)
+}
+\end{tabular}
+\end{center}
+Spróbuj zdefiniować $apply$ za pomocą $funsplit$.
+
+
 \end{zadanie}
 
 \begin{zadanie}

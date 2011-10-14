@@ -96,6 +96,17 @@ module ExercisesPaper where
         → A ⇒ A
     idf = Λ[ x ] x
 
+    funsplit : { A : Set } → {B : A → Set }
+             → {C : Π A B  → Set }
+             → ((b : (x : A) → B x ) → C (Λ b))
+             → (f : Π A B) → C f
+    funsplit H (Λ f) = H f
+
+    apply' : { A : Set} → { B : A → Set }
+          → Π A B → (x : A)
+          → B x
+    apply' f a = funsplit (λ b → b a) f
+
     ----
 
     data Σ (A : Set) (B : A → Set) : Set where
@@ -287,6 +298,14 @@ module ExercisesPaper where
     open MartinLof
     open Task6
 
+    eta : {A : Set} {B : A → Set}
+        → (f : Π A B)
+        → f ≡ Λ (λ x → apply f x)
+    eta f = funsplit
+      {C = (λ g → g ≡ Λ (λ x → apply g x))} 
+      (λ b → id (Λ b))
+       f
+
     thm : {A B : Set}
         → (f g : A ⇒ B)
         → f ≡ g
@@ -294,6 +313,8 @@ module ExercisesPaper where
     thm f g H = Λ[ x ] subst
         {P = λ p → apply f x ≡ apply p x}
         H (id (apply f x))
+
+
 
   module Task10 where
     open MartinLofWithUniverse
