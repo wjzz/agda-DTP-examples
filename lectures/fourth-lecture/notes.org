@@ -1,0 +1,26 @@
+* Rzeczy, które chcemy powiedzieć na temat Agdy
+** Technikalia
+** Kwestie leksykalne
+*** Komentarze
+*** Unicode
+** Różne
+*** Polimorfizm symulowany przez typy zależne
+*** Parametry niejawne
+** Ważne rzeczy
+*** Każda definicja powinna być poprzedzona sygnaturą
+*** Nazwy konstuktorów mogą sie powtarzać w różnych typach
+*** Funkcje definiujemy przez pattern-matching
+*** Funkcje muszą rozważać wszystkie przypadki
+*** Funkcje muszą się kończyć
+** Przykłady
+*** Fin, Wektor, False, True, And, Or
+*** Typ identycznościowy jako typ indukcyjny (czemu tego typu nie ma jak w Haskellu zdefiniować)
+*** Uniwersa
+*** Dowodzenie twierdzeń
+*** Definiowanie predykatów indukcyjnych
+*** Przykład: insertion sort jako spełnienie specyfikacji funkcji sortującej
+
+
+* Do przemyślenia
+
+** Kiedy (i czy w ogóle) chcemy mówić o importowaniu modułów?
