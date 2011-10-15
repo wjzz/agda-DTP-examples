@@ -1,0 +1,26 @@
+#+CAPTION: This is a table with lines around and between cells
+#+ATTR_HTML: border="2" rules="all" frame="all"
+
+|------------+------------------------+-----------------------------------------------|
+|      Kiedy | Kto                    | O czym                                        |
+|------------+------------------------+-----------------------------------------------|
+| 28.09.2011 |                        | Spotkanie organizacyjne                       |
+| 05.10.2011 | P. Wieczorek           | Teoria typów Martina-Löfa                     |
+| 12.10.2011 | P. Wieczorek           | Teoria typów Martina-Löfa c.d.                |
+| 19.10.2011 | W. Jedynak             | Wprowadzanie do Agdy                          |
+| 26.10.2011 | W. Jedynak             | Wprowadzenie do Agdy c.d                      |
+| 02.11.2011 | M. Imiełowski          | Piękno i elegancja typów zależnych            |
+| 09.11.2011 | A. Balicki i Ł. Zapart | Gdy rekursja strukturalna może nie wystarczać |
+| 23.11.2011 | S. Laszczyński         | Koindukcja                                    |
+| 30.11.2011 | M. Januszkiewicz       | Widoki                                        |
+| 07.12.2011 | P. Polesiuk            | Reprezentacja języków z wiązaniem zmiennych   |
+| 14.12.2011 | M. Kotowicz            | Typy zależne w Haskellu                       |
+| 04.01.2012 | F. Król                | Agdowe spojrzenie na klasy typów              |
+| 11.01.2012 | M. Jurkiewicz          | Programowanie generyczne                      |
+| 18.01.2012 | ?                      | ?                                             |
+|------------+------------------------+-----------------------------------------------|
+
+* Wyciąg z terminarza:
+** 16 listopada 2011 (środa) będą przeprowadzone zajęcia wtorkowe;
+** Przerwa świąteczna: 23.12.2011 – 02.01.2012
+
