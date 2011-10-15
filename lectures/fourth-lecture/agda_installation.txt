@@ -1,0 +1,30 @@
+Zalecamy zainstalować Agdę w wersji 2.2.10 (ew. wersję developerską).
+
+==========
+Instalacja
+==========
+
+Wymagania:
+* Haskell Platform
+* Emacs (zalecana wersja 23)
+* haskell-mode dla Emacsa - http://projects.haskell.org/haskellmode-emacs/
+
+1. Agda
+
+Jeśli mamy zainstalowane Haskell Platform i Emacs, to wystarczy wydać polecenia
+$ cabal update
+$ cabal install Agda-executable
+$ agda-mode setup
+
+Do instalacji wymagane są pakiety zlib oraz ncurses. Pod Debianem bądź Ubuntu wystarczy
+$ apt-get install zlib1g-dev libncurses5-dev 
+
+Pełny opis można znaleźć na Agda-wiki:
+http://wiki.portal.chalmers.se/agda/pmwiki.php?n=Main.README-2-2-10
+
+2. Biblioteka standardowa
+
+W niektórych publikacjach mogą być odniesienia do biblioteki standardowej Agdy.
+Samą bibliotekę i opis instalacji znajduje się na Agda-wiki:
+http://wiki.portal.chalmers.se/agda/pmwiki.php?n=Libraries.StandardLibrary
+
