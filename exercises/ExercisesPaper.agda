@@ -1,7 +1,37 @@
+-- Rozwiazania do pierwszej listy zadan
+-- Wojciech Jedynak
+-- Pawel Wieczorek
+
 module ExercisesPaper where
 
   module MartinLof where
-    -- standard Martin-Lof type theory from Book
+    -- Zakodowanie teorii typow Martina-Lof'a w Agdzie. Jest to zgodne z idea
+    -- 'logical framework' o ktorej wspominalismy na seminarium. Agda to taki
+    -- framework i posluzyl do zdefiniowania teorii.
+    -- 
+    -- Wyrazenia agdy to wyrazenia za pomoca ktorymi budujemy teorie
+    --
+    -- Roznice notacyjne:
+    -- Podmiot                     Ksiazka         Teoria zakodowana w Agdzie
+    --  aplikacja (wyrazenia)      f(x)            f x
+    --  aplikacja (wyrazenia)      f(x,y,z)        f x y z
+    --  abstrakcja (wyrazenia)     (x)e            λ x → e
+    --  Konstruktor Π-typu         Π               Π (ten sam symbol)
+    --  Π-typ                      (Π x ∈ A) B(x)  Π A B
+    --  Π-typ                      (Π x ∈ A) B(x)  Π[ x ∶ A ] B
+    --  Konstruktor Σ-typu         Σ               Σ (ten sam sysmbol)
+    --  Σ-typ                      (Σ x ∈ A) B(x)  Σ A B
+    --  Σ-typ                      (Σ x ∈ A) B(x)  Σ[ x ∶ A ] B
+    --  kontruktor λ               λ               Λ 
+    --  funkcja                    λ b             Λ b
+    --  funkcja                    λx.b            Λ[ x ] b
+    --  zwykla strzalka            →               ⇒ (NIE ten sam symbol)
+    --  zwykla para                ×               × (ten sam symbol)
+    --
+    -- Notacje:
+    --  Π A (λ x → e)          Π[ x ∶ A ] e
+    --  Σ A (λ x → e)          Σ[ x ∶ A ] e
+    --  Λ (λ x → e)            Λ[ x ] e
 
     data ℕ∅ : Set where
 
@@ -81,10 +111,10 @@ module ExercisesPaper where
     data Π (A : Set) (B : A → Set) : Set where
       Λ : ( (x : A) → B x ) → Π A B
 
-    apply : { A : Set} → { B : A → Set }
+    apply' : { A : Set} → { B : A → Set }
           → Π A B → (x : A)
           → B x
-    apply (Λ f) x = f x
+    apply' (Λ f) x = f x
 
     syntax Π A (λ x → B) = Π[ x ∶ A ] B
     syntax Λ (λ x → e)   = Λ[ x ] e
@@ -92,20 +122,16 @@ module ExercisesPaper where
     _⇒_ : Set → Set → Set
     A ⇒ B = Π A (λ x → B)
 
-    idf : {A : Set}
-        → A ⇒ A
-    idf = Λ[ x ] x
-
     funsplit : { A : Set } → {B : A → Set }
              → {C : Π A B  → Set }
              → ((b : (x : A) → B x ) → C (Λ b))
              → (f : Π A B) → C f
     funsplit H (Λ f) = H f
 
-    apply' : { A : Set} → { B : A → Set }
+    apply : { A : Set} → { B : A → Set }
           → Π A B → (x : A)
           → B x
-    apply' f a = funsplit (λ b → b a) f
+    apply f a = funsplit (λ b → b a) f
 
     ----
 
@@ -146,12 +172,18 @@ module ExercisesPaper where
 
     ---
 
-    ¬_ : (C : Set) → Set
+    ¬_ : Set → Set
     ¬ C = C ⇒ ⊥
 
 
   module Task1 where
     open MartinLof
+
+    --
+    -- Trudno sformalizowac nasze zadanie dotyczace dodania nowych regul
+    -- do systemu poniewaz tutaj zalatwiaja nam duzo typy indukcyjne.
+    -- Nadal mozna zweryfikowac regule eliminacji.
+    --
 
     data List (A : Set) : Set where
       nil  : List A
@@ -179,7 +211,9 @@ module ExercisesPaper where
     open MartinLof public
     open Task1 public
 
-    ---
+    --
+    -- Uniwersum ala Tarski
+    --
 
     mutual
       data U : Set where
@@ -211,8 +245,8 @@ module ExercisesPaper where
 
   module Task2 where
     open MartinLof
-
-    -- done as ⊎
+    
+    -- zrobione przy definicji teorii, ⊎
 
 
   module Task3 (A : Set ; B : A → Set ; C : A → A → Set) where
@@ -334,6 +368,11 @@ module ExercisesPaper where
     open MartinLof
     open Task6
 
+    --
+    -- Typem EQ nie mozemy sie posluzyc bo go nie mozna zdefiniowac.
+    -- Nie mozna dodac do systemu nowej reguly wnioskowania (silnej eliminacji)
+    --
+
     eta : {A : Set} {B : A → Set}
         → (f : Π A B)
         → f ≡ Λ (λ x → apply f x)
@@ -346,6 +385,10 @@ module ExercisesPaper where
     open MartinLof
     open Task6
 
+    --
+    -- Typem EQ nie mozemy sie posluzyc bo go nie mozna zdefiniowac.
+    -- Nie mozna dodac do systemu nowej reguly wnioskowania (silnej eliminacji)
+    --
 
     thm : {A B : Set}
         → (f g : A ⇒ B)
@@ -360,6 +403,16 @@ module ExercisesPaper where
   module Task10 where
     open MartinLofWithUniverse
     open Task6
+
+    --
+    -- Dowod jak w ksiazce, uzycie reguly Leibniza:
+    -- 
+    --   [0 = succ n] true     IsZero(0) true
+    -- --------------------------------------
+    --        IsZero(succ n) true
+    --
+    -- IsZero(succ n) = ⊥
+
 
     H01 : Π[ n ∶ ℕ ] ¬ (O ≡ succ n)
     H01 = Λ[ n ] Λ[ Heq ] subst {P = λ x → IsZero x} (Heq) 0₁
@@ -427,27 +480,89 @@ module ExercisesPaper where
     BinSeq : Set
     BinSeq = ℕ ⇒ Bool
 
+    --
+    -- Rozwiazanie:
+    --
+    -- 0 | f 0 0 | f 0 1 | ...
+    -- 1 | f 1 0 | f 1 1 | ...
+    --   | ...   
+    -- n | ...           | f n n | ..
+    --   | ...
+    --
+    -- Definiujemy nowy ciag taki aby jego n-ty element byl
+    -- rozny od elementu (f n n) w powyzszej tabelce. Definiujemy
+    -- ciag ktory jest negacja elementow przekatnej.
+    --
+    -- s n = negb (f n n)
+    --
+    -- Poniewaz to prawidlowy ciag binarny to ma swoj numerek
+    -- h = g s
+    -- taki ze f h = s  (mowi nam o tym zalozenie f (g s) = s)
+    --
+    -- Mamy paradoksalna rownosc dla ciagu s zaaplikowanego do swojego numeru:
+    -- 
+    -- s h = negb (f h h) = negb (f (g s) h) = negb (s h)
+    -- widzimy ze definicja ciagu zanegowala swoja wlasna wartosc
+
+    --
+    -- Prawdziwe rozwiazanie:
+    --
+    -- Mamy udowodnic negacje, a wiec mamy stworzyc funkcje ktora daje
+    -- absurdalna wartosc.
+    -- W argumencie funkcji mamy funkcje 'f', funkcje 'g' 
+    -- oraz dowod ze g jest prawa odwrotnoscia.
+    -- Posluzmy sie makrem diagonal(f,g,Heq) ktore wezmie rozpakowane z Σ-typow
+    -- wartosci.
+    --
+    -- Chcemy teraz uzyskac:
+    --
+    -- f ∈ ℕ → BinSeq
+    -- g ∈ BinSeq → ℕ
+    -- Heq ∈ (Π s ∈ BinSeq) [ s ≡ apply f (apply g s) ]
+    -- -------------------------------------------------
+    -- diagonal(f,g,Heq) ∈ ⊥
+    --
+    -- No wiec lecimy dokladnie jak w kartkowym dowodzie
+    -- * definicja ciagu:
+    -- s n ≣ apply(negb, (apply((apply(f,n),n))))
+    --
+    -- * jego numerek:
+    -- h ≡ apply(g, s) ≡ apply (g,((n) apply(negb, (apply((apply(f,n),n))))))
+    --
+    -- * paradoksalna rownosc
+    -- Niech P(x) ≡ apply(negb, (apply(x,h))) ≡  apply(negb, (apply(s,h)))
+    --
+    --  apply(Heq,s) ∈ [ s ≡ apply(f,(apply(g,s))) ]     id (...) ∈ P(s)
+    -- ----------------------------------------------------------------------
+    --   subst( apply(Heq,s), id (...)) ∈ P (apply(f,(apply(g,s))))
+    --
+    -- Niech thm ≡ subst( apply(Heq,s), id (...))
+    -- Teraz, P (apply(f,(apply(g,s)))) oznacza 
+    --        [apply(negb, (apply(s,h))) ≡ apply(s,h)]
+    --
+    -- Z poprzedniego zadania mamy Hnegb ∈ (Π b ∈ Bool) ¬ apply(negb,b) ≡ b
+    -- a wiec diagonal(f,g,Heq) ≡ apply(apply(Hnegb,s(h)), thm) ∈ ⊥
+    -- 
+    -- Otrzymujemy ostatecznie:
+    -- cantor = λH. split( (f,H') split( (g, Heq) diagonal(f,g,Heq), H'), H)
+
+
     cantor : ¬ (Σ[ f ∶ ℕ ⇒ BinSeq ] (Σ[ g ∶ BinSeq ⇒ ℕ ]
              Π[ s ∶ BinSeq ] s ≡ (apply f (apply g s))))
            
-    cantor = Λ (λ H → split (λ f → split (λ g H0 → diagonal f g H0) ) H)
+    cantor = Λ[ H ] split (λ f → split (λ g H0 → diagonal f g H0) ) H
       where
        diagonal : (f : ℕ ⇒ BinSeq) → (g : BinSeq ⇒ ℕ)
                 → Π[ s ∶ BinSeq ] s ≡  (apply f (apply g s))
                 → ⊥
        diagonal f g Heq = apply (apply Hnegb (apply s h)) thm2
          where
-           -- diagonal sequence: s(n) = neg (f n n)
            s : BinSeq
            s = Λ[ n ] apply negb (apply (apply f n) n)
 
-           -- number of s
            h : ℕ
            h = apply g s
 
-           -- paradox: s h = negb (f h h) = negb (f (g s) h) = negb (s h)
-           -- first two equations are definitional, so we need to prove only
-           -- last
            thm2 :
                 apply s h
                 ≡
