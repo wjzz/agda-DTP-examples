@@ -1,26 +1,77 @@
 * Rzeczy, które chcemy powiedzieć na temat Agdy
-** Technikalia
+** 1. Technikalia
+*** Sterowanie emacsem
+*** Pisanie, sprawdzanie, uruchamianie programów
+
 ** Kwestie leksykalne
-*** Komentarze
-*** Unicode
+*** 1? Komentarze
+*** 1  Unicode
+    Czyli dlaczego musimy wstawiać tak dużo spacji
+
 ** Różne
-*** Polimorfizm symulowany przez typy zależne
-*** Parametry niejawne
-** Ważne rzeczy
+*** 1  Polimorfizm symulowany przez typy zależne
+*** 1? Parametry niejawne
+    Ten temat by ładnie pasował przy okazji wektorów
+
+** 1. Ważne rzeczy
 *** Każda definicja powinna być poprzedzona sygnaturą
-*** Nazwy konstuktorów mogą sie powtarzać w różnych typach
+    (n : Nat) -> (m : Nat) -> ...
+    można skrócić do
+    (n m : Nat) -> ...
+
+*** ? Nazwy konstruktorów mogą sie powtarzać w różnych typach
 *** Funkcje definiujemy przez pattern-matching
 *** Funkcje muszą rozważać wszystkie przypadki
 *** Funkcje muszą się kończyć
+
 ** Przykłady
 *** Fin, Wektor, False, True, And, Or
-*** Typ identycznościowy jako typ indukcyjny (czemu tego typu nie ma jak w Haskellu zdefiniować)
-*** Uniwersa
-*** Dowodzenie twierdzeń
-*** Definiowanie predykatów indukcyjnych
-*** Przykład: insertion sort jako spełnienie specyfikacji funkcji sortującej
+*** Typ identycznościowy jako typ indukcyjny (czemu tego typu nie ma jak w Haskellu zdefiniować?)
+*** 2 ew. 1. Uniwersa
+    Pokazać, że są i że nie są kumulatywne.
+    Na drugim wykładzie można by pokazać universe-polymorphism
 
+*** Przykład: pokazać funkcję, której naiwna implementacja nie jest strukturalnie rekurencyjna
+    Merge odpada, bo to będzie na prezentacji Marka    
+
+*** 1. Dowodzenie twierdzeń o równości
+*** 2. Definiowanie predykatów indukcyjnych
+*** 2. Przykład: insertion sort jako spełnienie specyfikacji funkcji sortującej:
+    Pokazać to na dwa sposoby: jako słabą i silną specyfikację.
+
+
+* Ćwiczenia
+
+** Zabawa izomorfizmem C-H
+   Najpierw można by pokazać jak zdefiniować spójniki w Agdzie na wykładzie
+
+** Zabawa wektorami, finami, typem in
+   Trochę rzeczy można wziąć z epigram tutorial
+
+   * Efektywny Reverse na wektorach - bo mamy problem z arytmetyką
+   * Bezpieczny zip
 
 * Do przemyślenia
 
 ** Kiedy (i czy w ogóle) chcemy mówić o importowaniu modułów?
+** Kiedy chcemy opowiedzieć o rewrite, with, mutual?
+** Przybliżenie na pierwszy wykład:
+   Set piszemy wszędzie tam, gdzie dalibyśmy * w Haskellu
+   A : Set   odpowiada sądowi  A set z teorii typów
+** Kiedy chcemy opowiedzieć o mixfixach? (przy równości warto)
+
+* Do opracowania
+** Lista zadań
+** Notatki w postaci skomentowanego pliku .agda
+** Mała ściaga z emacsa (albo chociaż linki)
+** Mała ściąga z unikodu
+
+
+* Outline pierwszego wykładu
+** Kwestie techniczne
+** Definicje indukcyjne
+** Typ wektorów
+*** Append
+*** Naiwny reverse
+*** Typ fin i indeksowanie wektorów
+** Podstawy dowodzenia twierdzeń
