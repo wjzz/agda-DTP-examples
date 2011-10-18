@@ -28,8 +28,9 @@ module Exercises where
 
 \end{code}
 
+\section{Podstawy Izomorfizmu Curry'ego-Howarda}
 
-\section{Typ identycznościowy, czyli równość w języku}
+Fałsz zdefiniowaliśmy w Agdzie jako typ pusty:
 
 \begin{code}
 
@@ -38,19 +39,138 @@ data ⊥ : Set where
 ⊥-elim : {A : Set} → ⊥ → A
 ⊥-elim ()
 
+\end{code}
+
+Możemy teraz wyrazić negację w standardowy sposób: jako funkcję w zbiór pusty.
+
+\begin{code}
 
 ¬_ : Set → Set
 ¬ A = A → ⊥
+
+\end{code}
+
+\begin{zadanie}
+Udowodnij, że p ⇒ ¬¬p, czyli dokończ poniższą definicję:
+
+\begin{code}
+pnnp : {A : Set} → A → ¬ ¬ A
+pnnp = {!!}
+\end{code}
+
+Czy potrafisz udowodnić implikację w drugą stronę?
+
+\end{zadanie}
+
+\begin{zadanie}
+
+Udowodnij prawo kontrapozycji, czyli pokaż że (A ⇒ B) ⇒ (¬ B ⇒ ¬ A). Czy potrafisz udowodnić twierdzenie odwrotne?
+
+\end{zadanie}
+
+\begin{zadanie}
+
+Zdefiniuj typ, który będzie odpowiadał formule atomowej ⊤. Jakiemu typowi z języków programowania on odpowiada?
+
+\end{zadanie}
+
+\begin{zadanie}
+
+Polimorficzne pary, czyli odpowiednik koniukcji możemy zdefiniować następująco:
+
+\begin{code}
+
+data _∧_ (A B : Set) : Set where
+  pair : (a : A) → (b : B) → A ∧ B
+
+\end{code}
+
+Udowodnij reguły eliminacji oraz prawo przemienności tj. zdefiniuj funkcje fst, snd i swap:
+
+\begin{code}
+
+fst : {A B : Set} → A ∧ B → A
+fst = {!!}
+
+snd : {A B : Set} → A ∧ B → B
+snd = {!!}
+
+swap : {A B : Set} → A ∧ B → B ∧ A
+swap = {!!}
+
+\end{code}
+
+\end{zadanie}
+
+\begin{zadanie}
+
+Zdefiniuj typ sumy rozłącznej (czyli Haskellowy typ Either). Jakiemu spójnikowi logicznemu
+odpowiada ten typ? Udowodnij przemienność tego spójnika.
+
+\end{zadanie}
+
+\begin{zadanie}
+
+Korzystając z typów z poprzednich dwóch zadań, sformułuj i spróbuj udowodnić prawa deMorgana znane
+z logiki klasycznej. Które z nich zachodzą w logice kostruktywnej?
+
+\end{zadanie}
+
+
+\section{Typ identycznościowy, czyli równość w języku}
+
+Aby wydawać i dowodzić sądy o równości różnych bytów, zdefiniowaliśmy tzw. typ identycznościowy.
+Typ ustalonych a,b ∈ A, a ≡ b jest zamieszkały wtw, gdy a i b obliczają się do tego samego
+elementu kanonicznego (wartości).
+
+\begin{code}
 
 infix 5 _≡_
 
 data _≡_ {A : Set} : A → A → Set where
   refl : {a : A} → a ≡ a
 
+
+\end{code}
+
+Różność elementów definiujemy jako... zaprzeczenie równości:
+
+\begin{code}
+
 _≢_ : {A : Set} → A → A → Set
 a ≢ b = ¬ (a ≡ b)
 
 \end{code}
+
+\begin{zadanie}
+
+Pokazaliśmy już jak udowodnić niektóre właśności równości:
+
+\begin{code}
+
+symm : {A : Set} → (a b : A) → a ≡ b → b ≡ a
+symm a .a refl = refl
+
+subst : {A : Set} → (P : A → Set) → (a b : A) → a ≡ b → P a → P b
+subst P a .a refl Pa = Pa
+
+\end{code}
+
+Udowodnij dwie dodatkowe (bardzo przydatne) właśności:
+
+\begin{code}
+
+trans : {A : Set} → (a b c : A) → a ≡ b → b ≡ c → a ≡ c
+trans = {!!} 
+
+cong : {A B : Set} → (P : A → B) → (a b : A) → a ≡ b → P a ≡ P b
+cong = {!!}
+
+\end{code}
+
+
+\end{zadanie}
+
 
 \section{Wartości boolowskie}
 
@@ -157,6 +277,28 @@ Jeśli masz ochotę, to udowodnij przemienność mnożenia.
 
 \end{zadanie}
 
+\begin{zadanie}
+
+Udowodnij, że zero ≢ suc (zero).
+
+\end{zadanie}
+
+\begin{zadanie}
+
+Udowodnij następującą własność ("prawo skracania"):
+
+\begin{code}
+
+strip-suc : (n m : ℕ) → suc n ≡ suc m → n ≡ m
+strip-suc = {!!}
+
+\end{code}
+
+
+\end{zadanie}
+
+
+
 \section{Wektory}
 
 Przypomnijmy definicję wektorów:
@@ -179,6 +321,12 @@ _++_ : {A : Set} → {n m : ℕ} → Vec A n → Vec A m → Vec A (n + m)
 
 \end{code}
 
+\begin{zadanie}
+
+Zaprogramuj funkcje vmap, która jest wektorowym odpowiednikiem map dla list.
+Jaka powinna być długość wynikowego wektora?
+
+\end{zadanie}
 
 \begin{zadanie}
 
@@ -190,7 +338,7 @@ zip \_ \_ = [] \\
 
 Jak widać, przyjęto tutaj, że jeśli listy są różnej długości, to dłuższa lista jest ucinana.
 Nie zawsze takie rozwiązanie jest satysfakcjonujące. Wymyśl taką sygnaturę dla funkcji zip na wektorach,
-aby niedopuścić (statycznie, za pomocą systemu typów) do niebezpiecznych wywołań.
+aby nie dopuścić (statycznie, za pomocą systemu typów) do niebezpiecznych wywołań.
 
 \end{zadanie}
 
@@ -230,5 +378,83 @@ _!_ : {A : Set} {n : ℕ} → Vec A n → Fin n → A
 
 \end{code}
 
+\begin{zadanie}
+
+Zauważ, że typ Fin przypomina strukturą liczby naturalne, choć zawiera więcej informacji. \\
+Napisz funkcję konwersji, która ''zapomina'' te dodatkowe informacje.
+
+Np. jeśli Fin 2 = \{ 0₂, 1₂ \}, to chcemy mieć \\
+toℕ 0₂ ≡ 0 \\
+toℕ 1₂ ≡ 1 \\
+
+\begin{code}
+toℕ : {n : ℕ} → Fin n → ℕ
+toℕ = {!!}
+\end{code}
+
+\end{zadanie}
+
+\begin{zadanie}
+
+Napisz funkcje, która dla danego n, zwraca największy element zbioru Fin (suc n).
+Przez największy rozumiemy tutaj ten element, który jest zbudowany z największej
+liczby konstruktorów.
+\\
+Przykładowo, dla n ≡ 3 mamy Fin 3 ≡ \{ 0₃, 1₃, 2₃ \} i jako wynik chcemy otrzymać 2₃.
+
+\begin{code}
+fmax : (n : ℕ) → Fin (suc n)
+fmax = {!!}
+
+\end{code}
+
+\end{zadanie}
+
+\begin{zadanie}
+
+Jeśli udało Ci się zrobić poprzednie dwa zadania, to pokaż, że ich złozenie w jedną ze stron daje identyczność.
+Czy potrafisz sformułować twierdzenie o złożeniu w drugą stronę?
+
+\begin{code}
+lemma-max : (n : ℕ) → toℕ (fmax n) ≡ n
+lemma-max = {!!}
+
+\end{code}
+
+\end{zadanie}
+
+\begin{zadanie}
+
+W matematyce mamy \{ 0, 1, 2, .. n-1 \} ⊆ \{ 0, 1, 2, .. n-1, n \}.
+Zainspirowani tym zawieraniem chcemy teraz
+pokazać, że typ Fin n można osadzić w Fin (suc n). \\
+Uwaga. Jednym ze sposobów byłoby po prostu użycie konstruktora suc, 
+ale chcemy zrobić odwzorowanie, w którym $ k_n $ przechodzi na $ k_{n+1} $.
+
+\begin{code}
+fweak : {n : ℕ} → Fin n → Fin (suc n)
+fweak = {!!}
+\end{code}
+
+Po zdefiniowaniu funkcji udowodnij jej poprawność:
+
+\begin{code}
+fweak-correctness : {n : ℕ} → (i : Fin n) → toℕ i ≡ toℕ (fweak i)
+fweak-correctness = {!!}
+\end{code}
+
+
+\end{zadanie}
+
+\begin{zadanie}
+Pokaż, że dla każdego n ∈ ℕ, możemy stablicować wszystkie elementy
+typu Fin n w n-elementowym wektorze.
+
+\begin{code}
+tabFins : (n : ℕ) → Vec (Fin n) n
+tabFins = {!!}
+\end{code}
+
+\end{zadanie}
 
 \end{document}
