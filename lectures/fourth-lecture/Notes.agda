@@ -60,7 +60,7 @@ data Color : Set where
 -- W tym wypadku możemy zastosować skrót:
 
 data Color2 : Set where
-  red green blue : Color2
+  red2 green2 blue2 : Color2
 
 {- Uwaga leksykalna
 
@@ -75,6 +75,17 @@ używa sie konwencji typy - wielką literą, konstruktory - małą literą.
 data color : Set where
   Red Green Blue : color
 
+
+-- przykładowa funkcja 
+
+rotateColor : Color → Color
+rotateColor red = green
+rotateColor green = blue
+rotateColor blue = red
+
+data Bool : Set where
+  true  : Bool
+  false : Bool
 
 -- 2. Konstuktory biorące argumenty
 
@@ -112,6 +123,10 @@ maybeExample = nothing
 maybeExample2 : Maybe Color
 maybeExample2 = just red
 
+fromMaybe : (A : Set) → Maybe A → A → (A → A) → A
+fromMaybe A nothing  z f = z
+fromMaybe A (just y) z f = f y
+
 -- 4. Definicje rekurencyjne
 
 -- liczby naturalne
@@ -138,6 +153,37 @@ plus (suc n) m = suc (plus n m)
 nat-test : Nat
 nat-test = plus (suc (suc zero)) (suc zero)
 
+-- porównanie: czy n >= m ?
+
+nat-ge : Nat → Nat → Bool
+nat-ge zero    zero    = true
+nat-ge zero    (suc m) = false
+nat-ge (suc n) zero    = true
+nat-ge (suc n) (suc m) = nat-ge n m
+
+-- Chcemy teraz napisać funkcję, która weźmie dwie liczby i zwróci ich maksimum.
+-- Dodatkowo, chcielibyśmy użyć funkcji nat-ge jako funkcji pomocniczej.
+-- Okazuje się, że w Agdzie nie ma osobnej konstrukcji case ... of! - 
+-- Pattern matching możemy wykonywać tylko na argumentach funkcji!!
+
+-- Q: Jak sobie z tym poradzić?
+-- A: Można definiować funkcje pomocnicze. 
+--    To rozwiązanie działa, ale jest bardzo niewygodne. 
+--    Znacznie lepiej użyć konstukcji 'with':
+
+max : Nat → Nat → Nat
+max n m with nat-ge n m
+max n m | true  = n
+max n m | false = m
+
+-- inny sposób na zapisanie tego samego
+
+max2 : Nat → Nat → Nat
+max2 n m with nat-ge n m
+... | true  = n
+... | false = m
+
+
 -- listy 
 
 data List (A : Set) : Set where
@@ -145,7 +191,8 @@ data List (A : Set) : Set where
   cons : A -> List A -> List A
 
 length : (A : Set) -> List A -> Nat
-length A l = {!!}
+length A nil         = zero
+length A (cons x xs) = suc (length A xs)
 
 -- 5. typy indeksowane wartościami
 
@@ -172,6 +219,16 @@ emptyVec = vnil
 
 twoNats : Vec Nat (suc (suc zero))
 twoNats = vcons (suc zero) 42 (vcons zero 107 vnil)
+
+-- Możemy teraz napisać bezpieczne wersji funkcji zwracające głowę czy ogon.
+-- Sygnatura tych funkcji w statyczny sposób wyklucza wywołania ich na pustym wektorze,
+-- gdyż vnil ma typ Vec A zero, zaś zero i suc n nie unifikują się.
+
+head : {A : Set} {n : Nat} -> Vec A (suc n) -> A
+head (vcons _ x xs) = x
+
+tail : {A : Set} {n : Nat} -> Vec A (suc n) -> Vec A n
+tail (vcons _ x xs) = xs
 
 -- konkatenacja wektorów
 
@@ -270,6 +327,25 @@ listsEq A n m eq v = subst (λ x → Vec A x) n m eq v
 
 listsEqDirect : {A : Set} -> (n m : Nat) -> n == m -> Vec A n -> Vec A m
 listsEqDirect .m m refl Vn = Vn
+
+-------------------------
+--  Przykłady dowodów  --
+-------------------------
+
+-- prosta własność, która można udowodnić przez obliczenie
+
+lem-plus-0-l : (n : Nat) → plus 0 n == n
+lem-plus-0-l n = refl
+
+-- ćwiczenie do domu
+
+postulate
+  cong : {A B : Set} → (P : A → B) → {a b : A} → a == b → P a == P b
+
+lem-plus-0-r : (n : Nat) → plus n 0 == n
+lem-plus-0-r zero    = refl
+lem-plus-0-r (suc n) with lem-plus-0-r n
+... | lem = cong suc lem 
 
 ---------------
 --  Negacja  --

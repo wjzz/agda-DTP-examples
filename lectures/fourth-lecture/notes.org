@@ -25,7 +25,7 @@
 *** Funkcje muszą się kończyć
 
 ** Przykłady
-*** Fin, Wektor, False, True, And, Or
+*** Fin, Wektor, False
 *** Typ identycznościowy jako typ indukcyjny (czemu tego typu nie ma jak w Haskellu zdefiniować?)
 *** 2 ew. 1. Uniwersa
     Pokazać, że są i że nie są kumulatywne.
@@ -40,7 +40,7 @@
     Pokazać to na dwa sposoby: jako słabą i silną specyfikację.
 
 
-* Ćwiczenia
+* DONE Ćwiczenia
 
 ** Zabawa izomorfizmem C-H
    Najpierw można by pokazać jak zdefiniować spójniki w Agdzie na wykładzie
@@ -61,17 +61,19 @@
 ** Kiedy chcemy opowiedzieć o mixfixach? (przy równości warto)
 
 * Do opracowania
-** Lista zadań
+** DONE Lista zadań
 ** Notatki w postaci skomentowanego pliku .agda
-** Mała ściaga z emacsa (albo chociaż linki)
-** Mała ściąga z unikodu
+** DONE Mała ściaga z emacsa (albo chociaż linki)
+** DONE Mała ściąga z unikodu
 
 
 * Outline pierwszego wykładu
 ** Kwestie techniczne
 ** Definicje indukcyjne
 ** Typ wektorów
+*** Dobry head i tail
 *** Append
 *** Naiwny reverse
 *** Typ fin i indeksowanie wektorów
 ** Podstawy dowodzenia twierdzeń
+** Pokazać składanie funkcji jako przykład dowodu

@@ -1,0 +1,46 @@
+* First Agda lecture
+
+** intro
+*** .agda
+*** module ...
+*** no prelude
+** function composition
+*** the set universe
+*** forall is just dep. prod.
+** inductive types
+*** enumerations
+**** color
+***** classic Haskell and GADT
+***** capitalization of types and constructors
+***** exhaustive patterns
+***** evaluation and type-checking in Emacs
+***** interaction intro
+****** ? and {!!}
+****** case splitting, insertion
+***** names of constructors can be repeated
+**** bool
+
+*** parametrized types
+**** maybe
+***** sim. polymorphism using the dep. product
+
+*** recursive types
+**** nat
+**** list
+
+*** indexed types
+**** vectors
+***** dotted patterns
+***** implicit args
+***** examples
+****** head, tail
+****** vappend
+****** vreverse
+**** equality
+***** symm, subst
+***** some example proofs
+****** meaning of forall
+****** neutrals elements for +
+**** negation
+***** empty type, false elim.
+
