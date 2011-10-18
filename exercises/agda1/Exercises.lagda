@@ -23,6 +23,12 @@
 
 \maketitle
 
+\section{Uwaga}
+
+Lista zadań jest dostępna w dwu wariantach: .pdf i .lagda. Wersję .lagda
+można otworzyć w edytorze tekstu i uzupełniać brakujące fragmenty bez przepisywania
+wszystkiego.
+
 \begin{code}
 module Exercises where
 
