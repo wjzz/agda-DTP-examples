@@ -31,6 +31,23 @@ module StdLib where
   ... | true = s≤s (filter-length P xs)
   ... | false = trans≤ (filter-length P xs) suc≤
 
+  div2 : ℕ → ℕ
+  div2 zero          = zero
+  div2 (suc zero)    = zero
+  div2 (suc (suc n)) = suc (div2 n)
+
+  div2≤ : {n : ℕ} → div2 n ≤ n
+  div2≤ {zero} = z≤n
+  div2≤ {suc zero} = z≤n
+  div2≤ {suc (suc n)} with div2≤ {n}
+  ... | H = s≤s (trans≤ H suc≤)
+
+  div2s≤ : {n : ℕ} → div2 (suc n) < suc n
+  div2s≤ {zero} = s≤s z≤n
+  div2s≤ {suc zero} = s≤s div2s≤
+  div2s≤ {suc (suc n)} with div2s≤ {n}
+  ... | (s≤s H) = s≤s (s≤s (trans≤ H suc≤))
+
 open StdLib
 
 {- ----------------------------------------------------
@@ -92,6 +109,28 @@ module WfNat where
   Wf< zero = Acc0 
   Wf< (suc n) with Wf< n
   ... | H = AccSn H
+
+
+  WfNatInd : (P : ℕ → Set)
+           → ( (x : ℕ) → ( (y : ℕ) → y < x → P y) → P x )
+           → (x : ℕ) → P x
+  WfNatInd P IH x = WfInd Wf< P IH x 
+
+
+{- ----------------------------------------------------
+   PRZYKLAD: logarytm binarny
+-}
+
+module WfNat_example where
+  open WfNat
+
+  log2 : ℕ → ℕ
+  log2 = WfNatInd (λ x → ℕ) log2'
+   where
+     log2' : (n : ℕ) → ( (m : ℕ) → m < n → ℕ ) → ℕ
+     log2' zero rec = zero
+     log2' (suc zero) rec = zero
+     log2' (suc n)    rec = suc (rec (div2 (suc n)) div2s≤)
 
 
 {- ----------------------------------------------------
@@ -182,55 +221,3 @@ module QuickSort where
 open import Induction
 open import Induction.Nat
 open import Induction.WellFounded
-
-
-module Lib where
-{-
-  filter : {A : Set} → (P : A → Bool) → List A → List A
-  filter P [] = []
-  filter P (x ∷ xs) with P x
-  ... | true  = x ∷ filter P xs
-  ... | false = filter P xs
-
--}
-
-  ≤suc : {n : ℕ} → n ≤ suc n
-  ≤suc {zero} = z≤n
-  ≤suc {suc n} = s≤s ≤suc
-
-  _<L_ : {A : Set} → List A → List A → Set
-  xs <L ys = length xs < length ys
-
-
-module QSort where
-  open Lib
-
-  qless : {A  : Set} 
-        → (pf : A → Bool)
-        → (a  : A)
-        → (l  : List A)
-        → filter pf l <L (a ∷ l)
-  qless pf a l = s≤s (filter-length pf l)
-
-  before : ℕ → ℕ → Bool
-  before c x with x ≤? c
-  ... | yes p = true
-  ... | no ¬p = false
-
-  after : ℕ → ℕ → Bool
-  after c y with suc c ≤? y
-  after c y | yes p = true
-  after c y | no ¬p = false
-
-  s : (l : List ℕ) → ( (l' : List ℕ) → l' <L l → List ℕ) → List ℕ
-  s [] ih = []
-  s (a ∷ l) ih = ih (filter (before a) l) (qless (before a) a l) 
-               ++ a ∷ ih (filter (after a) l) (qless (after a) a l)
-
-  data DealT : List ℕ → Set where
-    emptyT : DealT []
-    stepT  : {a : ℕ} {xs : List ℕ}
-           → DealT (filter (before a) xs)
-           → DealT (filter (after a) xs)
-           → DealT (a ∷ xs)
-
