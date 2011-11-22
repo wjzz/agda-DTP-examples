@@ -120,8 +120,8 @@ module WfInvImage
 
 
 {- ----------------------------------------------------
-   Dobrze ufundowana relacja na przeciw-obrazie:
-   PRZYKLAD
+   PRZYKLAD: specjalizacja zasady dobrze ufundowanej
+             rekursji dla list
 -}
 
 module WfInvImage_example (X : Set)  where
@@ -142,6 +142,9 @@ module WfInvImage_example (X : Set)  where
             → (x : List X) → P x
   WfListInd = WfInd Wf⊏
 
+{- ----------------------------------------------------
+   PRZYKLAD: latwy do napisania quicksort
+-}
 
 module QuickSort where
 
@@ -163,7 +166,17 @@ module QuickSort where
         → filter pf l ⊏ (a ∷ l)
   qless pf a l = s≤s (filter-length pf l)
 
+  qsort : List ℕ → List ℕ
+  qsort = WfListInd (λ x → List ℕ) qsort'
+   where
+     qsort' : (xs : List ℕ) → ( (ys : List ℕ) → ys ⊏ xs → List ℕ ) → List ℕ
+     qsort' [] rec = []
+     qsort' (x ∷ xs) rec = left ++ x ∷ right
+      where
+        left  = rec (filter (before x) xs) (qless (before x) x xs)
+        right = rec (filter (after x) xs) (qless (after x) x xs)
 
+  test = qsort ( 2 ∷ 9 ∷ 7 ∷ 1 ∷ [] )
 
 ------------------------------------------------------------------------------------------
 open import Induction
