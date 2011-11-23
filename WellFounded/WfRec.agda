@@ -327,26 +327,7 @@ module MergeSortWf where
 
   half2 : List ℕ → List ℕ
   half2 xs = drop (div2 (length xs)) xs
-
-  half1≤' : (xs : List ℕ) → length (half1 xs) ≤ length xs
-  half1≤' []           = z≤n
-  half1≤' (x ∷ [])     = z≤n
-  half1≤' (a ∷ b ∷ xs) = s≤s (take-length (div2 (foldr (λ x → suc) zero xs)) (b ∷ xs))
-
-  half1≤ : (a b : ℕ) → (xs : List ℕ) → half1 (a ∷ b ∷ xs) ⊏ (a ∷ b ∷ xs)
-  half1≤ a b xs with half1≤' (b ∷ xs)
-  ... | H = {!H!}
-
-{-
-  half1≤ : (a b : ℕ) (xs : List ℕ) → half1 (a ∷ b ∷ xs) ⊏ (a ∷ b ∷ xs)
-  half1≤ a b xs = 
--}
-
-
-
-  half2≤ : (a : ℕ) (xs : List ℕ) → half2 xs ⊏ (a ∷ xs)
-  half2≤ a xs = s≤s (drop-length (div2 (length xs)) xs)
-
+  
   merge : List ℕ → List ℕ → List ℕ
   merge [] ys             = ys
   merge xs []             = xs
@@ -358,12 +339,12 @@ module MergeSortWf where
   msort  = WfListInd _ msort' 
    where
      msort' : (xs : List ℕ) → ( (ys : List ℕ) → ys ⊏ xs → List ℕ) → List ℕ
-     msort' [] rec            = []
-     msort' (x ∷ []) rec      = x ∷ []
-     msort' (x ∷ xs) rec      = merge left right
+     msort' [] rec                = []
+     msort' (x ∷ [])     rec      = x ∷ []
+     msort' (a ∷ b ∷ xs) rec      = merge left right
        where
-         left  = rec (half1 (x ∷ xs)) {!!}
-         right = rec (half2 (x ∷ xs)) {!!}
+         left  = rec (half1 (a ∷ b ∷ xs)) {!!}
+         right = rec (half2 (a ∷ b ∷ xs)) {!!}
 
 
 {- ----------------------------------------------------
