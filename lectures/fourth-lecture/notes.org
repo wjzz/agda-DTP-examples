@@ -47,7 +47,6 @@
 
 ** Zabawa wektorami, finami, typem in
    Trochę rzeczy można wziąć z epigram tutorial
-
    * Efektywny Reverse na wektorach - bo mamy problem z arytmetyką
    * Bezpieczny zip
 

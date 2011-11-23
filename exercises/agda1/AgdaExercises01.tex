@@ -1,0 +1,886 @@
+\documentclass{scrartcl}
+
+% current annoyance: this will be fixed
+% by the next update of agda.fmt
+\def\textmu{}
+
+%% ODER: format ==         = "\mathrel{==}"
+%% ODER: format /=         = "\neq "
+%
+%
+\makeatletter
+\@ifundefined{lhs2tex.lhs2tex.sty.read}%
+  {\@namedef{lhs2tex.lhs2tex.sty.read}{}%
+   \newcommand\SkipToFmtEnd{}%
+   \newcommand\EndFmtInput{}%
+   \long\def\SkipToFmtEnd#1\EndFmtInput{}%
+  }\SkipToFmtEnd
+
+\newcommand\ReadOnlyOnce[1]{\@ifundefined{#1}{\@namedef{#1}{}}\SkipToFmtEnd}
+\usepackage{amstext}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\DeclareFontFamily{OT1}{cmtex}{}
+\DeclareFontShape{OT1}{cmtex}{m}{n}
+  {<5><6><7><8>cmtex8
+   <9>cmtex9
+   <10><10.95><12><14.4><17.28><20.74><24.88>cmtex10}{}
+\DeclareFontShape{OT1}{cmtex}{m}{it}
+  {<-> ssub * cmtt/m/it}{}
+\newcommand{\texfamily}{\fontfamily{cmtex}\selectfont}
+\DeclareFontShape{OT1}{cmtt}{bx}{n}
+  {<5><6><7><8>cmtt8
+   <9>cmbtt9
+   <10><10.95><12><14.4><17.28><20.74><24.88>cmbtt10}{}
+\DeclareFontShape{OT1}{cmtex}{bx}{n}
+  {<-> ssub * cmtt/bx/n}{}
+\newcommand{\tex}[1]{\text{\texfamily#1}}	% NEU
+
+\newcommand{\Sp}{\hskip.33334em\relax}
+
+
+\newcommand{\Conid}[1]{\mathit{#1}}
+\newcommand{\Varid}[1]{\mathit{#1}}
+\newcommand{\anonymous}{\kern0.06em \vbox{\hrule\@width.5em}}
+\newcommand{\plus}{\mathbin{+\!\!\!+}}
+\newcommand{\bind}{\mathbin{>\!\!\!>\mkern-6.7mu=}}
+\newcommand{\rbind}{\mathbin{=\mkern-6.7mu<\!\!\!<}}% suggested by Neil Mitchell
+\newcommand{\sequ}{\mathbin{>\!\!\!>}}
+\renewcommand{\leq}{\leqslant}
+\renewcommand{\geq}{\geqslant}
+\usepackage{polytable}
+
+%mathindent has to be defined
+\@ifundefined{mathindent}%
+  {\newdimen\mathindent\mathindent\leftmargini}%
+  {}%
+
+\def\resethooks{%
+  \global\let\SaveRestoreHook\empty
+  \global\let\ColumnHook\empty}
+\newcommand*{\savecolumns}[1][default]%
+  {\g@addto@macro\SaveRestoreHook{\savecolumns[#1]}}
+\newcommand*{\restorecolumns}[1][default]%
+  {\g@addto@macro\SaveRestoreHook{\restorecolumns[#1]}}
+\newcommand*{\aligncolumn}[2]%
+  {\g@addto@macro\ColumnHook{\column{#1}{#2}}}
+
+\resethooks
+
+\newcommand{\onelinecommentchars}{\quad-{}- }
+\newcommand{\commentbeginchars}{\enskip\{-}
+\newcommand{\commentendchars}{-\}\enskip}
+
+\newcommand{\visiblecomments}{%
+  \let\onelinecomment=\onelinecommentchars
+  \let\commentbegin=\commentbeginchars
+  \let\commentend=\commentendchars}
+
+\newcommand{\invisiblecomments}{%
+  \let\onelinecomment=\empty
+  \let\commentbegin=\empty
+  \let\commentend=\empty}
+
+\visiblecomments
+
+\newlength{\blanklineskip}
+\setlength{\blanklineskip}{0.66084ex}
+
+\newcommand{\hsindent}[1]{\quad}% default is fixed indentation
+\let\hspre\empty
+\let\hspost\empty
+\newcommand{\NB}{\textbf{NB}}
+\newcommand{\Todo}[1]{$\langle$\textbf{To do:}~#1$\rangle$}
+
+\EndFmtInput
+\makeatother
+%
+%
+%
+%
+%
+%
+% This package provides two environments suitable to take the place
+% of hscode, called "plainhscode" and "arrayhscode". 
+%
+% The plain environment surrounds each code block by vertical space,
+% and it uses \abovedisplayskip and \belowdisplayskip to get spacing
+% similar to formulas. Note that if these dimensions are changed,
+% the spacing around displayed math formulas changes as well.
+% All code is indented using \leftskip.
+%
+% Changed 19.08.2004 to reflect changes in colorcode. Should work with
+% CodeGroup.sty.
+%
+\ReadOnlyOnce{polycode.fmt}%
+\makeatletter
+
+\newcommand{\hsnewpar}[1]%
+  {{\parskip=0pt\parindent=0pt\par\vskip #1\noindent}}
+
+% can be used, for instance, to redefine the code size, by setting the
+% command to \small or something alike
+\newcommand{\hscodestyle}{}
+
+% The command \sethscode can be used to switch the code formatting
+% behaviour by mapping the hscode environment in the subst directive
+% to a new LaTeX environment.
+
+\newcommand{\sethscode}[1]%
+  {\expandafter\let\expandafter\hscode\csname #1\endcsname
+   \expandafter\let\expandafter\endhscode\csname end#1\endcsname}
+
+% "compatibility" mode restores the non-polycode.fmt layout.
+
+\newenvironment{compathscode}%
+  {\par\noindent
+   \advance\leftskip\mathindent
+   \hscodestyle
+   \let\\=\@normalcr
+   \let\hspre\(\let\hspost\)%
+   \pboxed}%
+  {\endpboxed\)%
+   \par\noindent
+   \ignorespacesafterend}
+
+\newcommand{\compaths}{\sethscode{compathscode}}
+
+% "plain" mode is the proposed default.
+% It should now work with \centering.
+% This required some changes. The old version
+% is still available for reference as oldplainhscode.
+
+\newenvironment{plainhscode}%
+  {\hsnewpar\abovedisplayskip
+   \advance\leftskip\mathindent
+   \hscodestyle
+   \let\hspre\(\let\hspost\)%
+   \pboxed}%
+  {\endpboxed%
+   \hsnewpar\belowdisplayskip
+   \ignorespacesafterend}
+
+\newenvironment{oldplainhscode}%
+  {\hsnewpar\abovedisplayskip
+   \advance\leftskip\mathindent
+   \hscodestyle
+   \let\\=\@normalcr
+   \(\pboxed}%
+  {\endpboxed\)%
+   \hsnewpar\belowdisplayskip
+   \ignorespacesafterend}
+
+% Here, we make plainhscode the default environment.
+
+\newcommand{\plainhs}{\sethscode{plainhscode}}
+\newcommand{\oldplainhs}{\sethscode{oldplainhscode}}
+\plainhs
+
+% The arrayhscode is like plain, but makes use of polytable's
+% parray environment which disallows page breaks in code blocks.
+
+\newenvironment{arrayhscode}%
+  {\hsnewpar\abovedisplayskip
+   \advance\leftskip\mathindent
+   \hscodestyle
+   \let\\=\@normalcr
+   \(\parray}%
+  {\endparray\)%
+   \hsnewpar\belowdisplayskip
+   \ignorespacesafterend}
+
+\newcommand{\arrayhs}{\sethscode{arrayhscode}}
+
+% The mathhscode environment also makes use of polytable's parray 
+% environment. It is supposed to be used only inside math mode 
+% (I used it to typeset the type rules in my thesis).
+
+\newenvironment{mathhscode}%
+  {\parray}{\endparray}
+
+\newcommand{\mathhs}{\sethscode{mathhscode}}
+
+% texths is similar to mathhs, but works in text mode.
+
+\newenvironment{texthscode}%
+  {\(\parray}{\endparray\)}
+
+\newcommand{\texths}{\sethscode{texthscode}}
+
+% The framed environment places code in a framed box.
+
+\def\codeframewidth{\arrayrulewidth}
+\RequirePackage{calc}
+
+\newenvironment{framedhscode}%
+  {\parskip=\abovedisplayskip\par\noindent
+   \hscodestyle
+   \arrayrulewidth=\codeframewidth
+   \tabular{@{}|p{\linewidth-2\arraycolsep-2\arrayrulewidth-2pt}|@{}}%
+   \hline\framedhslinecorrect\\{-1.5ex}%
+   \let\endoflinesave=\\
+   \let\\=\@normalcr
+   \(\pboxed}%
+  {\endpboxed\)%
+   \framedhslinecorrect\endoflinesave{.5ex}\hline
+   \endtabular
+   \parskip=\belowdisplayskip\par\noindent
+   \ignorespacesafterend}
+
+\newcommand{\framedhslinecorrect}[2]%
+  {#1[#2]}
+
+\newcommand{\framedhs}{\sethscode{framedhscode}}
+
+% The inlinehscode environment is an experimental environment
+% that can be used to typeset displayed code inline.
+
+\newenvironment{inlinehscode}%
+  {\(\def\column##1##2{}%
+   \let\>\undefined\let\<\undefined\let\\\undefined
+   \newcommand\>[1][]{}\newcommand\<[1][]{}\newcommand\\[1][]{}%
+   \def\fromto##1##2##3{##3}%
+   \def\nextline{}}{\) }%
+
+\newcommand{\inlinehs}{\sethscode{inlinehscode}}
+
+% The joincode environment is a separate environment that
+% can be used to surround and thereby connect multiple code
+% blocks.
+
+\newenvironment{joincode}%
+  {\let\orighscode=\hscode
+   \let\origendhscode=\endhscode
+   \def\endhscode{\def\hscode{\endgroup\def\@currenvir{hscode}\\}\begingroup}
+   %\let\SaveRestoreHook=\empty
+   %\let\ColumnHook=\empty
+   %\let\resethooks=\empty
+   \orighscode\def\hscode{\endgroup\def\@currenvir{hscode}}}%
+  {\origendhscode
+   \global\let\hscode=\orighscode
+   \global\let\endhscode=\origendhscode}%
+
+\makeatother
+\EndFmtInput
+%
+%
+\ReadOnlyOnce{agda.fmt}%
+
+
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8x]{inputenc}
+\RequirePackage{ucs}
+\RequirePackage{amsfonts}
+
+\providecommand\mathbbm{\mathbb}
+
+% TODO: Define more of these ...
+\DeclareUnicodeCharacter{737}{\textsuperscript{l}}
+\DeclareUnicodeCharacter{8718}{\ensuremath{\blacksquare}}
+\DeclareUnicodeCharacter{8759}{::}
+\DeclareUnicodeCharacter{9669}{\ensuremath{\triangleleft}}
+\DeclareUnicodeCharacter{8799}{\ensuremath{\stackrel{\scriptscriptstyle ?}{=}}}
+\DeclareUnicodeCharacter{10214}{\ensuremath{\llbracket}}
+\DeclareUnicodeCharacter{10215}{\ensuremath{\rrbracket}}
+
+% TODO: This is in general not a good idea.
+\providecommand\textepsilon{$\epsilon$}
+\providecommand\textmu{$\mu$}
+
+
+%Actually, varsyms should not occur in Agda output.
+
+% TODO: Make this configurable. IMHO, italics doesn't work well
+% for Agda code.
+
+\renewcommand\Varid[1]{\mathord{\textsf{#1}}}
+\let\Conid\Varid
+\newcommand\Keyword[1]{\textsf{\textbf{#1}}}
+\EndFmtInput
+
+
+
+\usepackage[T1]{fontenc}
+% \usepackage[utf8]{inputenc} 
+\usepackage[polish]{babel} 
+\usepackage{listings}
+
+\newtheorem{zadanie}{Zadanie}
+
+\author{Wojciech Jedynak \and Paweł Wieczorek}
+\title{Ćwiczenia z Agdy - Lista 1.}
+
+\begin{document}
+\lstset{language=Haskell}
+
+\maketitle
+
+\section{Uwaga}
+
+Lista zadań jest dostępna w dwu wariantach: .pdf i .lagda. Wersję .lagda
+można otworzyć w edytorze tekstu i uzupełniać brakujące fragmenty bez przepisywania
+wszystkiego.
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Keyword{module}\;\Conid{Exercises}\;\Keyword{where}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+\section{Podstawy Izomorfizmu Curry'ego-Howarda}
+
+Fałsz zdefiniowaliśmy w Agdzie jako typ pusty:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Keyword{data}\;\Varid{⊥}\;\mathbin{:}\;\Conid{Set}\;\Keyword{where}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{⊥-elim}\;\mathbin{:}\;\{\mskip1.5mu \Conid{A}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\Varid{→}\;\Varid{⊥}\;\Varid{→}\;\Conid{A}{}\<[E]%
+\\
+\>[B]{}\Varid{⊥-elim}\;(){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Możemy teraz wyrazić negację w standardowy sposób: jako funkcję w zbiór pusty.
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{¬\char95 }\;\mathbin{:}\;\Conid{Set}\;\Varid{→}\;\Conid{Set}{}\<[E]%
+\\
+\>[B]{}\Varid{¬}\;\Conid{A}\;\mathrel{=}\;\Conid{A}\;\Varid{→}\;\Varid{⊥}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+\begin{zadanie}
+Udowodnij, że p ⇒ ¬¬p, czyli dokończ poniższą definicję:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{pnnp}\;\mathbin{:}\;\{\mskip1.5mu \Conid{A}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\Varid{→}\;\Conid{A}\;\Varid{→}\;\Varid{¬}\;\Varid{¬}\;\Conid{A}{}\<[E]%
+\\
+\>[B]{}\Varid{pnnp}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Czy potrafisz udowodnić implikację w drugą stronę?
+
+\end{zadanie}
+
+\begin{zadanie}
+
+Udowodnij prawo kontrapozycji, czyli pokaż że (A ⇒ B) ⇒ (¬ B ⇒ ¬ A). Czy potrafisz udowodnić twierdzenie odwrotne?
+
+\end{zadanie}
+
+\begin{zadanie}
+
+Zdefiniuj typ, który będzie odpowiadał formule atomowej ⊤. Jakiemu typowi z języków programowania on odpowiada?
+
+\end{zadanie}
+
+\begin{zadanie}
+
+Polimorficzne pary, czyli odpowiednik koniukcji możemy zdefiniować następująco:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Keyword{data}\;\Varid{\char95 ∧\char95 }\;(\Conid{A}\;\Conid{B}\;\mathbin{:}\;\Conid{Set})\;\mathbin{:}\;\Conid{Set}\;\Keyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{pair}\;\mathbin{:}\;(\Varid{a}\;\mathbin{:}\;\Conid{A})\;\Varid{→}\;(\Varid{b}\;\mathbin{:}\;\Conid{B})\;\Varid{→}\;\Conid{A}\;\Varid{∧}\;\Conid{B}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Udowodnij reguły eliminacji oraz prawo przemienności tj. zdefiniuj funkcje fst, snd i swap:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{fst}\;\mathbin{:}\;\{\mskip1.5mu \Conid{A}\;\Conid{B}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\Varid{→}\;\Conid{A}\;\Varid{∧}\;\Conid{B}\;\Varid{→}\;\Conid{A}{}\<[E]%
+\\
+\>[B]{}\Varid{fst}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{snd}\;\mathbin{:}\;\{\mskip1.5mu \Conid{A}\;\Conid{B}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\Varid{→}\;\Conid{A}\;\Varid{∧}\;\Conid{B}\;\Varid{→}\;\Conid{B}{}\<[E]%
+\\
+\>[B]{}\Varid{snd}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{swap}\;\mathbin{:}\;\{\mskip1.5mu \Conid{A}\;\Conid{B}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\Varid{→}\;\Conid{A}\;\Varid{∧}\;\Conid{B}\;\Varid{→}\;\Conid{B}\;\Varid{∧}\;\Conid{A}{}\<[E]%
+\\
+\>[B]{}\Varid{swap}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+\end{zadanie}
+
+\begin{zadanie}
+
+Zdefiniuj typ sumy rozłącznej (czyli Haskellowy typ Either). Jakiemu spójnikowi logicznemu
+odpowiada ten typ? Udowodnij przemienność tego spójnika.
+
+\end{zadanie}
+
+\begin{zadanie}
+
+Korzystając z typów z poprzednich dwóch zadań, sformułuj i spróbuj udowodnić prawa deMorgana znane
+z logiki klasycznej. Które z nich zachodzą w logice kostruktywnej?
+
+\end{zadanie}
+
+
+\section{Typ identycznościowy, czyli równość w języku}
+
+Aby wydawać i dowodzić sądy o równości różnych bytów, zdefiniowaliśmy tzw. typ identycznościowy.
+Typ ustalonych a,b ∈ A, a ≡ b jest zamieszkały wtw, gdy a i b obliczają się do tego samego
+elementu kanonicznego (wartości).
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Keyword{infix}\;\Varid{5}\;\Varid{\char95 ≡\char95 }{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Keyword{data}\;\Varid{\char95 ≡\char95 }\;\{\mskip1.5mu \Conid{A}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\mathbin{:}\;\Conid{A}\;\Varid{→}\;\Conid{A}\;\Varid{→}\;\Conid{Set}\;\Keyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{refl}\;\mathbin{:}\;\{\mskip1.5mu \Varid{a}\;\mathbin{:}\;\Conid{A}\mskip1.5mu\}\;\Varid{→}\;\Varid{a}\;\Varid{≡}\;\Varid{a}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Różność elementów definiujemy jako... zaprzeczenie równości:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{\char95 ≢\char95 }\;\mathbin{:}\;\{\mskip1.5mu \Conid{A}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\Varid{→}\;\Conid{A}\;\Varid{→}\;\Conid{A}\;\Varid{→}\;\Conid{Set}{}\<[E]%
+\\
+\>[B]{}\Varid{a}\;\Varid{≢}\;\Varid{b}\;\mathrel{=}\;\Varid{¬}\;(\Varid{a}\;\Varid{≡}\;\Varid{b}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+\begin{zadanie}
+
+Pokazaliśmy już jak udowodnić niektóre właśności równości:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{symm}\;\mathbin{:}\;\{\mskip1.5mu \Conid{A}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\Varid{→}\;(\Varid{a}\;\Varid{b}\;\mathbin{:}\;\Conid{A})\;\Varid{→}\;\Varid{a}\;\Varid{≡}\;\Varid{b}\;\Varid{→}\;\Varid{b}\;\Varid{≡}\;\Varid{a}{}\<[E]%
+\\
+\>[B]{}\Varid{symm}\;\Varid{a}\;\Varid{.a}\;\Varid{refl}\;\mathrel{=}\;\Varid{refl}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{subst}\;\mathbin{:}\;\{\mskip1.5mu \Conid{A}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\Varid{→}\;(\Conid{P}\;\mathbin{:}\;\Conid{A}\;\Varid{→}\;\Conid{Set})\;\Varid{→}\;(\Varid{a}\;\Varid{b}\;\mathbin{:}\;\Conid{A})\;\Varid{→}\;\Varid{a}\;\Varid{≡}\;\Varid{b}\;\Varid{→}\;\Conid{P}\;\Varid{a}\;\Varid{→}\;\Conid{P}\;\Varid{b}{}\<[E]%
+\\
+\>[B]{}\Varid{subst}\;\Conid{P}\;\Varid{a}\;\Varid{.a}\;\Varid{refl}\;\Conid{Pa}\;\mathrel{=}\;\Conid{Pa}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Udowodnij dwie dodatkowe (bardzo przydatne) właśności:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{trans}\;\mathbin{:}\;\{\mskip1.5mu \Conid{A}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\Varid{→}\;(\Varid{a}\;\Varid{b}\;\Varid{c}\;\mathbin{:}\;\Conid{A})\;\Varid{→}\;\Varid{a}\;\Varid{≡}\;\Varid{b}\;\Varid{→}\;\Varid{b}\;\Varid{≡}\;\Varid{c}\;\Varid{→}\;\Varid{a}\;\Varid{≡}\;\Varid{c}{}\<[E]%
+\\
+\>[B]{}\Varid{trans}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{cong}\;\mathbin{:}\;\{\mskip1.5mu \Conid{A}\;\Conid{B}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\Varid{→}\;(\Conid{P}\;\mathbin{:}\;\Conid{A}\;\Varid{→}\;\Conid{B})\;\Varid{→}\;(\Varid{a}\;\Varid{b}\;\mathbin{:}\;\Conid{A})\;\Varid{→}\;\Varid{a}\;\Varid{≡}\;\Varid{b}\;\Varid{→}\;\Conid{P}\;\Varid{a}\;\Varid{≡}\;\Conid{P}\;\Varid{b}{}\<[E]%
+\\
+\>[B]{}\Varid{cong}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+
+\end{zadanie}
+
+
+\section{Wartości boolowskie}
+
+Wartości boolowskie zdefiniowaliśmy następująco:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Keyword{data}\;\Conid{Bool}\;\mathbin{:}\;\Conid{Set}\;\Keyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{false}\;\mathbin{:}\;\Conid{Bool}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{true}\;{}\<[9]%
+\>[9]{}\mathbin{:}\;\Conid{Bool}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+\begin{zadanie}
+
+Uzupełnij poniższą definicję tak, aby otrzymać funkcję negacji boolowskiej.
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{11}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}not\;\mathbin{:}\;\Conid{Bool}\;\Varid{→}\;\Conid{Bool}{}\<[E]%
+\\
+\>[B]{}not\;\Varid{false}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\\
+\>[B]{}not\;\Varid{true}\;{}\<[11]%
+\>[11]{}\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Udowodnij, że Twoja definicja spełnia następujące własności:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{not-has-no-fixed-points}\;\mathbin{:}\;(\Varid{b}\;\mathbin{:}\;\Conid{Bool})\;\Varid{→}\;not\;\Varid{b}\;\Varid{≢}\;\Varid{b}{}\<[E]%
+\\
+\>[B]{}\Varid{not-has-no-fixed-points}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{not-is-involutive}\;\mathbin{:}\;(\Varid{b}\;\mathbin{:}\;\Conid{Bool})\;\Varid{→}\;not\;(not\;\Varid{b})\;\Varid{≡}\;\Varid{b}{}\<[E]%
+\\
+\>[B]{}\Varid{not-is-involutive}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+
+
+\end{zadanie}
+
+\section{Liczby naturalne}
+
+Na wykładzie zdefiniowaliśmy liczby naturalne z dodawaniem następująco:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{7}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{8}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Keyword{data}\;\Conid{ℕ}\;\mathbin{:}\;\Conid{Set}\;\Keyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{zero}\;\mathbin{:}\;\Conid{ℕ}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{suc}\;{}\<[8]%
+\>[8]{}\mathbin{:}\;\Conid{ℕ}\;\Varid{→}\;\Conid{ℕ}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\mbox{\enskip\{-\# BUILTIN NATURAL ℕ  \#-\}\enskip}{}\<[E]%
+\\
+\>[B]{}\mbox{\enskip\{-\# BUILTIN ZERO zero  \#-\}\enskip}{}\<[E]%
+\\
+\>[B]{}\mbox{\enskip\{-\# BUILTIN SUC suc  \#-\}\enskip}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Keyword{infix}\;\Varid{6}\;\Varid{\char95 +\char95 }{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{\char95 +\char95 }\;\mathbin{:}\;\Conid{ℕ}\;\Varid{→}\;\Conid{ℕ}\;\Varid{→}\;\Conid{ℕ}{}\<[E]%
+\\
+\>[B]{}\Varid{zero}\;{}\<[7]%
+\>[7]{}\Varid{+}\;\Varid{m}\;\mathrel{=}\;\Varid{m}{}\<[E]%
+\\
+\>[B]{}\Varid{suc}\;\Varid{n}\;\Varid{+}\;\Varid{m}\;\mathrel{=}\;\Varid{suc}\;(\Varid{n}\;\Varid{+}\;\Varid{m}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+\begin{zadanie}
+Pamiętając, że wg ICH indukcja = rekursja, udowodnij następujące własności dodawania:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{plus-right-zero}\;\mathbin{:}\;(\Varid{n}\;\mathbin{:}\;\Conid{ℕ})\;\Varid{→}\;\Varid{n}\;\Varid{+}\;\Varid{0}\;\Varid{≡}\;\Varid{n}{}\<[E]%
+\\
+\>[B]{}\Varid{plus-right-zero}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{plus-suc-n-m}\;\mathbin{:}\;(\Varid{n}\;\Varid{m}\;\mathbin{:}\;\Conid{ℕ})\;\Varid{→}\;\Varid{suc}\;(\Varid{n}\;\Varid{+}\;\Varid{m})\;\Varid{≡}\;\Varid{n}\;\Varid{+}\;\Varid{suc}\;\Varid{m}{}\<[E]%
+\\
+\>[B]{}\Varid{plus-suc-n-m}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+\end{zadanie}
+
+\begin{zadanie}
+Korzystając z poprzedniego zadania, udowodnij przemienność dodawania:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{plus-commutative}\;\mathbin{:}\;(\Varid{n}\;\Varid{m}\;\mathbin{:}\;\Conid{ℕ})\;\Varid{→}\;\Varid{n}\;\Varid{+}\;\Varid{m}\;\Varid{≡}\;\Varid{m}\;\Varid{+}\;\Varid{n}{}\<[E]%
+\\
+\>[B]{}\Varid{plus-commutative}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+\end{zadanie}
+
+
+\begin{zadanie}
+Zdefiniuj mnożenie i potęgowanie dla liczb naturalnych.
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{22}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Keyword{infix}\;\Varid{7}\;\Varid{\char95 *\char95 }{}\<[E]%
+\\
+\>[B]{}\Keyword{infix}\;\Varid{8}\;\Varid{\char95 \char94 \char95 }{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{\char95 *\char95 }\;\mathbin{:}\;\Conid{ℕ}\;\Varid{→}\;\Conid{ℕ}\;\Varid{→}\;\Conid{ℕ}{}\<[E]%
+\\
+\>[B]{}\Varid{n}\;\Varid{*}\;\Varid{m}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{\char95 \char94 \char95 }\;\mathbin{:}\;\Conid{ℕ}\;\Varid{→}\;\Conid{ℕ}\;\Varid{→}\;\Conid{ℕ}{}\<[E]%
+\\
+\>[B]{}\Varid{n}\;\mathbin{\uparrow}\;\Varid{m}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[22]%
+\>[22]{}\mbox{\onelinecomment  tutaj też ma być daszek :-)}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Jeśli masz ochotę, to udowodnij przemienność mnożenia.
+
+\end{zadanie}
+
+\begin{zadanie}
+
+Udowodnij, że zero ≢ suc (zero).
+
+\end{zadanie}
+
+\begin{zadanie}
+
+Udowodnij następującą własność ("prawo skracania"):
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{strip-suc}\;\mathbin{:}\;(\Varid{n}\;\Varid{m}\;\mathbin{:}\;\Conid{ℕ})\;\Varid{→}\;\Varid{suc}\;\Varid{n}\;\Varid{≡}\;\Varid{suc}\;\Varid{m}\;\Varid{→}\;\Varid{n}\;\Varid{≡}\;\Varid{m}{}\<[E]%
+\\
+\>[B]{}\Varid{strip-suc}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+
+\end{zadanie}
+
+
+
+\section{Wektory}
+
+Przypomnijmy definicję wektorów:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{7}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Keyword{data}\;\Conid{Vec}\;(\Conid{A}\;\mathbin{:}\;\Conid{Set})\;\mathbin{:}\;\Conid{ℕ}\;\Varid{→}\;\Conid{Set}\;\Keyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}[\mskip1.5mu \mskip1.5mu]\;{}\<[7]%
+\>[7]{}\mathbin{:}\;\Conid{Vec}\;\Conid{A}\;\Varid{0}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{\char95 ∷\char95 }\;\mathbin{:}\;\{\mskip1.5mu \Varid{n}\;\mathbin{:}\;\Conid{ℕ}\mskip1.5mu\}\;\Varid{→}\;(\Varid{x}\;\mathbin{:}\;\Conid{A})\;\Varid{→}\;(\Varid{xs}\;\mathbin{:}\;\Conid{Vec}\;\Conid{A}\;\Varid{n})\;\Varid{→}\;\Conid{Vec}\;\Conid{A}\;(\Varid{suc}\;\Varid{n}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Zdefiniowaliśmy już m.in. konkatenację wektorów:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{\char95 ++\char95 }\;\mathbin{:}\;\{\mskip1.5mu \Conid{A}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\Varid{→}\;\{\mskip1.5mu \Varid{n}\;\Varid{m}\;\mathbin{:}\;\Conid{ℕ}\mskip1.5mu\}\;\Varid{→}\;\Conid{Vec}\;\Conid{A}\;\Varid{n}\;\Varid{→}\;\Conid{Vec}\;\Conid{A}\;\Varid{m}\;\Varid{→}\;\Conid{Vec}\;\Conid{A}\;(\Varid{n}\;\Varid{+}\;\Varid{m}){}\<[E]%
+\\
+\>[B]{}[\mskip1.5mu \mskip1.5mu]\;{}\<[10]%
+\>[10]{}\plus \;\Varid{v2}\;\mathrel{=}\;\Varid{v2}{}\<[E]%
+\\
+\>[B]{}(\Varid{x}\;\Varid{∷}\;\Varid{v1})\;\plus \;\Varid{v2}\;\mathrel{=}\;\Varid{x}\;\Varid{∷}\;(\Varid{v1}\;\plus \;\Varid{v2}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+\begin{zadanie}
+
+Zaprogramuj funkcje vmap, która jest wektorowym odpowiednikiem map dla list.
+Jaka powinna być długość wynikowego wektora?
+
+\end{zadanie}
+
+\begin{zadanie}
+
+W Haskellu bardzo często używamy funkcji zip, która jest zdefiniowana następująco: \\
+\\
+zip :: [a] -> [b] -> [(a,b)] \\
+zip (x:xs) (y:ys) = (x,y) : zip xs ys \\
+zip \_ \_ = [] \\
+
+Jak widać, przyjęto tutaj, że jeśli listy są różnej długości, to dłuższa lista jest ucinana.
+Nie zawsze takie rozwiązanie jest satysfakcjonujące. Wymyśl taką sygnaturę dla funkcji zip na wektorach,
+aby nie dopuścić (statycznie, za pomocą systemu typów) do niebezpiecznych wywołań.
+
+\end{zadanie}
+
+\begin{zadanie}
+
+Zaprogramuj wydajną funkcję odwracającą wektor. Użyj funkcji subst, jeśli będziesz chcieć zmusić Agdę do stosowania praw arytmetyki.
+
+\begin{hscode}\SaveRestoreHook
+\ColumnHook
+\end{hscode}\resethooks
+
+
+\end{zadanie}
+
+\section{Zbiory skończone - typ fin}
+
+Przypomnijmy definicję typu fin:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Keyword{data}\;\Conid{Fin}\;\mathbin{:}\;\Conid{ℕ}\;\Varid{→}\;\Conid{Set}\;\Keyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{zero}\;{}\<[9]%
+\>[9]{}\mathbin{:}\;\{\mskip1.5mu \Varid{n}\;\mathbin{:}\;\Conid{ℕ}\mskip1.5mu\}\;\Varid{→}\;\Conid{Fin}\;(\Varid{suc}\;\Varid{n}){}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{suc}\;{}\<[9]%
+\>[9]{}\mathbin{:}\;\{\mskip1.5mu \Varid{n}\;\mathbin{:}\;\Conid{ℕ}\mskip1.5mu\}\;\Varid{→}\;(\Varid{i}\;\mathbin{:}\;\Conid{Fin}\;\Varid{n})\;\Varid{→}\;\Conid{Fin}\;(\Varid{suc}\;\Varid{n}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Dla dowolnego n ∈ ℕ typ Fin n ma dokładnie n mieszkańców (w szczególności Fin 0 jest pusty).
+Własność ta sprawia, że typ Fin świetnie nadaje się do indeksowania wektorów.
+Indeksowanie to jest bezpieczne, gdyż system typów wyklucza nam możliwość stworzenia indeksu, 
+który wykraczałby poza dozwolony zakres.
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{18}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{\char95 !\char95 }\;\mathbin{:}\;\{\mskip1.5mu \Conid{A}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\{\mskip1.5mu \Varid{n}\;\mathbin{:}\;\Conid{ℕ}\mskip1.5mu\}\;\Varid{→}\;\Conid{Vec}\;\Conid{A}\;\Varid{n}\;\Varid{→}\;\Conid{Fin}\;\Varid{n}\;\Varid{→}\;\Conid{A}{}\<[E]%
+\\
+\>[B]{}[\mskip1.5mu \mskip1.5mu]\;\mathbin{!}\;(){}\<[E]%
+\\
+\>[B]{}(\Varid{x}\;\Varid{∷}\;\Varid{xs})\;\mathbin{!}\;\Varid{zero}\;{}\<[18]%
+\>[18]{}\mathrel{=}\;\Varid{x}{}\<[E]%
+\\
+\>[B]{}(\Varid{x}\;\Varid{∷}\;\Varid{xs})\;\mathbin{!}\;\Varid{suc}\;\Varid{i}\;\mathrel{=}\;\Varid{xs}\;\mathbin{!}\;\Varid{i}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+\begin{zadanie}
+
+Zauważ, że typ Fin przypomina strukturą liczby naturalne, choć zawiera więcej informacji. \\
+Napisz funkcję konwersji, która ''zapomina'' te dodatkowe informacje.
+
+Np. jeśli Fin 2 = \{ 0₂, 1₂ \}, to chcemy mieć \\
+toℕ 0₂ ≡ 0 \\
+toℕ 1₂ ≡ 1 \\
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{toℕ}\;\mathbin{:}\;\{\mskip1.5mu \Varid{n}\;\mathbin{:}\;\Conid{ℕ}\mskip1.5mu\}\;\Varid{→}\;\Conid{Fin}\;\Varid{n}\;\Varid{→}\;\Conid{ℕ}{}\<[E]%
+\\
+\>[B]{}\Varid{toℕ}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+\end{zadanie}
+
+\begin{zadanie}
+
+Napisz funkcje, która dla danego n, zwraca największy element zbioru Fin (suc n).
+Przez największy rozumiemy tutaj ten element, który jest zbudowany z największej
+liczby konstruktorów.
+\\
+Przykładowo, dla n ≡ 3 mamy Fin 3 ≡ \{ 0₃, 1₃, 2₃ \} i jako wynik chcemy otrzymać 2₃.
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{fmax}\;\mathbin{:}\;(\Varid{n}\;\mathbin{:}\;\Conid{ℕ})\;\Varid{→}\;\Conid{Fin}\;(\Varid{suc}\;\Varid{n}){}\<[E]%
+\\
+\>[B]{}\Varid{fmax}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+\end{zadanie}
+
+\begin{zadanie}
+
+Jeśli udało Ci się zrobić poprzednie dwa zadania, to pokaż, że ich złozenie w jedną ze stron daje identyczność.
+Czy potrafisz sformułować twierdzenie o złożeniu w drugą stronę?
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{lemma-max}\;\mathbin{:}\;(\Varid{n}\;\mathbin{:}\;\Conid{ℕ})\;\Varid{→}\;\Varid{toℕ}\;(\Varid{fmax}\;\Varid{n})\;\Varid{≡}\;\Varid{n}{}\<[E]%
+\\
+\>[B]{}\Varid{lemma-max}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+\end{zadanie}
+
+\begin{zadanie}
+
+W matematyce mamy \{ 0, 1, 2, .. n-1 \} ⊆ \{ 0, 1, 2, .. n-1, n \}.
+Zainspirowani tym zawieraniem chcemy teraz
+pokazać, że typ Fin n można osadzić w Fin (suc n). \\
+Uwaga. Jednym ze sposobów byłoby po prostu użycie konstruktora suc, 
+ale chcemy zrobić odwzorowanie, w którym $ k_n $ przechodzi na $ k_{n+1} $.
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{fweak}\;\mathbin{:}\;\{\mskip1.5mu \Varid{n}\;\mathbin{:}\;\Conid{ℕ}\mskip1.5mu\}\;\Varid{→}\;\Conid{Fin}\;\Varid{n}\;\Varid{→}\;\Conid{Fin}\;(\Varid{suc}\;\Varid{n}){}\<[E]%
+\\
+\>[B]{}\Varid{fweak}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Po zdefiniowaniu funkcji udowodnij jej poprawność:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{fweak-correctness}\;\mathbin{:}\;\{\mskip1.5mu \Varid{n}\;\mathbin{:}\;\Conid{ℕ}\mskip1.5mu\}\;\Varid{→}\;(\Varid{i}\;\mathbin{:}\;\Conid{Fin}\;\Varid{n})\;\Varid{→}\;\Varid{toℕ}\;\Varid{i}\;\Varid{≡}\;\Varid{toℕ}\;(\Varid{fweak}\;\Varid{i}){}\<[E]%
+\\
+\>[B]{}\Varid{fweak-correctness}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+
+\end{zadanie}
+
+\begin{zadanie}
+Pokaż, że dla każdego n ∈ ℕ, możemy stablicować wszystkie elementy
+typu Fin n w n-elementowym wektorze.
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{tabFins}\;\mathbin{:}\;(\Varid{n}\;\mathbin{:}\;\Conid{ℕ})\;\Varid{→}\;\Conid{Vec}\;(\Conid{Fin}\;\Varid{n})\;\Varid{n}{}\<[E]%
+\\
+\>[B]{}\Varid{tabFins}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!!}\mskip1.5mu\}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+\end{zadanie}
+
+\end{document}
