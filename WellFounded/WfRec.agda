@@ -1,7 +1,7 @@
 module WfRec where
 
 open import Data.Nat
-open import Data.List -- hiding -- (filter)
+open import Data.List
 open import Data.Bool
 open import Data.Product
 open import Data.Empty
@@ -9,7 +9,7 @@ open import Relation.Nullary
 
 -- ,,Kombinatory'' budujace nowe relacje sa inspirowane praca
 -- L. C. Paulson -"Constructing Recursion Operators in Intuitionistic Type Theory" 
--- oraz roznymi jej implementacjami (biblioteka Coqa, Agdy)
+-- oraz roznymi implementacjami tych kombinatorow (biblioteka Coqa, Agdy)
 
 {- ----------------------------------------------------
    Rozne pomoce
@@ -101,28 +101,35 @@ open Wf
 module WfNat where
 
   Acc0 : Acc _<_ 0
-  Acc0 = AccIntro (λ y Hy → ⊥-elim (No0< Hy))
+  Acc0 = AccIntro (λ y Hy<0 → ⊥-elim (No0< Hy<0))
 
   AccSn : {n : ℕ} → Acc _<_ n → Acc _<_ (suc n)
-  AccSn {zero} H = AccIntro (λ y Hy → spec Hy)
+  AccSn {zero} Hn = AccIntro (λ y Hy<1 → spec Hy<1)
    where
      spec : {y : ℕ} → y < 1 → Acc _<_ y
      spec (s≤s z≤n) = Acc0
 
-  AccSn {suc n} (AccIntro f) = AccIntro (λ y Hy → spec Hy)
+  AccSn {suc n} (AccIntro f) = AccIntro (λ y Hy<Sn → spec Hy<Sn)
    where
      spec : {y : ℕ} → y < suc (suc n) → Acc _<_ y
-     spec {y} (s≤s m≤n) = AccIntro (λ z Hz → f z  (trans≤ Hz m≤n))
+     spec {y} (s≤s y≤Sn) = AccIntro (λ z HSz<n → f z  (trans≤ HSz<n y≤Sn))
 
   Wf< : Wf _<_
   Wf< zero = Acc0 
   Wf< (suc n) with Wf< n
   ... | H = AccSn H
 
+{-
+  WfInd : {A : Set} {_≺_ : A → A → Set} → (Wf _≺_)
+         → (P : A → Set)
+         → ( (x : A) → ( (y : A) → y ≺ x → P y ) → P x)
+         → (x : A) → P x
+-}
 
   WfNatInd : (P : ℕ → Set)
            → ( (x : ℕ) → ( (y : ℕ) → y < x → P y) → P x )
            → (x : ℕ) → P x
+
   WfNatInd P IH x = WfInd Wf< P IH x 
 
 
@@ -133,13 +140,21 @@ module WfNat where
 module WfNat_example where
   open WfNat
 
+{-
+  log2 0  = zero
+  log2 1  = zero
+  log2 n  = suc (div2 n)
+-}
+
   log2 : ℕ → ℕ
   log2 = WfNatInd (λ x → ℕ) log2'
    where
      log2' : (n : ℕ) → ( (m : ℕ) → m < n → ℕ ) → ℕ
-     log2' zero rec = zero
+     log2' zero rec       = zero
      log2' (suc zero) rec = zero
-     log2' (suc n)    rec = suc (rec (div2 (suc n)) div2s≤)
+     log2' (suc n)    rec = suc (rec (div2 (suc n)) proof1)
+      where
+        proof1 = div2s≤
 
 
 {- ----------------------------------------------------
