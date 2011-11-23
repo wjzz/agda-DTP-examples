@@ -1,0 +1,32 @@
+* Second Agda lecture
+** Finish stuff started a week ago
+*** vectors
+**** indexing vectors, very briefly about fins
+**** vreverse and the type problem
+*** proving theorems
+**** equality
+***** symm, subst, cong
+****** fixing the vreverse function
+***** some example proofs
+****** meaning of forall
+****** neutrals elements for +
+**** negation
+***** empty type, false elim.
+**** equality ctnd
+***** tricks that require std-lib
+****** the with construction
+****** the rewrite trick
+****** nice-equations
+
+** New things
+*** Intro to inductive predicates
+**** number-is-even
+**** a number-greater-than-some-other-number
+**** list-is-empty
+**** list-is-sorted
+
+*** The hierarchy of sets
+*** Universes
+
+* Things to consider
+** Nat \== Bool?
