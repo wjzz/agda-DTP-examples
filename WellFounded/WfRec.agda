@@ -40,6 +40,22 @@ module StdLib where
   ... | true = s≤s (filter-length P xs)
   ... | false = trans≤ (filter-length P xs) suc≤
 
+  take-length : {A : Set} 
+              → (n : ℕ)
+              → (xs : List A)
+              → length (take n xs) ≤ length xs
+  take-length zero xs          = z≤n
+  take-length (suc n) []       = z≤n
+  take-length (suc n) (x ∷ xs) = s≤s (take-length n xs)
+
+  drop-length : {A : Set} 
+              → (n : ℕ)
+              → (xs : List A)
+              → length (drop n xs) ≤ length xs
+  drop-length zero xs          = n≤n
+  drop-length (suc n) []       = z≤n
+  drop-length (suc n) (x ∷ xs) = trans≤ (drop-length n xs) suc≤
+
   div2 : ℕ → ℕ
   div2 zero          = zero
   div2 (suc zero)    = zero
@@ -56,6 +72,16 @@ module StdLib where
   div2s≤ {suc zero} = s≤s div2s≤
   div2s≤ {suc (suc n)} with div2s≤ {n}
   ... | (s≤s H) = s≤s (s≤s (trans≤ H suc≤))
+
+  minus≤ : (n m : ℕ)
+         → n ∸ m ≤ n
+  minus≤ n        zero   = n≤n
+  minus≤ zero    (suc m) = z≤n
+  minus≤ (suc n) (suc m) = trans≤ (minus≤ n m) suc≤
+
+
+
+
 
 open StdLib
 
@@ -156,7 +182,6 @@ module WfNat_example where
       where
         proof1 = div2s≤
 
-
 {- ----------------------------------------------------
    Dobrze ufundowana relacja na przeciw-obrazie
 -}
@@ -240,6 +265,101 @@ module QuickSort where
         right = rec (filter (after x) xs) (qless (after x) x xs)
 
   test = qsort ( 2 ∷ 9 ∷ 7 ∷ 1 ∷ [] )
+
+
+
+module MergeSort1 where
+
+  -- kod z poprzedniego wykladu M.Mielowskiego
+
+--typ porządku
+  data Order : Set where
+    le : Order
+    ge : Order
+
+
+  order : (x y : ℕ) → Order
+  order  zero     y       = le
+  order (suc x′)  zero    = ge
+  order (suc x′) (suc y′) = order x′ y′
+
+  merge : (xs ys : List ℕ) → List ℕ
+  merge  []      ys = ys
+  merge (x ∷ xs) [] = x ∷ xs
+  merge (x ∷ xs) (y ∷ ys) with order x y | x ∷ merge xs (y ∷ ys) | y ∷ merge (x ∷ xs) ys
+  ... | le | m1 | m2 = m1
+  ... | ge | m1 | m2 = m2
+
+
+  data Parity : Set where
+    odd  : Parity
+    even : Parity
+
+  data DealT (A : Set) : Set where
+    empT  : DealT A
+    leafT : A → DealT A
+    nodeT : (p : Parity) → (l r : DealT A) → DealT A
+
+  insertT : {A : Set}(x : A) → (t : DealT A) → DealT A
+  insertT x  empT            = leafT x
+  insertT x (leafT y)        = nodeT even (leafT y) (leafT x)
+  insertT x (nodeT even l r) = nodeT odd (insertT x l) r
+  insertT x (nodeT odd  l r) = nodeT even l (insertT x r)
+
+  dealT : {A : Set}(xs : List A) → DealT A
+  dealT    []    = empT
+  dealT (x ∷ xs) = insertT x (dealT xs)
+
+  mergeT : (t : DealT ℕ) → List ℕ
+  mergeT  empT         = []
+  mergeT (leafT x)     = x ∷ []
+  mergeT (nodeT p l r) = merge (mergeT l) (mergeT r)
+
+  sort′ : List ℕ → List ℕ
+  sort′ xs = mergeT (dealT xs)
+
+module MergeSortWf where
+
+  open WfInvImage_example ℕ
+
+  half1 : List ℕ → List ℕ
+  half1 xs = take (div2 (length xs)) xs
+
+  half2 : List ℕ → List ℕ
+  half2 xs = drop (div2 (length xs)) xs
+
+  half1≤ : (xs : List ℕ) → length (half1 xs) ≤ length xs
+  half1≤ []           = z≤n
+  half1≤ (x ∷ [])     = z≤n
+  half1≤ (a ∷ b ∷ xs) = s≤s (take-length (div2 (foldr (λ x → suc) zero xs)) (b ∷ xs))
+
+{-
+  half1≤ : (a b : ℕ) (xs : List ℕ) → half1 (a ∷ b ∷ xs) ⊏ (a ∷ b ∷ xs)
+  half1≤ a b xs = 
+-}
+
+
+
+  half2≤ : (a : ℕ) (xs : List ℕ) → half2 xs ⊏ (a ∷ xs)
+  half2≤ a xs = s≤s (drop-length (div2 (length xs)) xs)
+
+  merge : List ℕ → List ℕ → List ℕ
+  merge [] ys             = ys
+  merge xs []             = xs
+  merge (x ∷ xs) (y ∷ ys) with x ≤? y | merge xs (y ∷ ys) | merge (x ∷ xs) ys
+  ... | yes _ | rsx | _   = x ∷ rsx
+  ... | no  _ | _   | rsy = y ∷ rsy
+
+  msort : List ℕ → List ℕ
+  msort  = WfListInd _ msort' 
+   where
+     msort' : (xs : List ℕ) → ( (ys : List ℕ) → ys ⊏ xs → List ℕ) → List ℕ
+     msort' [] rec            = []
+     msort' (x ∷ []) rec      = x ∷ []
+     msort' (x ∷ xs) rec      = merge left right
+       where
+         left  = rec (half1 (x ∷ xs)) {!!}
+         right = rec (half2 (x ∷ xs)) {!!}
 
 
 {- ----------------------------------------------------
