@@ -272,7 +272,6 @@ module MergeSort1 where
 
   -- kod z poprzedniego wykladu M.Mielowskiego
 
---typ porządku
   data Order : Set where
     le : Order
     ge : Order
